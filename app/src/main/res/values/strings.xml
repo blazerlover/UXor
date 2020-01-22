@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">UksOrganizer</string>
     <string name="new_event">New event</string>
-    <string name="shopping_event">Shopping event</string>
+    <string name="recycle_view_orientation">Orientation</string>
+    <string name="recycle_view_orientation_vertical">Vertical orientation</string>
+    <string name="recycle_view_orientation_horizontal">Horizontal orientation</string>
+    <string name="recycle_view_orientation_grid">Grid orientation</string>
     <string name="settings">Settings</string>
 </resources>
