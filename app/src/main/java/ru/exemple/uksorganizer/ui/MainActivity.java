@@ -11,12 +11,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
 
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
+import ru.exemple.uksorganizer.model.Event;
 
 //TODO: сделать чтобы можно было выбирать setLayoutManager recycler из UI
 //TODO: сделть чтобы если нет events - отображалась вьюшка с текстом "Еще нет евентиов, добавьте"
@@ -24,6 +28,8 @@ import ru.exemple.uksorganizer.db.EventsDatabase;
  public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
      private RecyclerView recycler;
+    ArrayList<Event> events;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +43,18 @@ import ru.exemple.uksorganizer.db.EventsDatabase;
 
         recycler = findViewById(R.id.rvEvents);
         recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        EventsAdapter eventsAdapter = new EventsAdapter(eventsDb.getAllEvents());
+        events = (ArrayList<Event>) eventsDb.getAllEvents();
+        EventsAdapter eventsAdapter = new EventsAdapter(events);
         recycler.setAdapter(eventsAdapter);
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        checkEmptyList();
+    }
 
+    @Override
     public void onClick(View view){
         Intent intent = new Intent(this, EventActivity.class);
         startActivity(intent);
@@ -74,5 +86,10 @@ import ru.exemple.uksorganizer.db.EventsDatabase;
                 default:
                     return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void checkEmptyList() {
+        if (events.size() == 0)
+            findViewById(R.id.tvEmpty).setVisibility(View.VISIBLE);
     }
 }
