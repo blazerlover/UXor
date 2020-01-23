@@ -7,12 +7,17 @@ import android.view.View;
 import android.widget.EditText;
 
 import ru.exemple.uksorganizer.R;
+import ru.exemple.uksorganizer.model.Event;
 
 public class EventActivity extends AppCompatActivity {
 
     private EditText editTextName;
     private EditText editTextCategory;
     private EditText editTextDescription;
+
+    //Добавить время
+    //private EditText editTextTime?;
+    private Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +31,9 @@ public class EventActivity extends AppCompatActivity {
         editTextName = findViewById(R.id.edittextName);
         editTextCategory = findViewById(R.id.edittextCategoty);
         editTextDescription = findViewById(R.id.edittextDescription);
+        //editTextTime = findViewById(R.id.edittextTime);
 
-//        getEventData();
+//        getEvent();
 
         findViewById(R.id.buttonSaveEvent).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,11 +45,12 @@ public class EventActivity extends AppCompatActivity {
 
     }
 
-//    public Event getEventData() {
-//        Event eventData = new Event(name, category, description, time);
-//        eventData.setName(editTextName.getText().toString());
-//        eventData.setCategory(editTextCategory.getText().toString());
-//        eventData.setDescription(editTextDescription.getText().toString());
-//        return eventData;
-//    }
+    public Event getEvent() {
+        String name = editTextName.getText().toString();
+        Event.Category category;
+        String description = editTextDescription.getText().toString();
+        //Long time = editTextTime.
+        event = new Event(name, category, description, time);
+        return event;
+    }
 }
