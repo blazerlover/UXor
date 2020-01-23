@@ -1,16 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
-        android:id="@+id/option_menu_main_item_1"
+        android:id="@+id/new_event_item"
         android:title="@string/new_event"
         app:showAsAction="never" />
+
+    <item android:title="@string/recycle_view_orientation">
+        <menu>
+            <item
+                android:id="@+id/recycle_view_orientation_vertical_item"
+                android:title="@string/recycle_view_orientation_vertical"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/recycle_view_orientation_horizontal_item"
+                android:title="@string/recycle_view_orientation_horizontal"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/recycle_view_orientation_grid_item"
+                android:title="@string/recycle_view_orientation_grid"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+
     <item
-        android:id="@+id/option_menu_main_item_2"
-        android:title="@string/shopping_event"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/option_menu_main_item_3"
+        android:id="@+id/settings_item"
         android:title="@string/settings"
         app:showAsAction="never" />
 </menu>

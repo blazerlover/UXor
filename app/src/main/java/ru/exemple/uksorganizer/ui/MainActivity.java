@@ -1,6 +1,7 @@
 package ru.exemple.uksorganizer.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -8,18 +9,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
 
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
+import ru.exemple.uksorganizer.model.Event;
 
 //TODO: сделать чтобы можно было выбирать setLayoutManager recycler из UI
 //TODO: сделть чтобы если нет events - отображалась вьюшка с текстом "Еще нет евентиов, добавьте"
 //TODO: сделать загрузку данных асинхронно (в другом потоке), пока грузится выводить прогресс
  public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+     private RecyclerView recycler;
+    ArrayList<Event> events;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +41,19 @@ import ru.exemple.uksorganizer.db.EventsDatabase;
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
-        RecyclerView recycler = findViewById(R.id.rvEvents);
+        recycler = findViewById(R.id.rvEvents);
         recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        EventsAdapter eventsAdapter = new EventsAdapter(eventsDb.getAllEvents());
+        events = (ArrayList<Event>) eventsDb.getAllEvents();
+        EventsAdapter eventsAdapter = new EventsAdapter(events);
         recycler.setAdapter(eventsAdapter);
     }
 
-    //Пока что слушатель только у одной кнопки, потом нужно будет пердусмотреть оператор switch/case или прикручивать к каждой кнопке отдельно
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkEmptyList();
+    }
+
     @Override
     public void onClick(View view){
         Intent intent = new Intent(this, EventActivity.class);
@@ -48,6 +64,32 @@ import ru.exemple.uksorganizer.db.EventsDatabase;
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.option_menu_main, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.new_event_item:
+                return true;
+            case R.id.recycle_view_orientation_vertical_item:
+                recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+                return true;
+            case R.id.recycle_view_orientation_horizontal_item:
+                recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+                return true;
+            case R.id.recycle_view_orientation_grid_item:
+                recycler.setLayoutManager(new GridLayoutManager(this, 2));
+                return true;
+            case R.id.settings_item:
+                return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void checkEmptyList() {
+        if (events.size() == 0)
+            findViewById(R.id.tvEmpty).setVisibility(View.VISIBLE);
     }
 }
