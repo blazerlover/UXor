@@ -1,6 +1,7 @@
 package ru.exemple.uksorganizer.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,7 +30,7 @@ import ru.exemple.uksorganizer.model.Event;
 
      private RecyclerView recycler;
     ArrayList<Event> events;
-
+    DividerItemDecoration dividerItemDecoration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +43,14 @@ import ru.exemple.uksorganizer.model.Event;
         fab.setOnClickListener(this);
 
         recycler = findViewById(R.id.rvEvents);
-        recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+        LinearLayoutManager llManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        recycler.setLayoutManager(llManager);
         events = (ArrayList<Event>) eventsDb.getAllEvents();
         EventsAdapter eventsAdapter = new EventsAdapter(events);
         recycler.setAdapter(eventsAdapter);
+        dividerItemDecoration = new DividerItemDecoration(recycler.getContext(),
+                llManager.getOrientation());
+        recycler.addItemDecoration(dividerItemDecoration);
     }
 
     @Override
@@ -74,9 +79,11 @@ import ru.exemple.uksorganizer.model.Event;
                 return true;
             case R.id.recycle_view_orientation_vertical_item:
                 recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+                dividerItemDecoration.setOrientation(RecyclerView.VERTICAL);
                 return true;
             case R.id.recycle_view_orientation_horizontal_item:
                 recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+                dividerItemDecoration.setOrientation(RecyclerView.HORIZONTAL);
                 return true;
             case R.id.recycle_view_orientation_grid_item:
                 recycler.setLayoutManager(new GridLayoutManager(this, 2));
