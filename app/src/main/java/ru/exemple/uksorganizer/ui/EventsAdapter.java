@@ -36,6 +36,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Event event = events.get(position);
         holder.tvTitle.setText(event.getName());
+        holder.tvCategory.setText(event.getCategory().toString());
+        holder.tvTime.setText(String.valueOf(event.getTime()));
     }
 
     @Override
@@ -46,10 +48,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView tvTitle;
+        private final TextView tvCategory;
+        private final TextView tvTime;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvEventTitle);
+            tvCategory = itemView.findViewById(R.id.tvEventCategory);
+            tvTime = itemView.findViewById(R.id.tvEventTime);
         }
 
     }
