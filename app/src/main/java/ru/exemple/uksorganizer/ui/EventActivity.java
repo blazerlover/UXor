@@ -16,6 +16,7 @@ import android.widget.TimePicker;
 import java.util.Calendar;
 
 import ru.exemple.uksorganizer.R;
+import ru.exemple.uksorganizer.db.EventsDatabaseFile;
 import ru.exemple.uksorganizer.model.Event;
 
 public class EventActivity extends AppCompatActivity {
@@ -26,6 +27,7 @@ public class EventActivity extends AppCompatActivity {
     private TextView textViewTime;
     private Button buttonSaveEvent;
     private Button buttonSetTime;
+    private Event.Category [] categoriesArray = Event.Category.values();
 
     private int CalendarHour, CalendarMinute;
     String format;
@@ -35,6 +37,7 @@ public class EventActivity extends AppCompatActivity {
     //Добавить время
     //private EditText editTextTime?;
     private Event event;
+    private EventsDatabaseFile eventsDatabaseFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,7 @@ public class EventActivity extends AppCompatActivity {
         buttonSaveEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                eventPresenter.save();
+                eventsDatabaseFile.addEvent(getEvent());
             }
         });
 
@@ -129,7 +132,7 @@ public class EventActivity extends AppCompatActivity {
         }*/
         String description = editTextDescription.getText().toString();
         Long time = Long.parseLong(textViewTime.getText().toString());
-        event = new Event(name, category, description, time);
-        return event;
+        return event = new Event(name, category, description, time);
+
     }
 }

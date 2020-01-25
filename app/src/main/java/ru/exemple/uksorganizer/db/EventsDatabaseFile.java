@@ -1,5 +1,7 @@
 package ru.exemple.uksorganizer.db;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,7 +23,18 @@ public class EventsDatabaseFile implements EventsDatabase{
     @Override
     public void addEvent(Event event) {
 
-        eventActivity.getEvent();
+        event = eventActivity.getEvent();
+        try {
+
+            FileOutputStream fileOutputStream = new FileOutputStream("event_1");
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(event);
+            objectOutputStream.close();
+
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
 
 
