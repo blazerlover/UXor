@@ -1,47 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:orientation="vertical"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent">
-<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/linearLayout1"
-    android:layout_marginLeft="10pt"
-    android:layout_marginRight="10pt"
-    android:layout_marginTop="3pt">
-    <EditText
-        android:layout_weight="1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="5pt"
-        android:id="@+id/edittextName"
-        android:layout_width="match_parent"
-        android:inputType="numberDecimal">
-    </EditText>
-    <EditText
+        android:id="@+id/linearLayout1"
+        android:layout_marginLeft="10pt"
+        android:layout_marginRight="10pt"
+        android:layout_marginTop="3pt">
+        <EditText
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5pt"
+            android:id="@+id/editTextName"
+            android:layout_width="match_parent">
+        </EditText>
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/category">
+        </Spinner>
+        <EditText
+            android:layout_height="40pt"
+            android:layout_weight="1"
+            android:layout_marginRight="5pt"
+            android:id="@+id/editTextDescription"
+            android:layout_width="match_parent">
+        </EditText>
+
+    </LinearLayout>
+
+    <RelativeLayout
+
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginRight="5pt"
-        android:id="@+id/edittextCategoty"
-        android:layout_width="match_parent"
-        android:inputType="numberDecimal">
-    </EditText>
-    <EditText
-        android:layout_height="40pt"
-        android:layout_weight="1"
-        android:layout_marginRight="5pt"
-        android:id="@+id/edittextDescription"
-        android:layout_width="match_parent"
-        android:inputType="numberDecimal">
-    </EditText>
-</LinearLayout>
+        >
+
+        <Button
+            android:id="@+id/buttonSetTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="Set Time" />
+
+        <TextView
+            android:id="@+id/textViewTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignWithParentIfMissing="false"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:clickable="true"
+            android:text="@string/setTime"></TextView>
+
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="horizontal">
+
 
         <Button
             android:id="@+id/buttonSaveEvent"
