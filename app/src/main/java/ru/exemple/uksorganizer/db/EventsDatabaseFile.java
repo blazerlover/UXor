@@ -23,10 +23,9 @@ public class EventsDatabaseFile implements EventsDatabase{
     @Override
     public void addEvent(Event event) {
 
-        event = eventActivity.getEvent();
         try {
 
-            FileOutputStream fileOutputStream = new FileOutputStream("event_1");
+            FileOutputStream fileOutputStream = new FileOutputStream(event.getName());
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(event);
             objectOutputStream.close();
