@@ -25,7 +25,7 @@ public class EventsDatabaseFile implements EventsDatabase{
 
         try {
 
-            FileOutputStream fileOutputStream = new FileOutputStream(event.getName());
+            FileOutputStream fileOutputStream = new FileOutputStream(event.getName() + ".ser");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(event);
             objectOutputStream.close();
