@@ -34,6 +34,7 @@ public class EventActivity extends AppCompatActivity {
     private TextView textViewDate;
     private Button buttonSaveEvent;
     private Button buttonSetTime;
+    private Button buttonSetDate;
     private Event.Category [] categoriesArray = Event.Category.values();
 
     private int CalendarHour, CalendarMinute;
@@ -71,12 +72,13 @@ public class EventActivity extends AppCompatActivity {
         textViewDate = findViewById(R.id.textViewDate);
         buttonSaveEvent = findViewById(R.id.buttonSaveEvent);
         buttonSetTime = findViewById(R.id.buttonSetTime);
+        buttonSetDate = findViewById(R.id.buttonSetDate);
 
 
         ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(this, android.R.layout.simple_list_item_1, categoriesArray);
         spinnerCategory.setAdapter(arrayAdapter);
 
-        buttonSetTime.setOnClickListener(new View.OnClickListener() {
+        buttonSetDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -84,8 +86,6 @@ public class EventActivity extends AppCompatActivity {
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
                 int month = calendar.get(Calendar.MONTH);
                 int year = calendar.get(Calendar.YEAR);
-                CalendarHour = calendar.get(Calendar.HOUR_OF_DAY);
-                CalendarMinute = calendar.get(Calendar.MINUTE);
 
                 datePickerDialog = new DatePickerDialog(EventActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
@@ -94,6 +94,19 @@ public class EventActivity extends AppCompatActivity {
                     }
                 }, day, month, year);
                 datePickerDialog.show();
+
+            }
+        });
+
+
+        buttonSetTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                calendar = Calendar.getInstance();
+                CalendarHour = calendar.get(Calendar.HOUR_OF_DAY);
+                CalendarMinute = calendar.get(Calendar.MINUTE);
+
 
 
                 timepickerdialog = new TimePickerDialog(EventActivity.this,

@@ -47,8 +47,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="Set Date and Time" />
+            android:text="Set Time" />
 
+
+        <Button
+            android:id="@+id/buttonSetDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="90dp"
+            android:text="Set Date" />
 
         <TextView
             android:id="@+id/textViewTime"
