@@ -62,7 +62,6 @@ public class EventActivity extends AppCompatActivity {
             }
         });
     }
-
     private void init() {
 
         editTextName = findViewById(R.id.editTextName);
@@ -73,7 +72,6 @@ public class EventActivity extends AppCompatActivity {
         buttonSaveEvent = findViewById(R.id.buttonSaveEvent);
         buttonSetTime = findViewById(R.id.buttonSetTime);
         buttonSetDate = findViewById(R.id.buttonSetDate);
-
 
         ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(this, android.R.layout.simple_list_item_1, categoriesArray);
         spinnerCategory.setAdapter(arrayAdapter);
@@ -94,10 +92,8 @@ public class EventActivity extends AppCompatActivity {
                     }
                 }, day, month, year);
                 datePickerDialog.show();
-
             }
         });
-
 
         buttonSetTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,8 +102,6 @@ public class EventActivity extends AppCompatActivity {
                 calendar = Calendar.getInstance();
                 CalendarHour = calendar.get(Calendar.HOUR_OF_DAY);
                 CalendarMinute = calendar.get(Calendar.MINUTE);
-
-
 
                 timepickerdialog = new TimePickerDialog(EventActivity.this,
                         new TimePickerDialog.OnTimeSetListener() {
@@ -128,9 +122,7 @@ public class EventActivity extends AppCompatActivity {
                                 else {
                                     format = "AM";
                                 }
-
                                 calendar.set(2020, 0, 25, hourOfDay, minute);
-
 
                                 textViewTime.setText(hourOfDay + ":" + minute + format);
                             }
@@ -141,8 +133,6 @@ public class EventActivity extends AppCompatActivity {
         });
 
     }
-
-
 
     public Event getEvent() {
         String name = editTextName.getText().toString();

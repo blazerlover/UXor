@@ -10,7 +10,6 @@ import ru.exemple.uksorganizer.ui.EventActivity;
 
 //TODO Сделать реализацию через Serialisable
 
-// HUI
 public class EventsDatabaseFile implements EventsDatabase{
 
     EventActivity eventActivity;
@@ -24,19 +23,14 @@ public class EventsDatabaseFile implements EventsDatabase{
     public void addEvent(Event event) {
 
         try {
-
             FileOutputStream fileOutputStream = new FileOutputStream(event.getName() + ".ser");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(event);
             objectOutputStream.close();
-
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
-
-
-
     }
 
     @Override
