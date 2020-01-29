@@ -12,6 +12,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -21,6 +24,7 @@ import java.util.ArrayList;
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
+import ru.exemple.uksorganizer.db.EventsDatabaseFile;
 import ru.exemple.uksorganizer.model.Event;
 
 //TODO: сделать чтобы можно было выбирать setLayoutManager recycler из UI
@@ -31,32 +35,39 @@ import ru.exemple.uksorganizer.model.Event;
      private RecyclerView recycler;
     ArrayList<Event> events;
     DividerItemDecoration dividerItemDecoration;
+    EventsDatabaseFile eventsDatabaseFile;
+    private ListView listViewEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        EventsDatabase eventsDb = ((App) getApplication()).getEventsDb();
+        /*EventsDatabase eventsDb = ((App) getApplication()).getEventsDb();*/
+        /*EventsDatabase eventsDatabaseFile = ((App) getApplication()).getEventsDb();*/
+        eventsDatabaseFile = new EventsDatabaseFile();
 
         setContentView(R.layout.activity_main);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(this);
+        listViewEvents = findViewById(R.id.listViewEvents);
 
-        recycler = findViewById(R.id.rvEvents);
+        /*recycler = findViewById(R.id.rvEvents);
         LinearLayoutManager llManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        recycler.setLayoutManager(llManager);
-        events = (ArrayList<Event>) eventsDb.getAllEvents();
-        EventsAdapter eventsAdapter = new EventsAdapter(events);
-        recycler.setAdapter(eventsAdapter);
+        recycler.setLayoutManager(llManager);*/
+        /*events = (ArrayList<Event>) eventsDb.getAllEvents();*/
+        events = (ArrayList<Event>) eventsDatabaseFile.getAllEvents();
+        ArrayAdapter<ArrayList<Event>> eventsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, events);
+        listViewEvents.setAdapter(eventsAdapter);
+        /*recycler.setAdapter(eventsAdapter);
         dividerItemDecoration = new DividerItemDecoration(recycler.getContext(),
                 llManager.getOrientation());
-        recycler.addItemDecoration(dividerItemDecoration);
+        recycler.addItemDecoration(dividerItemDecoration);*/
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        checkEmptyList();
+        /*checkEmptyList();*/
     }
 
     @Override
@@ -95,8 +106,8 @@ import ru.exemple.uksorganizer.model.Event;
         }
     }
 
-    public void checkEmptyList() {
+    /*public void checkEmptyList() {
         if (events.size() == 0)
             findViewById(R.id.tvEmpty).setVisibility(View.VISIBLE);
-    }
+    }*/
 }

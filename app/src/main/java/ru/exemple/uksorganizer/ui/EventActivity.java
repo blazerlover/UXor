@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -23,7 +24,6 @@ import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabaseFile;
 import ru.exemple.uksorganizer.model.Event;
 
-//TODO: добавить реализацию DatePickerDialog перед вызовом TimePickerDialog
 
 public class EventActivity extends AppCompatActivity {
 
@@ -35,6 +35,8 @@ public class EventActivity extends AppCompatActivity {
     private Button buttonSaveEvent;
     private Button buttonSetTime;
     private Button buttonSetDate;
+    private Button buttonOpenEvent;
+    private EditText editTextOpenEvent;
     private Event.Category [] categoriesArray = Event.Category.values();
 
     private int CalendarHour, CalendarMinute;
@@ -131,7 +133,6 @@ public class EventActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     public Event getEvent() {
