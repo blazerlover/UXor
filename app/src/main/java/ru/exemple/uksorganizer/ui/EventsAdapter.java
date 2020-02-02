@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Date;
 import java.util.List;
 
 import ru.exemple.uksorganizer.R;
@@ -37,7 +38,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         Event event = events.get(position);
         holder.tvTitle.setText(event.getName());
         holder.tvCategory.setText(event.getCategory().toString());
-        holder.tvTime.setText(String.valueOf(event.getTime()));
+        Date date = new Date();
+        date.setTime(event.getTime());
+        String time = date.toString();
+        holder.tvTime.setText(time);
     }
 
     @Override
