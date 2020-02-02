@@ -27,15 +27,11 @@ public class EventsDatabaseFile implements EventsDatabase{
     public List<Event> getAllEvents() {
 
         try {
-            Event event = (Event) loadSerializedObject(new File("/Download/save_object.bin"));
-            /*File file = new File("/Main storage/Download/1.txt");
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-            Event event = (Event) ois.readObject();*/
-            /*FileInputStream fileInputStream = new FileInputStream("1.txt");
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            Event event = (Event) objectInputStream.readObject();
-            fileInputStream.close();*/
-            /*events.add(event);*/
+            FileInputStream fis = new FileInputStream("/Download/save_object.bin");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Event event = (Event) ois.readObject();
+            ois.close();
+            events.add(event);
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -49,13 +45,7 @@ public class EventsDatabaseFile implements EventsDatabase{
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("/Download/save_object.bin")));
             oos.writeObject(event);
-            oos.flush();
             oos.close();
-            //Classic java serializable
-            /*FileOutputStream fileOutputStream = new FileOutputStream("1.txt");
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(event);
-            fileOutputStream.close();*/
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -65,20 +55,5 @@ public class EventsDatabaseFile implements EventsDatabase{
     @Override
     public void update(Event event) {
 
-    }
-
-    public Object loadSerializedObject(File file)
-    {
-        try
-        {
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-            Object o = ois.readObject();
-            return o;
-        }
-        catch(Exception ex)
-        {
-            ex.printStackTrace();
-        }
-        return null;
     }
 }
