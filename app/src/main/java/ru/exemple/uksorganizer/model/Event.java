@@ -35,5 +35,4 @@ public class Event implements Serializable {
     public enum Category {
         MEETING, SPORT, ALKO
     }
-
 }
