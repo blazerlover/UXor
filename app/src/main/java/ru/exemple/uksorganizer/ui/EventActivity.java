@@ -42,7 +42,8 @@ public class EventActivity extends AppCompatActivity {
     String format;
     Calendar calendar;
     TimePickerDialog timepickerdialog;
-    private static final String TAG = "LOGS";
+
+    File file = new File(this.getBaseContext().getFilesDir(), "1.bin");
 
     private Event event;
     private EventsDatabaseFile eventsDatabaseFile;

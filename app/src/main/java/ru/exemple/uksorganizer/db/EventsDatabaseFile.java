@@ -20,14 +20,13 @@ import ru.exemple.uksorganizer.ui.EventActivity;
 
 public class EventsDatabaseFile implements EventsDatabase{
 
-    EventActivity eventActivity;
     ArrayList<Event> events = new ArrayList<>();
 
     @Override
     public List<Event> getAllEvents() {
 
         try {
-            FileInputStream fis = new FileInputStream("/Download/save_object.bin");
+            FileInputStream fis = new FileInputStream("1.bin");
             ObjectInputStream ois = new ObjectInputStream(fis);
             Event event = (Event) ois.readObject();
             ois.close();
@@ -43,7 +42,7 @@ public class EventsDatabaseFile implements EventsDatabase{
     public void addEvent(Event event) {
 
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("/Download/save_object.bin")));
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("1.bin"));
             oos.writeObject(event);
             oos.close();
         }
