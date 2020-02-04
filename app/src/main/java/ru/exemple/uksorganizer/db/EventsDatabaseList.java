@@ -11,7 +11,7 @@ public class EventsDatabaseList implements EventsDatabase {
     public List<Event> getAllEvents() {
         ArrayList<Event> events = new ArrayList<>();
         events.add(new Event("HUI0", Event.Category.ALKO, "hu hui", System.currentTimeMillis()));
-        events.add(new Event("HUI1", Event.Category.ALKO, "hu hui", System.currentTimeMillis()));
+        events.add(new Event("HUI1", Event.Category.SPORT, "hu hui", System.currentTimeMillis()));
         events.add(new Event("HUI2", Event.Category.ALKO, "hu hui", System.currentTimeMillis()));
         events.add(new Event("HUI3", Event.Category.ALKO, "hu hui", System.currentTimeMillis()));
         events.add(new Event("HUI4", Event.Category.ALKO, "hu hui", System.currentTimeMillis()));

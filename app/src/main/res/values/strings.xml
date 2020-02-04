@@ -9,4 +9,5 @@
     <string name="setTime">Time</string>
     <string name="empty_view_text">You do not have any events!\n
     Create new Event</string>
+    <string name="category_description_type">Type category</string>
 </resources>
