@@ -15,6 +15,7 @@ import java.util.List;
 
 import ru.exemple.uksorganizer.model.Event;
 import ru.exemple.uksorganizer.ui.EventActivity;
+import ru.exemple.uksorganizer.ui.MainActivity;
 
 //TODO Сделать реализацию через Serialisable
 
@@ -22,11 +23,13 @@ public class EventsDatabaseFile implements EventsDatabase{
 
     ArrayList<Event> events = new ArrayList<>();
 
+
+
     @Override
     public List<Event> getAllEvents() {
 
         try {
-            FileInputStream fis = new FileInputStream("1.bin");
+            FileInputStream fis = new FileInputStream("data/data/ru/exemple/uksorganizer/ui/1.txt");
             ObjectInputStream ois = new ObjectInputStream(fis);
             Event event = (Event) ois.readObject();
             ois.close();
@@ -42,7 +45,7 @@ public class EventsDatabaseFile implements EventsDatabase{
     public void addEvent(Event event) {
 
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("1.bin"));
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("data/data/ru/exemple/uksorganizer/ui")));
             oos.writeObject(event);
             oos.close();
         }
