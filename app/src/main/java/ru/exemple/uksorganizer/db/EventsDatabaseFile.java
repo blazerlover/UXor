@@ -2,6 +2,7 @@ package ru.exemple.uksorganizer.db;
 
 import android.content.Context;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import java.io.File;
@@ -22,14 +23,14 @@ import ru.exemple.uksorganizer.ui.MainActivity;
 public class EventsDatabaseFile implements EventsDatabase{
 
     ArrayList<Event> events = new ArrayList<>();
-
-
+    EventActivity eventActivity;
 
     @Override
     public List<Event> getAllEvents() {
 
         try {
-            FileInputStream fis = new FileInputStream("data/data/ru/exemple/uksorganizer/ui/1.txt");
+            FileInputStream fis =
+                    new FileInputStream("1.txt");
             ObjectInputStream ois = new ObjectInputStream(fis);
             Event event = (Event) ois.readObject();
             ois.close();
@@ -45,7 +46,9 @@ public class EventsDatabaseFile implements EventsDatabase{
     public void addEvent(Event event) {
 
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("data/data/ru/exemple/uksorganizer/ui")));
+            File directory = eventActivity.getDirectory();
+            ObjectOutputStream oos =
+                    new ObjectOutputStream(new FileOutputStream(new File(directory, "1.txt")));
             oos.writeObject(event);
             oos.close();
         }

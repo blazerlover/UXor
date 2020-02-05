@@ -45,6 +45,7 @@ public class EventActivity extends AppCompatActivity {
 
     private Event event;
     private EventsDatabaseFile eventsDatabaseFile;
+    public File directory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,5 +125,12 @@ public class EventActivity extends AppCompatActivity {
         String description = editTextDescription.getText().toString();
         Long time = calendar.getTimeInMillis();
         return event = new Event(name, category, description, time);
+    }
+
+    public File getDirectory() {
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        return directory = this.getFilesDir();
     }
 }
