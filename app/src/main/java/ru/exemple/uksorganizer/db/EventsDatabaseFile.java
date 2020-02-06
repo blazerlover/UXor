@@ -29,8 +29,7 @@ public class EventsDatabaseFile implements EventsDatabase{
     public List<Event> getAllEvents() {
 
         try {
-            FileInputStream fis =
-                    new FileInputStream("1.txt");
+            FileInputStream fis = new FileInputStream("1.txt");
             ObjectInputStream ois = new ObjectInputStream(fis);
             Event event = (Event) ois.readObject();
             ois.close();
@@ -46,9 +45,9 @@ public class EventsDatabaseFile implements EventsDatabase{
     public void addEvent(Event event) {
 
         try {
+            eventActivity = new EventActivity();
             File directory = eventActivity.getDirectory();
-            ObjectOutputStream oos =
-                    new ObjectOutputStream(new FileOutputStream(new File(directory, "1.txt")));
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(directory, "1.txt")));
             oos.writeObject(event);
             oos.close();
         }

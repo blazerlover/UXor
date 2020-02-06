@@ -45,7 +45,7 @@ public class EventActivity extends AppCompatActivity {
 
     private Event event;
     private EventsDatabaseFile eventsDatabaseFile;
-    public File directory;
+    private File directory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,11 @@ public class EventActivity extends AppCompatActivity {
                 eventsDatabaseFile.addEvent((EventActivity.this.getEvent()));
             }
         });
+
+        directory = EventActivity.this.getFilesDir();
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
     }
 
     private void init() {
@@ -128,9 +133,6 @@ public class EventActivity extends AppCompatActivity {
     }
 
     public File getDirectory() {
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        return directory = this.getFilesDir();
+        return directory;
     }
 }
