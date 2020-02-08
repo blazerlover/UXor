@@ -3,8 +3,8 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="colorCategoryAlko">#e98df5</color>
-    <color name="colorCategorySport">#ffc77d</color>
-    <color name="colorCategoryMeeting">#c6f68d</color>
+    <color name="colorCategoryAlko">#40C4FF</color>
+    <color name="colorCategorySport">#ffaf49</color>
+    <color name="colorCategoryMeeting">#CE93D8</color>
     <color name="colorFab">#6002ee</color>
 </resources>

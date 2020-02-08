@@ -3,39 +3,43 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="20dp"
+    android:padding="10dp"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="70dp">
 
     <TextView
         android:id="@+id/tvEventTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start|center_vertical"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp" />
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="100dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="15dp"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/tvEventTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp" />
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="15dp"
+        android:textStyle="bold"/>
 
     <ImageView
         android:id="@+id/ivCategory"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_gravity="end|center"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_gravity="start|center"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/category_alko_shape"
         android:contentDescription="@string/category_description_type"></ImageView>
 
@@ -43,8 +47,8 @@
         android:id="@+id/tvEventCategory"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_gravity="end|center_vertical"
+        android:layout_gravity="start|center_vertical"
         android:gravity="center"
-        android:layout_margin="10dp"/>
+        android:layout_margin="20dp"/>
 
 </FrameLayout>

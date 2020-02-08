@@ -33,7 +33,7 @@ public class Event implements Serializable {
     }
 
     public enum Category {
-        MEETING, SPORT, ALKO
+        MEETING, SPORT, ALKO, SOMETHING
     }
 
 }
