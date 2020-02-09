@@ -40,6 +40,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
-        android:src="@android:drawable/stat_notify_more" />
+        android:src="@drawable/baseline_add_circle_black_24"
+        app:backgroundTint="@android:color/background_light"
+        app:maxImageSize="@android:dimen/notification_large_icon_height" />
 
 </FrameLayout>

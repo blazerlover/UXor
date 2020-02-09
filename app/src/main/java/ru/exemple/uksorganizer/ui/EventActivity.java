@@ -9,6 +9,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,7 +18,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.Calendar;
 
 import ru.exemple.uksorganizer.R;
@@ -47,6 +52,7 @@ public class EventActivity extends AppCompatActivity {
 
     private Event event;
     private EventsDatabaseFile eventsDatabaseFile;
+    private File directory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +69,12 @@ public class EventActivity extends AppCompatActivity {
                 eventsDatabaseFile.addEvent((EventActivity.this.getEvent()));
             }
         });
+
+        directory = EventActivity.this.getFilesDir();
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
     }
     private void init() {
 
@@ -73,10 +85,12 @@ public class EventActivity extends AppCompatActivity {
         textViewDate = findViewById(R.id.textViewDate);
         buttonSaveEvent = findViewById(R.id.buttonSaveEvent);
         buttonSetTime = findViewById(R.id.buttonSetTime);
+
         buttonSetDate = findViewById(R.id.buttonSetDate);
 
         ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(this, android.R.layout.simple_list_item_1, categoriesArray);
         spinnerCategory.setAdapter(arrayAdapter);
+
 
         buttonSetDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,6 +110,7 @@ public class EventActivity extends AppCompatActivity {
                 datePickerDialog.show();
             }
         });
+
 
         buttonSetTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,6 +156,9 @@ public class EventActivity extends AppCompatActivity {
         String description = editTextDescription.getText().toString();
         Long time = calendar.getTimeInMillis();
         return event = new Event(name, category, description, time);
+    }
 
+    public File getDirectory() {
+        return directory;
     }
 }

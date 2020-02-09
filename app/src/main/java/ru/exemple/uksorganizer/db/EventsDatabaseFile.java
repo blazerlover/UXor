@@ -1,8 +1,16 @@
 package ru.exemple.uksorganizer.db;
 
 import android.content.Context;
+
 import android.content.Intent;
 import android.provider.CalendarContract;
+
+
+import android.os.Environment;
+import android.provider.ContactsContract;
+import android.util.Log;
+
+import java.io.File;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,6 +28,7 @@ import ru.exemple.uksorganizer.ui.MainActivity;
 
 public class EventsDatabaseFile implements EventsDatabase{
 
+    ArrayList<Event> events = new ArrayList<>();
     EventActivity eventActivity;
     Event event;
 
@@ -27,12 +36,20 @@ public class EventsDatabaseFile implements EventsDatabase{
     public List<Event> getAllEvents() {
 
         try {
+
             ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream( "1.ser"));
             event = (Event) objectInputStream.readObject();
+            FileInputStream fis = new FileInputStream("1.txt");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Event event = (Event) ois.readObject();
+            ois.close();
+            events.add(event);
+
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
+
 
         ArrayList<Event> events = new ArrayList<>();
         /*events.add(new Event(event.getName(), event.getCategory(), event.getDescription(),event.getTime()));*/
@@ -44,9 +61,16 @@ public class EventsDatabaseFile implements EventsDatabase{
     public void addEvent(Event event) {
 
         try {
+
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream("1.ser"));
             objectOutputStream.writeObject(event);
             objectOutputStream.close();
+            eventActivity = new EventActivity();
+            File directory = eventActivity.getDirectory();
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(directory, "1.txt")));
+            oos.writeObject(event);
+            oos.close();
+
         }
         catch (Exception ex) {
             ex.printStackTrace();
