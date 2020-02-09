@@ -1,5 +1,7 @@
 package ru.exemple.uksorganizer.db;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -10,7 +12,7 @@ public class EventsDatabaseList implements EventsDatabase {
     Random random = new Random();
 
     @Override
-    public List<Event> getAllEvents() {
+    public List<Event> getAllEvents(Context context) {
         ArrayList<Event> events = new ArrayList<>();
         events.add(new Event("HUI", categoryCreate(), "hu hui", random.nextLong()));
         events.add(new Event("HUI1", categoryCreate(), "hu hui", System.currentTimeMillis()));
@@ -26,7 +28,7 @@ public class EventsDatabaseList implements EventsDatabase {
     }
 
     @Override
-    public void addEvent(Event event) {
+    public void addEvent(Event event, Context context) {
 
     }
 

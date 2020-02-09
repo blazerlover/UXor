@@ -1,5 +1,7 @@
 package ru.exemple.uksorganizer.db;
 
+import android.content.Context;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
@@ -18,12 +20,12 @@ public class EventsDatabaseFile implements EventsDatabase{
 
 
     @Override
-    public List<Event> getAllEvents() {
+    public List<Event> getAllEvents(Context context) {
         return null;
     }
 
     @Override
-    public void addEvent(Event event) {
+    public void addEvent(Event event, Context context) {
 
         try {
 
