@@ -24,12 +24,18 @@ public class EventsDatabaseFile implements EventsDatabase{
 
     ArrayList<Event> events = new ArrayList<>();
     EventActivity eventActivity;
+    MainActivity mainActivity;
+    File directory;
 
     @Override
-    public List<Event> getAllEvents() {
+    public List<Event> getAllEvents(Context context) {
+
+        mainActivity = (MainActivity) context;
 
         try {
-            FileInputStream fis = new FileInputStream("1.txt");
+            directory = mainActivity.getFilesDir();
+            File file = new File(directory, "1");
+            FileInputStream fis = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fis);
             Event event = (Event) ois.readObject();
             ois.close();
@@ -42,12 +48,15 @@ public class EventsDatabaseFile implements EventsDatabase{
     }
 
     @Override
-    public void addEvent(Event event) {
+    public void addEvent(Event event, Context context) {
 
         try {
-            eventActivity = new EventActivity();
-            File directory = eventActivity.getDirectory();
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(directory, "1.txt")));
+            eventActivity = (EventActivity) context;
+
+            directory = eventActivity.getFilesDir();
+
+            File file = new File(directory, "1");
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
             oos.writeObject(event);
             oos.close();
         }

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -59,7 +60,7 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eventsDatabaseFile = new EventsDatabaseFile();
-                eventsDatabaseFile.addEvent((EventActivity.this.getEvent()));
+                eventsDatabaseFile.addEvent(EventActivity.this.getEvent(), EventActivity.this);
             }
         });
 
@@ -134,5 +135,9 @@ public class EventActivity extends AppCompatActivity {
 
     public File getDirectory() {
         return directory;
+    }
+
+    public Context getContext(Context context){
+        return this;
     }
 }

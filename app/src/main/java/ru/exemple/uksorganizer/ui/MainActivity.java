@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -58,7 +59,7 @@ import ru.exemple.uksorganizer.model.Event;
         }
         else
         recycler.setLayoutManager(llManager);
-        events = (ArrayList<Event>) eventsDb.getAllEvents();
+        events = (ArrayList<Event>) eventsDb.getAllEvents(this);
         EventsAdapter eventsAdapter = new EventsAdapter(events);
         recycler.setAdapter(eventsAdapter);
         recycler.addItemDecoration(dividerItemDecoration);
