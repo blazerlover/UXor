@@ -39,7 +39,9 @@ import ru.exemple.uksorganizer.model.Event;
     private ArrayList<Event> events;
     private DividerItemDecoration dividerItemDecoration;
     private LinearLayoutManager llManager;
+    private DataLoader dataLoader;
     private int currentOrientation;
+    private DataStateStorage storage;
 
     final static String TAG = "myLOG";
     EventsDatabase eventsDb;
@@ -52,6 +54,7 @@ import ru.exemple.uksorganizer.model.Event;
 
         setContentView(R.layout.activity_main);
         FloatingActionButton fab = findViewById(R.id.fab);
+        progressBar = findViewById(R.id.pbMain);
         fab.setOnClickListener(this);
         recycler = findViewById(R.id.rvEvents);
         llManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
@@ -65,17 +68,24 @@ import ru.exemple.uksorganizer.model.Event;
         else
         recycler.setLayoutManager(llManager);
 
-        progressBar = findViewById(R.id.pbMain);
-        //events = (ArrayList<Event>) eventsDb.getAllEvents();
-        DataLoader dataLoader = new DataLoader(this);
-        dataLoader.execute(events);
-        /*try {
-            events = dataLoader.get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
+        storage = (DataStateStorage) getLastCustomNonConfigurationInstance();
+        if (storage == null) {
+            Log.d(TAG, "storage == null");
+            storage = new DataStateStorage(dataLoader, events);
+        }
+        events = storage.getList();
+        if (events == null)
+            Log.d(TAG, "events == null");
+        if (events != null) {
+            Log.d(TAG, "events != null");
+            onAsyncTaskFinished(events);
+        }
+        dataLoader = storage.getDataLoader();
+        if (dataLoader == null) {
+            Log.d(TAG, "dataLoader == null");
+            dataLoader = new DataLoader(this);
+            dataLoader.execute(events);
+        }
 
     }
 
@@ -85,6 +95,7 @@ import ru.exemple.uksorganizer.model.Event;
         recycler.setAdapter(eventsAdapter);
         recycler.addItemDecoration(dividerItemDecoration);
         checkEmptyList(events);
+        storage.saveDataState(this.dataLoader, events);
     }
 
     @Override
@@ -128,10 +139,10 @@ import ru.exemple.uksorganizer.model.Event;
         savedInstanceState.putInt("currentOrientation", currentOrientation);
     }
 
-    /*@Override
+    @Override
     public Object onRetainCustomNonConfigurationInstance() {
-        return super.onRetainCustomNonConfigurationInstance();
-    }*/
+        return storage;
+    }
 
     public void checkEmptyList(ArrayList<Event> events) {
         if (events.size() == 0)
@@ -190,10 +201,11 @@ import ru.exemple.uksorganizer.model.Event;
         @Override
         protected ArrayList<Event> doInBackground(ArrayList<Event>... events) {
             try {
-                TimeUnit.SECONDS.sleep(3);
+                TimeUnit.SECONDS.sleep(5);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
+            Log.d(TAG, "activity hash" + activity.hashCode() + " task hash" + dataLoader.hashCode());
             events[0] = (ArrayList<Event>) eventsDb.getAllEvents();
             return events[0];
         }
