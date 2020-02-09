@@ -58,7 +58,7 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eventsDatabaseFile = new EventsDatabaseFile();
-                eventsDatabaseFile.addEvent((EventActivity.this.getEvent()));
+                eventsDatabaseFile.addEvent((EventActivity.this.getEvent()), EventActivity.this);
             }
         });
     }
