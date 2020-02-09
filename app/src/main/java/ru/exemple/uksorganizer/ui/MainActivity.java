@@ -164,11 +164,6 @@ import ru.exemple.uksorganizer.model.Event;
         savedInstanceState.putInt("currentOrientation", currentOrientation);
     }
 
-    /*@Override
-    public Object onRetainCustomNonConfigurationInstance() {
-        return super.onRetainCustomNonConfigurationInstance();
-    }*/
-
     public void checkEmptyList(ArrayList<Event> events) {
         if (events.size() == 0)
             findViewById(R.id.tvEmpty).setVisibility(View.VISIBLE);

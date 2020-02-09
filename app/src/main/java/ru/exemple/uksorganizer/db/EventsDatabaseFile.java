@@ -11,8 +11,11 @@ import android.os.Environment;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+<<<<<<< HEAD
 import java.io.File;
 import java.io.FileInputStream;
+=======
+>>>>>>> parent of faeaf63... again
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -31,7 +34,6 @@ public class EventsDatabaseFile implements EventsDatabase{
     ArrayList<Event> events = new ArrayList<>();
     EventActivity eventActivity;
     Event event;
-
 
     @Override
     public List<Event> getAllEvents() {
@@ -61,8 +63,14 @@ public class EventsDatabaseFile implements EventsDatabase{
     @Override
     public void addEvent(Event event) {
 
+<<<<<<< HEAD
         try {            
             FileOutputStream fileOutputStream = new FileOutputStream(new File());
+=======
+        try {
+
+            FileOutputStream fileOutputStream = new FileOutputStream(event.getName());
+>>>>>>> parent of faeaf63... again
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream("1.ser"));
             objectOutputStream.writeObject(event);
