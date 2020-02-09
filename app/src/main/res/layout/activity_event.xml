@@ -17,7 +17,8 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5pt"
             android:id="@+id/editTextName"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:hint="Set Event Name">
         </EditText>
         <Spinner
             android:id="@+id/spinnerCategory"
@@ -29,7 +30,8 @@
             android:layout_weight="1"
             android:layout_marginRight="5pt"
             android:id="@+id/editTextDescription"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:hint="Description">
         </EditText>
 
     </LinearLayout>
@@ -47,6 +49,14 @@
             android:layout_alignParentRight="true"
             android:text="Set Time" />
 
+        <Button
+            android:id="@+id/buttonSetDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="90dp"
+            android:text="Set Date" />
+
         <TextView
             android:id="@+id/textViewTime"
             android:layout_width="wrap_content"
@@ -59,6 +69,21 @@
             android:clickable="true"
             android:text="@string/setTime"></TextView>
 
+        <TextView
+            android:id="@+id/textViewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_alignStart="@+id/textViewTime"
+            android:layout_alignLeft="@+id/textViewTime"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="false"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="55dp"
+            android:layout_marginLeft="55dp"
+            android:layout_marginTop="15dp"
+            android:clickable="true"
+            android:text="@string/setDate"></TextView>
 
     </RelativeLayout>
 
@@ -67,12 +92,12 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-
         <Button
             android:id="@+id/buttonSaveEvent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Save Event" />
+
     </LinearLayout>
 
 </LinearLayout>
