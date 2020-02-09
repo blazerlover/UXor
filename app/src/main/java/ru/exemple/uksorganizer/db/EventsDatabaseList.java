@@ -40,11 +40,11 @@ public class EventsDatabaseList implements EventsDatabase {
         int categoryNum = random.nextInt(3);
         switch (categoryNum) {
             case 0: randomCategory = Event.Category.ALKO;
-            break;
+                break;
             case 1: randomCategory = Event.Category.MEETING;
-            break;
+                break;
             case 2: randomCategory = Event.Category.SPORT;
-            break;
+                break;
             default: randomCategory = Event.Category.SOMETHING;
         }
         return randomCategory;
