@@ -39,7 +39,7 @@ public class EventActivity extends AppCompatActivity {
     private TextView textViewDate;
     private Button buttonSaveEvent;
     private Button buttonSetTime;
-    private Button buttonSetDate;
+    private Button buttonSD;
     private Button buttonOpenEvent;
     private EditText editTextOpenEvent;
     private Event.Category [] categoriesArray = Event.Category.values();
@@ -66,7 +66,7 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eventsDatabaseFile = new EventsDatabaseFile();
-                eventsDatabaseFile.addEvent((EventActivity.this.getEvent()));
+                eventsDatabaseFile.addEvent((EventActivity.this.getEvent()), EventActivity.this);
             }
         });
 
@@ -85,14 +85,13 @@ public class EventActivity extends AppCompatActivity {
         textViewDate = findViewById(R.id.textViewDate);
         buttonSaveEvent = findViewById(R.id.buttonSaveEvent);
         buttonSetTime = findViewById(R.id.buttonSetTime);
-
-        buttonSetDate = findViewById(R.id.buttonSetDate);
+        buttonSD = findViewById(R.id.buttonSD);
 
         ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(this, android.R.layout.simple_list_item_1, categoriesArray);
         spinnerCategory.setAdapter(arrayAdapter);
 
 
-        buttonSetDate.setOnClickListener(new View.OnClickListener() {
+        buttonSD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -108,9 +107,9 @@ public class EventActivity extends AppCompatActivity {
                     }
                 }, day, month, year);
                 datePickerDialog.show();
+
             }
         });
-
 
         buttonSetTime.setOnClickListener(new View.OnClickListener() {
             @Override

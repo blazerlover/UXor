@@ -1,5 +1,7 @@
 package ru.exemple.uksorganizer.db;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,8 +9,10 @@ import ru.exemple.uksorganizer.model.Event;
 
 public class EventsDatabaseList implements EventsDatabase {
 
+
+
     @Override
-    public List<Event> getAllEvents() {
+    public List<Event> getAllEvents(Context context) {
         ArrayList<Event> events = new ArrayList<>();
         events.add(new Event("HUI0", Event.Category.ALKO, "hu hui", System.currentTimeMillis()));
         events.add(new Event("HUI1", Event.Category.ALKO, "hu hui", System.currentTimeMillis()));
@@ -24,7 +28,7 @@ public class EventsDatabaseList implements EventsDatabase {
     }
 
     @Override
-    public void addEvent(Event event) {
+    public void addEvent(Event event, Context context) {
 
     }
 

@@ -50,7 +50,7 @@
             android:text="Set Time" />
 
         <Button
-            android:id="@+id/buttonSetDate"
+            android:id="@+id/buttonSD"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

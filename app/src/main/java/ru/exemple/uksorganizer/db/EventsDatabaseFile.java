@@ -1,17 +1,11 @@
 package ru.exemple.uksorganizer.db;
 
 import android.content.Context;
-
-import android.content.Intent;
-import android.provider.CalendarContract;
-
-
 import android.os.Environment;
 import android.provider.ContactsContract;
 import android.util.Log;
 
 import java.io.File;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -30,47 +24,41 @@ public class EventsDatabaseFile implements EventsDatabase{
 
     ArrayList<Event> events = new ArrayList<>();
     EventActivity eventActivity;
-    Event event;
+    MainActivity mainActivity;
+    File directory;
 
     @Override
-    public List<Event> getAllEvents() {
+    public List<Event> getAllEvents(Context context) {
+
+        mainActivity = (MainActivity) context;
 
         try {
-
-            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream( "1.ser"));
-            event = (Event) objectInputStream.readObject();
-            FileInputStream fis = new FileInputStream("1.txt");
+            directory = mainActivity.getFilesDir();
+            File file = new File(directory, "1");
+            FileInputStream fis = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fis);
             Event event = (Event) ois.readObject();
             ois.close();
             events.add(event);
-
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
-
-
-        ArrayList<Event> events = new ArrayList<>();
-        /*events.add(new Event(event.getName(), event.getCategory(), event.getDescription(),event.getTime()));*/
-        events.add(new Event("HUI0", Event.Category.ALKO, "hu hui", System.currentTimeMillis()));
         return events;
     }
 
     @Override
-    public void addEvent(Event event) {
+    public void addEvent(Event event, Context context) {
 
         try {
+            eventActivity = (EventActivity) context;
 
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream("1.ser"));
-            objectOutputStream.writeObject(event);
-            objectOutputStream.close();
-            eventActivity = new EventActivity();
-            File directory = eventActivity.getDirectory();
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(directory, "1.txt")));
+            directory = eventActivity.getFilesDir();
+
+            File file = new File(directory, "1");
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
             oos.writeObject(event);
             oos.close();
-
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -79,8 +67,6 @@ public class EventsDatabaseFile implements EventsDatabase{
 
     @Override
     public void update(Event event) {
-
-
 
     }
 }
