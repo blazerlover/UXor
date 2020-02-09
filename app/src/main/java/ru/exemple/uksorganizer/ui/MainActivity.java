@@ -32,7 +32,7 @@ import ru.exemple.uksorganizer.model.Event;
 //TODO: сделать чтобы можно было выбирать setLayoutManager recycler из UI
 //TODO: сделть чтобы если нет events - отображалась вьюшка с текстом "Еще нет евентиов, добавьте"
 //TODO: сделать загрузку данных асинхронно (в другом потоке), пока грузится выводить прогресс
- public class MainActivity extends AppCompatActivity implements View.OnClickListener, AsyncTaskListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AsyncTaskListener {
 
     private RecyclerView recycler;
     private ProgressBar progressBar;
@@ -66,7 +66,7 @@ import ru.exemple.uksorganizer.model.Event;
             setCurrentOrientation(currentOrientation);
         }
         else
-        recycler.setLayoutManager(llManager);
+            recycler.setLayoutManager(llManager);
 
         storage = (DataStateStorage) getLastCustomNonConfigurationInstance();
         if (storage == null) {
@@ -113,7 +113,7 @@ import ru.exemple.uksorganizer.model.Event;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-                switch (item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.new_event_item:
                 return true;
             case R.id.recycle_view_orientation_vertical_item:
@@ -127,8 +127,8 @@ import ru.exemple.uksorganizer.model.Event;
                 return true;
             case R.id.settings_item:
                 return true;
-                default:
-                    return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
     }

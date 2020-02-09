@@ -26,7 +26,7 @@ public class EventsDatabaseFile implements EventsDatabase{
     public void addEvent(Event event) {
 
         try {
-            
+
             FileOutputStream fileOutputStream = new FileOutputStream(new File("/"));
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(event);
