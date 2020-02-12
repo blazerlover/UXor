@@ -69,21 +69,7 @@
             android:clickable="true"
             android:text="@string/setTime"></TextView>
 
-        <TextView
-            android:id="@+id/textViewDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignWithParentIfMissing="true"
-            android:layout_alignStart="@+id/textViewTime"
-            android:layout_alignLeft="@+id/textViewTime"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="false"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="55dp"
-            android:layout_marginLeft="55dp"
-            android:layout_marginTop="15dp"
-            android:clickable="true"
-            android:text="@string/setDate"></TextView>
+
 
     </RelativeLayout>
 
