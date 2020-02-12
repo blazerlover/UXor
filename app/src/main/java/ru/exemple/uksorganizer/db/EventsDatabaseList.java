@@ -9,10 +9,11 @@ import java.util.Random;
 import ru.exemple.uksorganizer.model.Event;
 
 public class EventsDatabaseList implements EventsDatabase {
+
     Random random = new Random();
 
     @Override
-    public List<Event> getAllEvents(Context context) {
+    public List<Event> getAllEvents() {
         ArrayList<Event> events = new ArrayList<>();
         events.add(new Event("HUI", categoryCreate(), "hu hui", random.nextLong()));
         events.add(new Event("HUI1", categoryCreate(), "hu hui", System.currentTimeMillis()));
@@ -28,7 +29,7 @@ public class EventsDatabaseList implements EventsDatabase {
     }
 
     @Override
-    public void addEvent(Event event, Context context) {
+    public void addEvent(Event event) {
 
     }
 

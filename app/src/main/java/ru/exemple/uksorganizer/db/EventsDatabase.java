@@ -8,9 +8,9 @@ import ru.exemple.uksorganizer.model.Event;
 
 public interface EventsDatabase {
 
-    List<Event> getAllEvents(Context context);
+    List<Event> getAllEvents();
 
-    void addEvent(Event event, Context context);
+    void addEvent(Event event);
 
     void update(Event event);
 

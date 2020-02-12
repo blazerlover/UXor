@@ -10,12 +10,12 @@ import ru.exemple.uksorganizer.model.Event;
 public class EventsDatabaseSqlite implements EventsDatabase {
 
     @Override
-    public List<Event> getAllEvents(Context context) {
+    public List<Event> getAllEvents() {
         return null;
     }
 
     @Override
-    public void addEvent(Event event, Context context) {
+    public void addEvent(Event event) {
 
     }
 
