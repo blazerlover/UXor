@@ -1,4 +1,4 @@
-package ru.exemple.uksorganizer.db;
+﻿package ru.exemple.uksorganizer.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -38,11 +38,11 @@ public class EventsDatabaseSqlite implements EventsDatabase {
         }
 
 
-        return null;
+
     }
 
     @Override
-    public void addEvent(Event event, Context context) {
+    public void addEvent(Event event) {
 
     }
 
