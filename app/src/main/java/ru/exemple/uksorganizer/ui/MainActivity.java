@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ex.printStackTrace();
             }
             Log.d(TAG, "activity hash" + activity.hashCode() + " task hash" + dataLoader.hashCode());
-            events[0] = (ArrayList<Event>) eventsDb.getAllEvents(MainActivity.this);
+            events[0] = (ArrayList<Event>) eventsDb.getAllEvents();
             return events[0];
         }
 
