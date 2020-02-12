@@ -1,10 +1,6 @@
 package ru.exemple.uksorganizer.ui;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.format.DateUtils;
@@ -17,7 +13,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabaseFile;
@@ -27,24 +28,18 @@ import ru.exemple.uksorganizer.model.Event;
 
 public class EventActivity extends AppCompatActivity {
 
-    private EditText editTextName;
+    private EditText editTextName, editTextDescription;
     private Spinner spinnerCategory;
-    private EditText editTextDescription;
     private TextView textViewTime;
-    private TextView textViewDate;
-    private Button buttonSaveEvent;
-    private Button buttonSetTime;
-    private Button buttonSD;
-    private Event.Category [] categoriesArray = Event.Category.values();
-
+    private Button buttonSaveEvent, buttonSetTime, buttonSD;
+    private Calendar calendar = Calendar.getInstance();
+    private TimePickerDialog timepickerdialog;
+    private DatePickerDialog datePickerDialog;
     private int CalendarHour, CalendarMinute;
-    String format;
-    Calendar calendar;
-    TimePickerDialog timepickerdialog;
-    DatePickerDialog datePickerDialog;
 
     private Event event;
     private EventsDatabaseFile eventsDatabaseFile;
+    private Event.Category [] categoriesArray = Event.Category.values();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +64,6 @@ public class EventActivity extends AppCompatActivity {
         spinnerCategory = findViewById(R.id.spinnerCategory);
         editTextDescription = findViewById(R.id.editTextDescription);
         textViewTime = findViewById(R.id.textViewTime);
-        textViewDate = findViewById(R.id.textViewDate);
         buttonSaveEvent = findViewById(R.id.buttonSaveEvent);
         buttonSetTime = findViewById(R.id.buttonSetTime);
         buttonSD = findViewById(R.id.buttonSD);
@@ -81,17 +75,15 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                calendar = Calendar.getInstance();
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                int month = calendar.get(Calendar.MONTH);
-                int year = calendar.get(Calendar.YEAR);
-
                 datePickerDialog = new DatePickerDialog(EventActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int day) {
-                        textViewDate.setText(day + "/" + month + 1 + "/" + year);
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, day);
+                        setInitialDateTime();
                     }
-                }, day, month, year);
+                }, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
@@ -101,44 +93,29 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                calendar = Calendar.getInstance();
-                CalendarHour = calendar.get(Calendar.HOUR_OF_DAY);
-                CalendarMinute = calendar.get(Calendar.MINUTE);
-
                 timepickerdialog = new TimePickerDialog(EventActivity.this,
                         new TimePickerDialog.OnTimeSetListener() {
 
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay,
                                                   int minute) {
-
-                                if (hourOfDay == 0) {
-                                    hourOfDay += 12;
-                                    format = "AM";
-                                }
-                                else if (hourOfDay == 12) {
-                                    format = "PM";
-                                }
-                                else if (hourOfDay > 12) {
-                                    hourOfDay -= 12;
-                                    format = "PM";
-                                }
-                                else {
-                                    format = "AM";
-                                }
-                                calendar.set(2020, 0, 25, hourOfDay, minute);
-
-                                textViewTime.setText(hourOfDay + ":" + minute + format);
+                                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                calendar.set(Calendar.MINUTE, minute);
+                                setInitialDateTime();
                             }
-                        }, CalendarHour, CalendarMinute, false);
+                        }, CalendarHour, CalendarMinute, true);
                 timepickerdialog.show();
-
             }
         });
-
+        setInitialDateTime();
     }
 
-
+    private void setInitialDateTime() {
+        textViewTime.setText(DateUtils.formatDateTime(this,
+                calendar.getTimeInMillis(),
+                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
+                        | DateUtils.FORMAT_SHOW_TIME));
+    }
 
     public Event getEvent() {
         String name = editTextName.getText().toString();
