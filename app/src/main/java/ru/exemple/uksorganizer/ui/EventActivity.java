@@ -43,7 +43,6 @@ public class EventActivity extends AppCompatActivity {
     private Event event;
     private EventsDatabase eventsDatabase;
     private Event.Category [] categoriesArray = Event.Category.values();
-    private final static String TAG = "My Log";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,10 +122,8 @@ public class EventActivity extends AppCompatActivity {
 
     public Event getEvent() {
         String name = editTextName.getText().toString();
-        Log.d(TAG, "name = " + name);
         Event.Category category = (Event.Category) spinnerCategory.getSelectedItem();
         String description = editTextDescription.getText().toString();
-        Log.d(TAG, "description = " + description);
         long time = calendar.getTimeInMillis();
         event = new Event(name, category, description, time);
         return event;
