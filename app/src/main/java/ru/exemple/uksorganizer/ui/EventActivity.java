@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,7 +21,9 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
+import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.db.EventsDatabaseFile;
 import ru.exemple.uksorganizer.model.Event;
 
@@ -38,8 +41,9 @@ public class EventActivity extends AppCompatActivity {
     private int CalendarHour, CalendarMinute;
 
     private Event event;
-    private EventsDatabaseFile eventsDatabaseFile;
+    private EventsDatabase eventsDatabase;
     private Event.Category [] categoriesArray = Event.Category.values();
+    private final static String TAG = "My Log";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +51,13 @@ public class EventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        eventsDatabase = ((App) getApplication()).getEventsDb();
         init();
 
         buttonSaveEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eventsDatabaseFile = new EventsDatabaseFile();
-                eventsDatabaseFile.addEvent((EventActivity.this.getEvent()), EventActivity.this);
+                eventsDatabase.addEvent(getEvent());
             }
         });
     }
@@ -119,9 +123,12 @@ public class EventActivity extends AppCompatActivity {
 
     public Event getEvent() {
         String name = editTextName.getText().toString();
+        Log.d(TAG, "name = " + name);
         Event.Category category = (Event.Category) spinnerCategory.getSelectedItem();
         String description = editTextDescription.getText().toString();
-        Long time = calendar.getTimeInMillis();
-        return event = new Event(name, category, description, time);
+        Log.d(TAG, "description = " + description);
+        long time = calendar.getTimeInMillis();
+        event = new Event(name, category, description, time);
+        return event;
     }
 }
