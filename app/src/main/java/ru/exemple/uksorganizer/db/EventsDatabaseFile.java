@@ -1,6 +1,7 @@
 package ru.exemple.uksorganizer.db;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,22 +21,28 @@ public class EventsDatabaseFile implements EventsDatabase{
         this.context = context;
     }
     private Context context;
-    EventActivity eventActivity;
-    ArrayList<Event> events = new ArrayList<>();
-    File directory;
-    File file;
+    private ArrayList<Event> events = new ArrayList<>();
+    private File directory;
+    private File file;
+    private String [] filelist;
+    private String TAG = "LOGS";
 
     @Override
     public List<Event> getAllEvents() {
 
+        directory = context.getFilesDir();
+        filelist = directory.list();
+        Log.d(TAG, filelist[0]);
+
         try {
-            directory = context.getFilesDir();
-            File file = new File(directory, "1");
-            FileInputStream fis = new FileInputStream(file);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            Event event = (Event) ois.readObject();
-            ois.close();
-            events.add(event);
+            for (String filename: filelist) {
+                File file = new File(directory, filename);
+                FileInputStream fis = new FileInputStream(file);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                Event event = (Event) ois.readObject();
+                ois.close();
+                events.add(event);
+            }
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -48,7 +55,7 @@ public class EventsDatabaseFile implements EventsDatabase{
 
         try {
             directory = context.getFilesDir();
-            file = new File(directory, "1");
+            file = new File(directory, event.getName());
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
             oos.writeObject(event);
             oos.close();
