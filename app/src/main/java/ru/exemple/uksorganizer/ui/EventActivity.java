@@ -64,7 +64,7 @@ public class EventActivity extends AppCompatActivity {
         textViewTime = findViewById(R.id.textViewTime);
         buttonSaveEvent = findViewById(R.id.buttonSaveEvent);
         buttonSetTime = findViewById(R.id.buttonSetTime);
-        buttonSD = findViewById(R.id.buttonSD);
+        buttonSD = findViewById(R.id.buttonSetDate);
 
         ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(this, android.R.layout.simple_list_item_1, categoriesArray);
         spinnerCategory.setAdapter(arrayAdapter);
@@ -119,7 +119,7 @@ public class EventActivity extends AppCompatActivity {
         String name = editTextName.getText().toString();
         Event.Category category = (Event.Category) spinnerCategory.getSelectedItem();
         String description = editTextDescription.getText().toString();
-        Long time = calendar.getTimeInMillis();
+        long time = calendar.getTimeInMillis();
         return event = new Event(name, category, description, time);
     }
 }

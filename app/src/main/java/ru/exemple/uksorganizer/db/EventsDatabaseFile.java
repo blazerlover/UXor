@@ -21,7 +21,7 @@ public class EventsDatabaseFile implements EventsDatabase{
         this.context = context;
     }
     private Context context;
-    private ArrayList<Event> events = new ArrayList<>();
+    private ArrayList<Event> events;
     private File directory;
     private File file;
     private String [] filelist;
@@ -32,7 +32,7 @@ public class EventsDatabaseFile implements EventsDatabase{
 
         directory = context.getFilesDir();
         filelist = directory.list();
-        Log.d(TAG, filelist[0]);
+        events = new ArrayList<>();
 
         try {
             for (String filename: filelist) {
