@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,6 +22,7 @@ import java.util.Calendar;
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
+import ru.exemple.uksorganizer.db.EventsDatabaseFile;
 import ru.exemple.uksorganizer.model.Event;
 
 
@@ -46,6 +48,7 @@ public class EventActivity extends AppCompatActivity {
         eventsDatabase = ((App) getApplication()).getEventsDb();
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        eventsDatabase = ((App) getApplication()).getEventsDb();
         init();
 
         buttonSaveEvent.setOnClickListener(new View.OnClickListener() {

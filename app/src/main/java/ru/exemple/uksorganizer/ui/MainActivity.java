@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DataStateStorage storage;
 
     final static String TAG = "myLOG";
-    EventsDatabase eventsDb;
+    private EventsDatabase eventsDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
