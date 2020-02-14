@@ -1,8 +1,10 @@
 package ru.exemple.uksorganizer;
 
 import android.app.Application;
+import android.content.Context;
 
 import ru.exemple.uksorganizer.db.EventsDatabase;
+import ru.exemple.uksorganizer.db.EventsDatabaseFile;
 import ru.exemple.uksorganizer.db.EventsDatabaseList;
 
 public class App extends Application {
@@ -12,7 +14,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        eventsDatabase = new EventsDatabaseList();
+        eventsDatabase = new EventsDatabaseFile(this);
     }
 
     public EventsDatabase getEventsDb() {

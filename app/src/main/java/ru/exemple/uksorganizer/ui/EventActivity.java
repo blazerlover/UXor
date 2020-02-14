@@ -16,15 +16,13 @@ import android.widget.TimePicker;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
+import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
-import ru.exemple.uksorganizer.db.EventsDatabaseFile;
+import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 
-//TODO: добавить реализацию DatePickerDialog перед вызовом TimePickerDialog
 
 public class EventActivity extends AppCompatActivity {
 
@@ -38,13 +36,14 @@ public class EventActivity extends AppCompatActivity {
     private int CalendarHour, CalendarMinute;
 
     private Event event;
-    private EventsDatabaseFile eventsDatabaseFile;
+    private EventsDatabase eventsDatabase;
     private Event.Category [] categoriesArray = Event.Category.values();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
+        eventsDatabase = ((App) getApplication()).getEventsDb();
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         init();
@@ -52,8 +51,7 @@ public class EventActivity extends AppCompatActivity {
         buttonSaveEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eventsDatabaseFile = new EventsDatabaseFile();
-                eventsDatabaseFile.addEvent((EventActivity.this.getEvent()), EventActivity.this);
+                eventsDatabase.addEvent((EventActivity.this.getEvent()));
             }
         });
     }
@@ -66,7 +64,7 @@ public class EventActivity extends AppCompatActivity {
         textViewTime = findViewById(R.id.textViewTime);
         buttonSaveEvent = findViewById(R.id.buttonSaveEvent);
         buttonSetTime = findViewById(R.id.buttonSetTime);
-        buttonSD = findViewById(R.id.buttonSD);
+        buttonSD = findViewById(R.id.buttonSetDate);
 
         ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(this, android.R.layout.simple_list_item_1, categoriesArray);
         spinnerCategory.setAdapter(arrayAdapter);
@@ -121,7 +119,7 @@ public class EventActivity extends AppCompatActivity {
         String name = editTextName.getText().toString();
         Event.Category category = (Event.Category) spinnerCategory.getSelectedItem();
         String description = editTextDescription.getText().toString();
-        Long time = calendar.getTimeInMillis();
+        long time = calendar.getTimeInMillis();
         return event = new Event(name, category, description, time);
     }
 }
