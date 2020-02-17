@@ -17,7 +17,11 @@ import android.widget.TimePicker;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
@@ -112,10 +116,8 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void setInitialDateTime() {
-        textViewTime.setText(DateUtils.formatDateTime(this,
-                calendar.getTimeInMillis(),
-                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
-                        | DateUtils.FORMAT_SHOW_TIME));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MM yyyy hh:mm", Locale.ENGLISH);
+        textViewTime.setText(sdf.format(calendar.getTimeInMillis()));
     }
 
     public Event getEvent() {
