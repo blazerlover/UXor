@@ -39,7 +39,6 @@ public class EventActivity extends AppCompatActivity {
     private Calendar calendar = Calendar.getInstance();
     private TimePickerDialog timepickerdialog;
     private DatePickerDialog datePickerDialog;
-    private int CalendarHour, CalendarMinute;
 
     private Event event;
     private EventsDatabase eventsDatabase;
@@ -108,7 +107,7 @@ public class EventActivity extends AppCompatActivity {
                                 calendar.set(Calendar.MINUTE, minute);
                                 setInitialDateTime();
                             }
-                        }, CalendarHour, CalendarMinute, true);
+                        }, Calendar.HOUR_OF_DAY, Calendar.MINUTE, true);
                 timepickerdialog.show();
             }
         });

@@ -9,9 +9,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.model.Event;
@@ -40,12 +42,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         Event event = events.get(position);
         holder.tvTitle.setText(event.getName());
         holder.tvCategory.setText(event.getCategory().toString());
-        Date date = new Date();
-        date.setTime(event.getTime());
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        String time = String.format("%tb %te %tR", calendar, calendar, calendar);
-        holder.tvTime.setText(time);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MM yy hh:mm", Locale.ENGLISH);
+        holder.tvTime.setText(sdf.format(event.getTime()));
         switch (event.getCategory()) {
             case ALKO:
                 holder.ivCategory.setImageResource(R.drawable.category_alko_shape);

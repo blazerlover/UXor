@@ -19,7 +19,7 @@
             android:layout_marginRight="5pt"
             android:id="@+id/editTextName"
             android:layout_width="match_parent"
-            android:hint="Set Event Name">
+            android:hint="@string/setEventName">
         </EditText>
         <Spinner
             android:id="@+id/spinnerCategory"
@@ -32,7 +32,7 @@
             android:layout_marginRight="5pt"
             android:id="@+id/editTextDescription"
             android:layout_width="match_parent"
-            android:hint="Description">
+            android:hint="@string/setDescription">
         </EditText>
 
     </LinearLayout>
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="Set Time" />
+            android:text="@string/setTime" />
 
         <Button
             android:id="@+id/buttonSetDate"
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="90dp"
-            android:text="Set Date" />
+            android:text="@string/setDate" />
 
         <TextView
             android:id="@+id/textViewTime"
@@ -85,7 +85,7 @@
             android:id="@+id/buttonSaveEvent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save Event" />
+            android:text="@string/saveEvent" />
 
     </LinearLayout>
 
