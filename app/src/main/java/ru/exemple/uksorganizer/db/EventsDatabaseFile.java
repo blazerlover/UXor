@@ -1,7 +1,6 @@
 package ru.exemple.uksorganizer.db;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.exemple.uksorganizer.model.Event;
-import ru.exemple.uksorganizer.ui.EventActivity;
 
 
 public class EventsDatabaseFile implements EventsDatabase{
@@ -21,28 +19,28 @@ public class EventsDatabaseFile implements EventsDatabase{
         this.context = context;
     }
     private Context context;
-    private ArrayList<Event> events;
-    private File directory;
-    private File file;
-    private String [] filelist;
-    private String TAG = "LOGS";
+
+    String [] filelist;
+    public static final String TAG = EventsDatabaseFile.class.getName();
 
     @Override
     public List<Event> getAllEvents() {
-
-        directory = context.getFilesDir();
+        File directory = new File(context.getFilesDir(), "saving_path");
+        if(!directory.exists()) {
+            directory.mkdirs();
+        }
         filelist = directory.list();
-        events = new ArrayList<>();
+        ArrayList<Event> events = new ArrayList<>();
 
         try {
-            for (String filename: filelist) {
-                File file = new File(directory, filename);
-                FileInputStream fis = new FileInputStream(file);
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                Event event = (Event) ois.readObject();
-                ois.close();
-                events.add(event);
-            }
+                for (String filename : filelist) {
+                    File file = new File(directory, filename);
+                    FileInputStream fis = new FileInputStream(file);
+                    ObjectInputStream ois = new ObjectInputStream(fis);
+                    Event event = (Event) ois.readObject();
+                    ois.close();
+                    events.add(event);
+                }
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -52,10 +50,9 @@ public class EventsDatabaseFile implements EventsDatabase{
 
     @Override
     public void addEvent(Event event) {
-
+        File directory = new File(context.getFilesDir(), "saving_path");
         try {
-            directory = context.getFilesDir();
-            file = new File(directory, event.getName());
+            File file = new File(directory, event.getName());
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
             oos.writeObject(event);
             oos.close();

@@ -3,8 +3,6 @@ package ru.exemple.uksorganizer.ui;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,16 +15,13 @@ import android.widget.TimePicker;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
-import ru.exemple.uksorganizer.db.EventsDatabaseFile;
 import ru.exemple.uksorganizer.model.Event;
 
 
@@ -35,7 +30,8 @@ public class EventActivity extends AppCompatActivity {
     private EditText editTextName, editTextDescription;
     private Spinner spinnerCategory;
     private TextView textViewTime;
-    private Button buttonSaveEvent, buttonSetTime, buttonSD;
+    private TextView textViewDate;
+    private Button buttonSaveEvent;
     private Calendar calendar = Calendar.getInstance();
     private TimePickerDialog timepickerdialog;
     private DatePickerDialog datePickerDialog;
@@ -68,17 +64,15 @@ public class EventActivity extends AppCompatActivity {
         spinnerCategory = findViewById(R.id.spinnerCategory);
         editTextDescription = findViewById(R.id.editTextDescription);
         textViewTime = findViewById(R.id.textViewTime);
+        textViewDate = findViewById(R.id.textViewDate);
         buttonSaveEvent = findViewById(R.id.buttonSaveEvent);
-        buttonSetTime = findViewById(R.id.buttonSetTime);
-        buttonSD = findViewById(R.id.buttonSetDate);
 
         ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(this, android.R.layout.simple_list_item_1, categoriesArray);
         spinnerCategory.setAdapter(arrayAdapter);
 
-        buttonSD.setOnClickListener(new View.OnClickListener() {
+        textViewDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 datePickerDialog = new DatePickerDialog(EventActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -93,10 +87,9 @@ public class EventActivity extends AppCompatActivity {
             }
         });
 
-        buttonSetTime.setOnClickListener(new View.OnClickListener() {
+        textViewTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 timepickerdialog = new TimePickerDialog(EventActivity.this,
                         new TimePickerDialog.OnTimeSetListener() {
 
@@ -115,8 +108,10 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void setInitialDateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MM yyyy hh:mm", Locale.ENGLISH);
-        textViewTime.setText(sdf.format(calendar.getTimeInMillis()));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MM yyyy", Locale.getDefault());
+        SimpleDateFormat stf = new SimpleDateFormat("hh:mm", Locale.getDefault());
+        textViewDate.setText(sdf.format(calendar.getTimeInMillis()));
+        textViewTime.setText(stf.format(calendar.getTimeInMillis()));
     }
 
     public Event getEvent() {

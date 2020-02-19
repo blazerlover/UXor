@@ -42,7 +42,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         Event event = events.get(position);
         holder.tvTitle.setText(event.getName());
         holder.tvCategory.setText(event.getCategory().toString());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MM yy hh:mm", Locale.ENGLISH);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MM yy hh:mm", Locale.getDefault());
         holder.tvTime.setText(sdf.format(event.getTime()));
         switch (event.getCategory()) {
             case ALKO:
