@@ -1,8 +1,14 @@
 package ru.exemple.uksorganizer.ui;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -12,8 +18,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -25,7 +33,7 @@ import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 
 
-public class EventActivity extends AppCompatActivity {
+public class EventActivity extends AppCompatActivity implements SimpleDialogFragment.SimpleDialogListener {
 
     private EditText editTextName, editTextDescription;
     private Spinner spinnerCategory;
@@ -56,6 +64,7 @@ public class EventActivity extends AppCompatActivity {
                 eventsDatabase.addEvent((EventActivity.this.getEvent()));
             }
         });
+
     }
 
     private void init() {
@@ -121,4 +130,41 @@ public class EventActivity extends AppCompatActivity {
         long time = calendar.getTimeInMillis();
         return event = new Event(name, category, description, time);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.option_menu_eventactivity, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_event:
+                showSimpleDialog();
+                return true;
+            case R.id.settings_item:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    public void showSimpleDialog() {
+        DialogFragment dialog = new SimpleDialogFragment();
+        dialog.show(getSupportFragmentManager(), "SimpleDialogFragment");
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        eventsDatabase.update(this.getEvent());
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
+    }
+
 }

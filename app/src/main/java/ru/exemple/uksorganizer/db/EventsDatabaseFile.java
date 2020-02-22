@@ -1,6 +1,7 @@
 package ru.exemple.uksorganizer.db;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -65,5 +66,11 @@ public class EventsDatabaseFile implements EventsDatabase{
     @Override
     public void update(Event event) {
 
+        File directory = new File(context.getFilesDir(), "saving_path");
+        File file = new File(directory, event.getName());
+        boolean deleted = file.delete();
+        if (deleted) {
+            Toast.makeText(context, "file deleted", Toast.LENGTH_LONG).show();
+        }
     }
 }

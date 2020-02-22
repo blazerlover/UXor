@@ -11,6 +11,10 @@
     <string name="saveEvent">Save Event</string>
     <string name="setEventName">Set Event Name</string>
     <string name="setDescription">Description</string>
+    <string name="delete_event">Delete Event</string>
+    <string name="delete_event_q">Delete this event?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
     <string name="empty_view_text">You do not have any events!\n
     Create new Event</string>
     <string name="category_description_type">Type category</string>
