@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import ru.exemple.uksorganizer.R;
-import ru.exemple.uksorganizer.db.EventsDatabase;
 
 public class SimpleDialogFragment extends DialogFragment {
 
@@ -19,7 +18,6 @@ public class SimpleDialogFragment extends DialogFragment {
         public void onDialogNegativeClick(DialogFragment dialog);
     }
     SimpleDialogListener mListener;
-    private EventsDatabase eventsDatabaseFile;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -35,7 +33,6 @@ public class SimpleDialogFragment extends DialogFragment {
 
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.delete_event_q)

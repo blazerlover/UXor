@@ -43,6 +43,8 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     private Calendar calendar = Calendar.getInstance();
     private TimePickerDialog timepickerdialog;
     private DatePickerDialog datePickerDialog;
+    final int DIALOG_EXIT = 1;
+    final int DIALOG_DELETE_EVENT = 2;
 
     private Event event;
     private EventsDatabase eventsDatabase;
@@ -142,7 +144,8 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_event:
-                showSimpleDialog();
+                DialogFragment dialog = new SimpleDialogFragment();
+                dialog.show(getSupportFragmentManager(), "SimpleDialogFragment");
                 return true;
             case R.id.settings_item:
                 return true;
@@ -150,11 +153,6 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
                 return super.onOptionsItemSelected(item);
         }
 
-    }
-
-    public void showSimpleDialog() {
-        DialogFragment dialog = new SimpleDialogFragment();
-        dialog.show(getSupportFragmentManager(), "SimpleDialogFragment");
     }
 
     @Override
@@ -167,4 +165,22 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
 
     }
 
+    private void openQuitDialog() {
+        AlertDialog.Builder quitDialog = new AlertDialog.Builder(this);
+        quitDialog.setTitle(R.string.save_changed);
+        quitDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                eventsDatabase.addEvent((EventActivity.this.getEvent()));
+            }
+        });
+        quitDialog.setNegativeButton(R.string.cancel, null);
+        quitDialog.create();
+        quitDialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        openQuitDialog();
+    }
 }
