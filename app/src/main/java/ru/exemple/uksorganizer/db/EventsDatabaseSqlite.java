@@ -82,13 +82,17 @@ public class EventsDatabaseSqlite implements EventsDatabase {
         database = helper.getWritableDatabase();
         database.insert("EventDataBase", null, contentValues);
         contentValues.clear();
+        database.close();
         //временно для очистки DB:
         //helper.getWritableDatabase().delete("EventDataBase", null, null);
     }
 
     @Override
     public void update(Event event) {
-
+        helper = new EventDataBaseHelper(context);
+        database = helper.getWritableDatabase();
+        Log.d(TAG, "" + database);
+        database.delete("EventDataBase", "NAME = ?", new String[]{event.getName()});
     }
 
     class EventDataBaseHelper extends SQLiteOpenHelper {

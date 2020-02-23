@@ -1,5 +1,7 @@
 package ru.exemple.uksorganizer.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,32 +23,41 @@ import ru.exemple.uksorganizer.model.Event;
 //TODO: отображать категории в виде иконок в кружочке, каждая категория - свой цвет круга (см пример GMail)
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
-    private final List<Event> events;
 
-    public EventsAdapter(List<Event> events) {
+
+    private final List<Event> events;
+    private View view;
+    private MainActivity mainActivity;
+
+    public EventsAdapter(List<Event> events, Context context) {
         this.events = events;
+        this.mainActivity = (MainActivity) context;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.row_event, parent, false);
+        view = layoutInflater.inflate(R.layout.row_event, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Event event = events.get(position);
-        holder.tvTitle.setText(event.getName());
-        holder.tvCategory.setText(event.getCategory().toString());
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        final Event event = events.get(position);
+        final String name = event.getName();
+        final Event.Category category = event.getCategory();
+        final String description = event.getDescription();
+        final long time = event.getTime();
+        holder.tvTitle.setText(name);
+        holder.tvCategory.setText(category.toString());
         Date date = new Date();
-        date.setTime(event.getTime());
+        date.setTime(time);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        String time = String.format("%tb %te %tR", calendar, calendar, calendar);
-        holder.tvTime.setText(time);
-        switch (event.getCategory()) {
+        String strTime = String.format("%tb %te %tR", calendar, calendar, calendar);
+        holder.tvTime.setText(strTime);
+        switch(category) {
             case ALKO:
                 holder.ivCategory.setImageResource(R.drawable.category_alko_shape);
                 break;
@@ -57,12 +68,41 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 holder.ivCategory.setImageResource(R.drawable.category_sport_shape);
                 break;
         }
+        //вызов EventActivity для редактирования при нажатии на Event в RecyclerView
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(view.getContext(), EventActivity.class);
+                //Имеет ли смысл передавать в массиве стринговом?
+                intent.putExtra("name", name);
+                intent.putExtra("category", category.toString());
+                intent.putExtra("description", description);
+                intent.putExtra("time", time);
+                view.getContext().startActivity(intent);
+            }
+        });
+        //удаление Event из RecyclerView при долгом нажатии на него
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                /*events.remove(holder.getLayoutPosition());
+                notifyDataSetChanged();*/
+                Event event = events.get(holder.getLayoutPosition());
+                mainActivity.onAdapterDataChanged(event);
+                return false;
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return events.size();
     }
+
+ /*   @Override
+    public List<Event> onDataChanged(List<Event> e) {
+        return null;
+    }*/
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
