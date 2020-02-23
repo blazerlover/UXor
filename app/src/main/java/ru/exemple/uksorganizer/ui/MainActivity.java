@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -32,7 +33,8 @@ import ru.exemple.uksorganizer.model.Event;
 //TODO: сделать чтобы можно было выбирать setLayoutManager recycler из UI
 //TODO: сделть чтобы если нет events - отображалась вьюшка с текстом "Еще нет евентиов, добавьте"
 //TODO: сделать загрузку данных асинхронно (в другом потоке), пока грузится выводить прогресс
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, AsyncTaskListener {
+public class MainActivity extends AppCompatActivity implements
+        View.OnClickListener, AsyncTaskListener, OnAdapterDataChange {
 
     private RecyclerView recycler;
     private ProgressBar progressBar;
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onAsyncTaskFinished(ArrayList<Event> events) {
-        EventsAdapter eventsAdapter = new EventsAdapter(events);
+        EventsAdapter eventsAdapter = new EventsAdapter(events, this);
         recycler.setAdapter(eventsAdapter);
         recycler.addItemDecoration(dividerItemDecoration);
         checkEmptyList(events);
@@ -182,6 +184,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
 
+    }
+
+    @Override
+    public void onAdapterDataChanged(Event event) {
+        eventsDb.update(event);
     }
 
     class DataLoader extends AsyncTask<ArrayList<Event>, Integer, ArrayList<Event>> {
