@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -32,7 +33,8 @@ import ru.exemple.uksorganizer.model.Event;
 //TODO: сделать чтобы можно было выбирать setLayoutManager recycler из UI
 //TODO: сделть чтобы если нет events - отображалась вьюшка с текстом "Еще нет евентиов, добавьте"
 //TODO: сделать загрузку данных асинхронно (в другом потоке), пока грузится выводить прогресс
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, AsyncTaskListener {
+public class MainActivity extends AppCompatActivity implements
+        View.OnClickListener, AsyncTaskListener, OnAdapterDataChange {
 
     private RecyclerView recycler;
     private ProgressBar progressBar;
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DividerItemDecoration dividerItemDecoration;
     private LinearLayoutManager llManager;
     private DataLoader dataLoader;
-    private int currentOrientation;
+    private int rvManagerType;
     private DataStateStorage storage;
 
     final static String TAG = "myLOG";
@@ -62,8 +64,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 llManager.getOrientation());
 
         if (savedInstanceState != null) {
-            currentOrientation = savedInstanceState.getInt("currentOrientation");
-            setCurrentOrientation(currentOrientation);
+            rvManagerType = savedInstanceState.getInt("rvManagerType");
+            setCurrentOrientation(rvManagerType);
         }
         else
             recycler.setLayoutManager(llManager);
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onAsyncTaskFinished(ArrayList<Event> events) {
-        EventsAdapter eventsAdapter = new EventsAdapter(events);
+        EventsAdapter eventsAdapter = new EventsAdapter(events, this);
         recycler.setAdapter(eventsAdapter);
         recycler.addItemDecoration(dividerItemDecoration);
         checkEmptyList(events);
@@ -136,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putInt("currentOrientation", currentOrientation);
+        savedInstanceState.putInt("rvManagerType", rvManagerType);
     }
 
     @Override
@@ -153,20 +155,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         llManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         recycler.setLayoutManager(llManager);
         dividerItemDecoration.setOrientation(RecyclerView.VERTICAL);
-        currentOrientation = 0;
+        rvManagerType = 0;
     }
 
     public void onHorizontalOrientation() {
         llManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         recycler.setLayoutManager(llManager);
         dividerItemDecoration.setOrientation(RecyclerView.HORIZONTAL);
-        currentOrientation = 1;
+        rvManagerType = 1;
     }
 
     public void onGridOrientation() {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recycler.setLayoutManager(gridLayoutManager);
-        currentOrientation = 2;
+        rvManagerType = 2;
     }
 
     public void setCurrentOrientation(int currentOrientation) {
@@ -182,6 +184,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
 
+    }
+
+    @Override
+    public void onAdapterDataChanged(Event event) {
+        eventsDb.update(event);
     }
 
     class DataLoader extends AsyncTask<ArrayList<Event>, Integer, ArrayList<Event>> {
