@@ -2,7 +2,6 @@ package ru.exemple.uksorganizer.ui;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -43,8 +41,6 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     private Calendar calendar = Calendar.getInstance();
     private TimePickerDialog timepickerdialog;
     private DatePickerDialog datePickerDialog;
-    final int DIALOG_EXIT = 1;
-    final int DIALOG_DELETE_EVENT = 2;
 
     private Event event;
     private EventsDatabase eventsDatabase;
@@ -181,6 +177,6 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
 
     @Override
     public void onBackPressed() {
-        openQuitDialog();
+            openQuitDialog();
     }
 }
