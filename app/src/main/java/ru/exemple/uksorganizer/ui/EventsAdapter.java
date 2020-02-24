@@ -43,6 +43,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     }
 
     @Override
+
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Event event = events.get(position);
         final String name = event.getName();
@@ -58,6 +59,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         String strTime = String.format("%tb %te %tR", calendar, calendar, calendar);
         holder.tvTime.setText(strTime);
         switch(category) {
+
             case ALKO:
                 holder.ivCategory.setImageResource(R.drawable.category_alko_shape);
                 break;

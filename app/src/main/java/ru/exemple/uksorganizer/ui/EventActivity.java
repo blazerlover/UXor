@@ -1,10 +1,13 @@
 package ru.exemple.uksorganizer.ui;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.format.DateUtils;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,26 +19,28 @@ import android.widget.TimePicker;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
-import ru.exemple.uksorganizer.db.EventsDatabaseFile;
 import ru.exemple.uksorganizer.model.Event;
 
 
-public class EventActivity extends AppCompatActivity {
+public class EventActivity extends AppCompatActivity implements SimpleDialogFragment.SimpleDialogListener {
 
     private EditText editTextName, editTextDescription;
     private Spinner spinnerCategory;
     private TextView textViewTime;
-    private Button buttonSaveEvent, buttonSetTime, buttonSD;
+    private TextView textViewDate;
+    private Button buttonSaveEvent;
     private Calendar calendar = Calendar.getInstance();
     private TimePickerDialog timepickerdialog;
     private DatePickerDialog datePickerDialog;
-    private int CalendarHour, CalendarMinute;
 
     private Event event;
     private EventsDatabase eventsDatabase;
@@ -57,6 +62,7 @@ public class EventActivity extends AppCompatActivity {
                 eventsDatabase.addEvent((EventActivity.this.getEvent()));
             }
         });
+
     }
 
     private void init() {
@@ -65,17 +71,15 @@ public class EventActivity extends AppCompatActivity {
         spinnerCategory = findViewById(R.id.spinnerCategory);
         editTextDescription = findViewById(R.id.editTextDescription);
         textViewTime = findViewById(R.id.textViewTime);
+        textViewDate = findViewById(R.id.textViewDate);
         buttonSaveEvent = findViewById(R.id.buttonSaveEvent);
-        buttonSetTime = findViewById(R.id.buttonSetTime);
-        buttonSD = findViewById(R.id.buttonSetDate);
 
         ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(this, android.R.layout.simple_list_item_1, categoriesArray);
         spinnerCategory.setAdapter(arrayAdapter);
 
-        buttonSD.setOnClickListener(new View.OnClickListener() {
+        textViewDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 datePickerDialog = new DatePickerDialog(EventActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -90,10 +94,9 @@ public class EventActivity extends AppCompatActivity {
             }
         });
 
-        buttonSetTime.setOnClickListener(new View.OnClickListener() {
+        textViewTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 timepickerdialog = new TimePickerDialog(EventActivity.this,
                         new TimePickerDialog.OnTimeSetListener() {
 
@@ -104,7 +107,7 @@ public class EventActivity extends AppCompatActivity {
                                 calendar.set(Calendar.MINUTE, minute);
                                 setInitialDateTime();
                             }
-                        }, CalendarHour, CalendarMinute, true);
+                        }, Calendar.HOUR_OF_DAY, Calendar.MINUTE, true);
                 timepickerdialog.show();
             }
         });
@@ -112,10 +115,10 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void setInitialDateTime() {
-        textViewTime.setText(DateUtils.formatDateTime(this,
-                calendar.getTimeInMillis(),
-                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
-                        | DateUtils.FORMAT_SHOW_TIME));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MM yyyy", Locale.getDefault());
+        SimpleDateFormat stf = new SimpleDateFormat("hh:mm", Locale.getDefault());
+        textViewDate.setText(sdf.format(calendar.getTimeInMillis()));
+        textViewTime.setText(stf.format(calendar.getTimeInMillis()));
     }
 
     public Event getEvent() {
@@ -124,5 +127,56 @@ public class EventActivity extends AppCompatActivity {
         String description = editTextDescription.getText().toString();
         long time = calendar.getTimeInMillis();
         return event = new Event(name, category, description, time);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.option_menu_eventactivity, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_event:
+                DialogFragment dialog = new SimpleDialogFragment();
+                dialog.show(getSupportFragmentManager(), "SimpleDialogFragment");
+                return true;
+            case R.id.settings_item:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        eventsDatabase.update(this.getEvent());
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
+    }
+
+    private void openQuitDialog() {
+        AlertDialog.Builder quitDialog = new AlertDialog.Builder(this);
+        quitDialog.setTitle(R.string.save_changed);
+        quitDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                eventsDatabase.addEvent((EventActivity.this.getEvent()));
+            }
+        });
+        quitDialog.setNegativeButton(R.string.cancel, null);
+        quitDialog.create();
+        quitDialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+            openQuitDialog();
     }
 }

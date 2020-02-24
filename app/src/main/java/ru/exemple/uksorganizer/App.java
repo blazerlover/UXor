@@ -15,11 +15,10 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        eventsDatabase = new EventsDatabaseSqlite(this);
+        eventsDatabase = new EventsDatabaseFile(this);
     }
 
     public EventsDatabase getEventsDb() {
         return eventsDatabase;
     }
-
 }
