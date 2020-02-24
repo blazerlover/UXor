@@ -72,23 +72,26 @@ public class MainActivity extends AppCompatActivity implements
 
         storage = (DataStateStorage) getLastCustomNonConfigurationInstance();
         if (storage == null) {
-            Log.d(TAG, "storage == null");
             storage = new DataStateStorage(dataLoader, events);
         }
         events = storage.getList();
         if (events == null)
-            Log.d(TAG, "events == null");
         if (events != null) {
-            Log.d(TAG, "events != null");
             onAsyncTaskFinished(events);
         }
-        dataLoader = storage.getDataLoader();
+        //asyncTaskExec();
+        /*dataLoader = storage.getDataLoader();
         if (dataLoader == null) {
-            Log.d(TAG, "dataLoader == null");
             dataLoader = new DataLoader(this);
             dataLoader.execute(events);
         }
+        else dataLoader.execute(events);*/
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        asyncTaskExec();
     }
 
     @Override
@@ -189,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onAdapterDataChanged(Event event) {
         eventsDb.update(event);
+        asyncTaskExec();
     }
 
     class DataLoader extends AsyncTask<ArrayList<Event>, Integer, ArrayList<Event>> {
@@ -208,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         protected ArrayList<Event> doInBackground(ArrayList<Event>... events) {
             try {
-                TimeUnit.SECONDS.sleep(5);
+                TimeUnit.SECONDS.sleep(2);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
@@ -225,6 +229,15 @@ public class MainActivity extends AppCompatActivity implements
             Toast.makeText(MainActivity.this, "Data loaded", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    public void asyncTaskExec() {
+        //dataLoader = storage.getDataLoader();
+        dataLoader = new DataLoader(this);
+        Log.d(TAG, "dataLoader = " + dataLoader);
+        if (dataLoader == null)
+            dataLoader = new DataLoader(this);
+            dataLoader.execute(events);
     }
 
 }

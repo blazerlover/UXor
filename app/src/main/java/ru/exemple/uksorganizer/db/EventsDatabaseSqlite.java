@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.exemple.uksorganizer.model.Event;
+import ru.exemple.uksorganizer.ui.MainActivity;
 
 //TODO Сделать реализацию через Sqlite
 public class EventsDatabaseSqlite implements EventsDatabase {

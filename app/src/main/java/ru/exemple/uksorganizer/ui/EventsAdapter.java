@@ -74,13 +74,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(view.getContext(), EventActivity.class);
-                //Имеет ли смысл передавать в массиве стринговом?
-                intent.putExtra("name", name);
-                intent.putExtra("category", category.toString());
-                intent.putExtra("description", description);
-                intent.putExtra("time", time);
-                view.getContext().startActivity(intent);
+                    Intent intent = new Intent(view.getContext(), EventActivity.class);
+                    //Имеет ли смысл передавать в массиве стринговом?
+                    intent.putExtra("name", name);
+                    intent.putExtra("category", category.toString());
+                    intent.putExtra("description", description);
+                    intent.putExtra("time", time);
+                    view.getContext().startActivity(intent);
             }
         });
         //удаление Event из RecyclerView при долгом нажатии на него
@@ -91,7 +91,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 notifyDataSetChanged();*/
                 Event event = events.get(holder.getLayoutPosition());
                 mainActivity.onAdapterDataChanged(event);
-                return false;
+                return true;
             }
         });
     }
