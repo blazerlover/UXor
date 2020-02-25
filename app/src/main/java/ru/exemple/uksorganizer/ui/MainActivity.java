@@ -75,11 +75,9 @@ public class MainActivity extends AppCompatActivity implements
             storage = new DataStateStorage(dataLoader, events);
         }
         events = storage.getList();
-        if (events == null)
         if (events != null) {
             onAsyncTaskFinished(events);
         }
-        //asyncTaskExec();
         /*dataLoader = storage.getDataLoader();
         if (dataLoader == null) {
             dataLoader = new DataLoader(this);
@@ -192,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onAdapterDataChanged(Event event) {
         eventsDb.update(event);
+        progressBar.setVisibility(View.VISIBLE);
         asyncTaskExec();
     }
 
@@ -212,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         protected ArrayList<Event> doInBackground(ArrayList<Event>... events) {
             try {
-                TimeUnit.SECONDS.sleep(2);
+                TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
@@ -232,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void asyncTaskExec() {
-        //dataLoader = storage.getDataLoader();
         dataLoader = new DataLoader(this);
         Log.d(TAG, "dataLoader = " + dataLoader);
         if (dataLoader == null)

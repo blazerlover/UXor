@@ -87,9 +87,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                /*events.remove(holder.getLayoutPosition());
-                notifyDataSetChanged();*/
-                Event event = events.get(holder.getLayoutPosition());
                 mainActivity.onAdapterDataChanged(event);
                 return true;
             }
@@ -100,11 +97,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     public int getItemCount() {
         return events.size();
     }
-
- /*   @Override
-    public List<Event> onDataChanged(List<Event> e) {
-        return null;
-    }*/
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
