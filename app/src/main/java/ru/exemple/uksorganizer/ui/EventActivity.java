@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -45,12 +47,12 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     private Event event;
     private EventsDatabase eventsDatabase;
     private Event.Category [] categoriesArray = Event.Category.values();
+    private final static String TAG = EventActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
-        eventsDatabase = ((App) getApplication()).getEventsDb();
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         eventsDatabase = ((App) getApplication()).getEventsDb();
@@ -112,6 +114,33 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
             }
         });
         setInitialDateTime();
+
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        Event.Category category;
+        int position;
+        try {
+            category = Event.Category.valueOf(intent.getStringExtra("category"));
+            position = arrayAdapter.getPosition(category);
+            spinnerCategory.setSelection(position);
+        }
+        catch (IllegalArgumentException ex) {
+            Log.e(TAG, ex.toString());
+
+        }
+        catch (NullPointerException ex) {
+            Log.e(TAG, ex.toString());
+        }
+
+        String description = intent.getStringExtra("description");
+        long time = intent.getLongExtra("time", calendar.getTimeInMillis());
+        editTextName.setText(name);
+        editTextDescription.setText(description);
+        SimpleDateFormat df = new SimpleDateFormat("dd MM yyyy", Locale.getDefault());
+        SimpleDateFormat tf = new SimpleDateFormat("hh:mm", Locale.getDefault());
+        textViewDate.setText(df.format(time));
+        textViewTime.setText(tf.format(time));
+        //event = new Event(name, category, description, time);
     }
 
     private void setInitialDateTime() {
@@ -119,6 +148,10 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         SimpleDateFormat stf = new SimpleDateFormat("hh:mm", Locale.getDefault());
         textViewDate.setText(sdf.format(calendar.getTimeInMillis()));
         textViewTime.setText(stf.format(calendar.getTimeInMillis()));
+    }
+
+    private void getIntentFromMain() {
+
     }
 
     public Event getEvent() {
