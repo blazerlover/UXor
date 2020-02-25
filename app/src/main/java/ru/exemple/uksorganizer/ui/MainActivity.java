@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -189,6 +191,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onAdapterDataChanged(Event event) {
+        openDeleteDialog(event);
+    }
+
+    public void updateDB(Event event) {
         eventsDb.update(event);
         progressBar.setVisibility(View.VISIBLE);
         asyncTaskExec();
@@ -232,10 +238,24 @@ public class MainActivity extends AppCompatActivity implements
 
     public void asyncTaskExec() {
         dataLoader = new DataLoader(this);
-        Log.d(TAG, "dataLoader = " + dataLoader);
         if (dataLoader == null)
             dataLoader = new DataLoader(this);
             dataLoader.execute(events);
+    }
+
+    private void openDeleteDialog(Event event) {
+        final Event eventInner = event;
+        AlertDialog.Builder deleteEventDialog = new AlertDialog.Builder(this);
+        deleteEventDialog.setTitle(R.string.delete_event_q);
+        deleteEventDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                updateDB(eventInner);
+            }
+        });
+        deleteEventDialog.setNegativeButton(R.string.cancel, null);
+        deleteEventDialog.create();
+        deleteEventDialog.show();
     }
 
 }
