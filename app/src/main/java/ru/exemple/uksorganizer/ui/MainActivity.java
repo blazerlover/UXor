@@ -94,6 +94,13 @@ public class MainActivity extends AppCompatActivity implements
         asyncTaskExec();
     }
 
+    public void asyncTaskExec() {
+        dataLoader = new DataLoader(this);
+        if (dataLoader == null)
+            dataLoader = new DataLoader(this);
+        dataLoader.execute(events);
+    }
+
     @Override
     public void onAsyncTaskFinished(ArrayList<Event> events) {
         EventsAdapter eventsAdapter = new EventsAdapter(events, this);
@@ -154,6 +161,20 @@ public class MainActivity extends AppCompatActivity implements
             findViewById(R.id.tvEmpty).setVisibility(View.VISIBLE);
     }
 
+    public void setCurrentOrientation(int currentOrientation) {
+        switch (currentOrientation) {
+            case 0:
+                onVerticalOrientation();
+                break;
+            case 1:
+                onHorizontalOrientation();
+                break;
+            case 2:
+                onGridOrientation();
+                break;
+        }
+    }
+
     public void onVerticalOrientation() {
         llManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         recycler.setLayoutManager(llManager);
@@ -174,19 +195,19 @@ public class MainActivity extends AppCompatActivity implements
         rvManagerType = 2;
     }
 
-    public void setCurrentOrientation(int currentOrientation) {
-        switch (currentOrientation) {
-            case 0:
-                onVerticalOrientation();
-                break;
-            case 1:
-                onHorizontalOrientation();
-                break;
-            case 2:
-                onGridOrientation();
-                break;
-        }
-
+    public void openDeleteDialog(Event event) {
+        final Event eventInner = event;
+        AlertDialog.Builder deleteEventDialog = new AlertDialog.Builder(this);
+        deleteEventDialog.setTitle(R.string.delete_event_q);
+        deleteEventDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                updateDB(eventInner);
+            }
+        });
+        deleteEventDialog.setNegativeButton(R.string.cancel, null);
+        deleteEventDialog.create();
+        deleteEventDialog.show();
     }
 
     @Override
@@ -234,28 +255,6 @@ public class MainActivity extends AppCompatActivity implements
             Toast.makeText(MainActivity.this, "Data loaded", Toast.LENGTH_SHORT).show();
         }
 
-    }
-
-    public void asyncTaskExec() {
-        dataLoader = new DataLoader(this);
-        if (dataLoader == null)
-            dataLoader = new DataLoader(this);
-            dataLoader.execute(events);
-    }
-
-    private void openDeleteDialog(Event event) {
-        final Event eventInner = event;
-        AlertDialog.Builder deleteEventDialog = new AlertDialog.Builder(this);
-        deleteEventDialog.setTitle(R.string.delete_event_q);
-        deleteEventDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                updateDB(eventInner);
-            }
-        });
-        deleteEventDialog.setNegativeButton(R.string.cancel, null);
-        deleteEventDialog.create();
-        deleteEventDialog.show();
     }
 
 }

@@ -69,6 +69,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             case SPORT:
                 holder.ivCategory.setImageResource(R.drawable.category_sport_shape);
                 break;
+            case SOMETHING:
+                holder.ivCategory.setImageResource(R.drawable.category_something_shape);
+                break;
         }
         //вызов EventActivity для редактирования при нажатии на Event в RecyclerView
         view.setOnClickListener(new View.OnClickListener() {
