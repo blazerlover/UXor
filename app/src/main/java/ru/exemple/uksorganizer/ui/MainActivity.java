@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -72,23 +74,31 @@ public class MainActivity extends AppCompatActivity implements
 
         storage = (DataStateStorage) getLastCustomNonConfigurationInstance();
         if (storage == null) {
-            Log.d(TAG, "storage == null");
             storage = new DataStateStorage(dataLoader, events);
         }
         events = storage.getList();
-        if (events == null)
-            Log.d(TAG, "events == null");
         if (events != null) {
-            Log.d(TAG, "events != null");
             onAsyncTaskFinished(events);
         }
-        dataLoader = storage.getDataLoader();
+        /*dataLoader = storage.getDataLoader();
         if (dataLoader == null) {
-            Log.d(TAG, "dataLoader == null");
             dataLoader = new DataLoader(this);
             dataLoader.execute(events);
         }
+        else dataLoader.execute(events);*/
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        asyncTaskExec();
+    }
+
+    public void asyncTaskExec() {
+        dataLoader = new DataLoader(this);
+        if (dataLoader == null)
+            dataLoader = new DataLoader(this);
+        dataLoader.execute(events);
     }
 
     @Override
@@ -151,6 +161,20 @@ public class MainActivity extends AppCompatActivity implements
             findViewById(R.id.tvEmpty).setVisibility(View.VISIBLE);
     }
 
+    public void setCurrentOrientation(int currentOrientation) {
+        switch (currentOrientation) {
+            case 0:
+                onVerticalOrientation();
+                break;
+            case 1:
+                onHorizontalOrientation();
+                break;
+            case 2:
+                onGridOrientation();
+                break;
+        }
+    }
+
     public void onVerticalOrientation() {
         llManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         recycler.setLayoutManager(llManager);
@@ -171,24 +195,30 @@ public class MainActivity extends AppCompatActivity implements
         rvManagerType = 2;
     }
 
-    public void setCurrentOrientation(int currentOrientation) {
-        switch (currentOrientation) {
-            case 0:
-                onVerticalOrientation();
-                break;
-            case 1:
-                onHorizontalOrientation();
-                break;
-            case 2:
-                onGridOrientation();
-                break;
-        }
-
+    public void openDeleteDialog(Event event) {
+        final Event eventInner = event;
+        AlertDialog.Builder deleteEventDialog = new AlertDialog.Builder(this);
+        deleteEventDialog.setTitle(R.string.delete_event_q);
+        deleteEventDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                updateDB(eventInner);
+            }
+        });
+        deleteEventDialog.setNegativeButton(R.string.cancel, null);
+        deleteEventDialog.create();
+        deleteEventDialog.show();
     }
 
     @Override
     public void onAdapterDataChanged(Event event) {
+        openDeleteDialog(event);
+    }
+
+    public void updateDB(Event event) {
         eventsDb.update(event);
+        progressBar.setVisibility(View.VISIBLE);
+        asyncTaskExec();
     }
 
     class DataLoader extends AsyncTask<ArrayList<Event>, Integer, ArrayList<Event>> {
@@ -208,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         protected ArrayList<Event> doInBackground(ArrayList<Event>... events) {
             try {
-                TimeUnit.SECONDS.sleep(5);
+                TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }

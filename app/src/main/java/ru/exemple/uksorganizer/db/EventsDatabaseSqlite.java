@@ -6,11 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.exemple.uksorganizer.model.Event;
+import ru.exemple.uksorganizer.ui.MainActivity;
 
 //TODO Сделать реализацию через Sqlite
 public class EventsDatabaseSqlite implements EventsDatabase {
@@ -24,6 +26,7 @@ public class EventsDatabaseSqlite implements EventsDatabase {
     private Event event;
 
     private final static String TAG = EventsDatabaseSqlite.class.getName();
+    private final static String DB_NAME = "EventDataBase";
     private final static String DB_NAME_COLUMN = "NAME";
     private final static String DB_CATEGORY_COLUMN = "CATEGORY";
     private final static String DB_DESCRIPTION_COLUMN = "DESCRIPTION";
@@ -38,12 +41,11 @@ public class EventsDatabaseSqlite implements EventsDatabase {
         events = new ArrayList<>();
         helper = new EventDataBaseHelper(context);
         database = helper.getWritableDatabase();
-        cursor = database.query("EventDataBase", null, null, null, null, null, null);
+        cursor = database.query(DB_NAME, null, null, null, null, null, null);
         while (cursor.moveToNext()) {
             String name = cursor.getString(cursor.getColumnIndex(DB_NAME_COLUMN));
             Event.Category category;
             String categoryString = cursor.getString(cursor.getColumnIndex(DB_CATEGORY_COLUMN));
-            Log.d(TAG, "categoryString = " + categoryString);
             try {
                 category = Event.Category.valueOf(categoryString);
             } catch (IllegalArgumentException e) {
@@ -53,15 +55,6 @@ public class EventsDatabaseSqlite implements EventsDatabase {
                 Log.e(TAG, e.toString());
                 category = Event.Category.SOMETHING;
             }
-            /*switch (categoryString) {
-                case "MEETING": category = Event.Category.MEETING;
-                    break;
-                case "SPORT" : category = Event.Category.SPORT;
-                    break;
-                case "ALKO" : category = Event.Category.ALKO;
-                    break;
-                default: category = Event.Category.SOMETHING;
-            }*/
             String description = cursor.getString(cursor.getColumnIndex(DB_DESCRIPTION_COLUMN));
             long time = cursor.getLong(cursor.getColumnIndex(DB_TIME_COLUMN));
             event = new Event(name, category, description, time);
@@ -80,24 +73,21 @@ public class EventsDatabaseSqlite implements EventsDatabase {
         contentValues.put(DB_DESCRIPTION_COLUMN, event.getDescription());
         contentValues.put(DB_TIME_COLUMN, event.getTime());
         database = helper.getWritableDatabase();
-        database.insert("EventDataBase", null, contentValues);
+        database.insert(DB_NAME, null, contentValues);
         contentValues.clear();
         database.close();
-        //временно для очистки DB:
-        //helper.getWritableDatabase().delete("EventDataBase", null, null);
     }
 
     @Override
     public void update(Event event) {
         helper = new EventDataBaseHelper(context);
         database = helper.getWritableDatabase();
-        Log.d(TAG, "" + database);
-        database.delete("EventDataBase", "NAME = ?", new String[]{event.getName()});
+        database.delete(DB_NAME, "NAME = ?", new String[]{event.getName()});
+        Toast.makeText(context, "File deleted", Toast.LENGTH_SHORT).show();
     }
 
     class EventDataBaseHelper extends SQLiteOpenHelper {
 
-        private final static String DB_NAME = "EventDataBase";
         private final static int DB_VERSION = 1;
 
         public EventDataBaseHelper(Context context) {

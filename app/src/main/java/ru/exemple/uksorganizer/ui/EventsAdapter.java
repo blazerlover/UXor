@@ -69,29 +69,29 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             case SPORT:
                 holder.ivCategory.setImageResource(R.drawable.category_sport_shape);
                 break;
+            case SOMETHING:
+                holder.ivCategory.setImageResource(R.drawable.category_something_shape);
+                break;
         }
         //вызов EventActivity для редактирования при нажатии на Event в RecyclerView
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(view.getContext(), EventActivity.class);
-                //Имеет ли смысл передавать в массиве стринговом?
-                intent.putExtra("name", name);
-                intent.putExtra("category", category.toString());
-                intent.putExtra("description", description);
-                intent.putExtra("time", time);
-                view.getContext().startActivity(intent);
+                    Intent intent = new Intent(view.getContext(), EventActivity.class);
+                    //Имеет ли смысл передавать в массиве стринговом?
+                    intent.putExtra("name", name);
+                    intent.putExtra("category", category.toString());
+                    intent.putExtra("description", description);
+                    intent.putExtra("time", time);
+                    view.getContext().startActivity(intent);
             }
         });
         //удаление Event из RecyclerView при долгом нажатии на него
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                /*events.remove(holder.getLayoutPosition());
-                notifyDataSetChanged();*/
-                Event event = events.get(holder.getLayoutPosition());
                 mainActivity.onAdapterDataChanged(event);
-                return false;
+                return true;
             }
         });
     }
@@ -100,11 +100,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     public int getItemCount() {
         return events.size();
     }
-
- /*   @Override
-    public List<Event> onDataChanged(List<Event> e) {
-        return null;
-    }*/
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
