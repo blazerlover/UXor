@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         protected ArrayList<Event> doInBackground(ArrayList<Event>... events) {
             try {
-                TimeUnit.SECONDS.sleep(0);
+                TimeUnit.SECONDS.sleep(2);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }

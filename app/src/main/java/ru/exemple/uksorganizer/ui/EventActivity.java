@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -62,6 +63,7 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
             @Override
             public void onClick(View v) {
                 eventsDatabase.addEvent((EventActivity.this.getEvent()));
+                EventActivity.this.finish();
             }
         });
 
@@ -114,33 +116,7 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
             }
         });
         setInitialDateTime();
-
-        Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
-        Event.Category category;
-        int position;
-        try {
-            category = Event.Category.valueOf(intent.getStringExtra("category"));
-            position = arrayAdapter.getPosition(category);
-            spinnerCategory.setSelection(position);
-        }
-        catch (IllegalArgumentException ex) {
-            Log.e(TAG, ex.toString());
-
-        }
-        catch (NullPointerException ex) {
-            Log.e(TAG, ex.toString());
-        }
-
-        String description = intent.getStringExtra("description");
-        long time = intent.getLongExtra("time", calendar.getTimeInMillis());
-        editTextName.setText(name);
-        editTextDescription.setText(description);
-        SimpleDateFormat df = new SimpleDateFormat("dd MM yyyy", Locale.getDefault());
-        SimpleDateFormat tf = new SimpleDateFormat("hh:mm", Locale.getDefault());
-        textViewDate.setText(df.format(time));
-        textViewTime.setText(tf.format(time));
-        //event = new Event(name, category, description, time);
+        getIntentFromMain();
     }
 
     private void setInitialDateTime() {
@@ -151,7 +127,34 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     }
 
     private void getIntentFromMain() {
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        Event.Category category = null;
+        int position;
+        try {
+            category = Event.Category.valueOf(intent.getStringExtra("category"));
+        }
+        catch (IllegalArgumentException ex) {
+            Log.e(TAG, ex.toString());
+        }
+        catch (NullPointerException ex) {
+            Log.e(TAG, ex.toString());
+            category = Event.Category.SOMETHING;
+            ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(this, android.R.layout.simple_list_item_1, categoriesArray);
+            spinnerCategory.setAdapter(arrayAdapter);
+            position = arrayAdapter.getPosition(category);
+            spinnerCategory.setSelection(position);
+        }
 
+        String description = intent.getStringExtra("description");
+        long time = intent.getLongExtra("time", calendar.getTimeInMillis());
+        editTextName.setText(name);
+        editTextDescription.setText(description);
+        SimpleDateFormat df = new SimpleDateFormat("dd MM yyyy", Locale.getDefault());
+        SimpleDateFormat tf = new SimpleDateFormat("hh:mm", Locale.getDefault());
+        textViewDate.setText(df.format(time));
+        textViewTime.setText(tf.format(time));
+        event = new Event(name, category, description, time);
     }
 
     public Event getEvent() {
@@ -187,6 +190,7 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         eventsDatabase.update(this.getEvent());
+        this.finish();
     }
 
     @Override
@@ -210,6 +214,10 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
 
     @Override
     public void onBackPressed() {
-            openQuitDialog();
+        Event hui = this.getEvent();
+        if(!hui.equals(event)){
+
+        }
+        openQuitDialog();
     }
 }
