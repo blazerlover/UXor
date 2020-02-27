@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -58,15 +57,6 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         actionBar.setDisplayHomeAsUpEnabled(true);
         eventsDatabase = ((App) getApplication()).getEventsDb();
         init();
-
-        buttonSaveEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                eventsDatabase.addEvent((EventActivity.this.getEvent()));
-                EventActivity.this.finish();
-            }
-        });
-
     }
 
     private void init() {
@@ -113,6 +103,18 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
                             }
                         }, Calendar.HOUR_OF_DAY, Calendar.MINUTE, true);
                 timepickerdialog.show();
+            }
+        });
+
+        buttonSaveEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(EventActivity.this.getEvent().getName().length() == 0) {
+                    openEnterNameDialog();
+                }
+                else {eventsDatabase.addEvent((EventActivity.this.getEvent()));
+                EventActivity.this.finish();
+                }
             }
         });
         setInitialDateTime();
@@ -205,6 +207,7 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 eventsDatabase.addEvent((EventActivity.this.getEvent()));
+                EventActivity.this.finish();
             }
         });
         quitDialog.setNegativeButton(R.string.cancel, null);
@@ -212,12 +215,16 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         quitDialog.show();
     }
 
+    private void openEnterNameDialog () {
+        final AlertDialog.Builder namedialog = new AlertDialog.Builder(this);
+        namedialog.setTitle("Enter name");
+        namedialog.setNegativeButton(R.string.ok, null);
+        namedialog.create();
+        namedialog.show();
+    }
+
     @Override
     public void onBackPressed() {
-        Event hui = this.getEvent();
-        if(!hui.equals(event)){
-
-        }
-        openQuitDialog();
+            openQuitDialog();
     }
 }
