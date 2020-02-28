@@ -14,8 +14,8 @@ import ru.exemple.uksorganizer.R;
 public class SimpleDialogFragment extends DialogFragment {
 
     public interface SimpleDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
+        public void onDeleteDialogPositiveClick(DialogFragment dialog);
+        public void onDeleteDialogNegativeClick(DialogFragment dialog);
     }
     SimpleDialogListener mListener;
 
@@ -38,7 +38,7 @@ public class SimpleDialogFragment extends DialogFragment {
         builder.setMessage(R.string.delete_event_q)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDialogPositiveClick(SimpleDialogFragment.this);
+                        mListener.onDeleteDialogPositiveClick(SimpleDialogFragment.this);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
