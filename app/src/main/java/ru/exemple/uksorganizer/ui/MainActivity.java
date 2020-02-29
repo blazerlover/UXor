@@ -1,10 +1,13 @@
 package ru.exemple.uksorganizer.ui;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +48,8 @@ public class MainActivity extends AppCompatActivity implements
     private DividerItemDecoration dividerItemDecoration;
     private LinearLayoutManager llManager;
     private DataLoader dataLoader;
-    private int rvManagerType;
     private DataStateStorage storage;
+    private int rvManagerType;
 
     final static String TAG = "myLOG";
     private EventsDatabase eventsDb;
@@ -57,8 +61,15 @@ public class MainActivity extends AppCompatActivity implements
         eventsDb = ((App) getApplication()).getEventsDb();
 
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar_main_activity);
+        setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
         progressBar = findViewById(R.id.pbMain);
+        DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.nav_open_drawer, R.string.nav_close_drawer);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
         fab.setOnClickListener(this);
         recycler = findViewById(R.id.rvEvents);
         llManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
@@ -80,12 +91,7 @@ public class MainActivity extends AppCompatActivity implements
         if (events != null) {
             onAsyncTaskFinished(events);
         }
-        /*dataLoader = storage.getDataLoader();
-        if (dataLoader == null) {
-            dataLoader = new DataLoader(this);
-            dataLoader.execute(events);
-        }
-        else dataLoader.execute(events);*/
+
     }
 
     @Override

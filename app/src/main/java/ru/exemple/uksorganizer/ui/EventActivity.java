@@ -19,6 +19,7 @@ import android.widget.TimePicker;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
 import java.text.SimpleDateFormat;
@@ -51,6 +52,8 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
         eventsDatabase = ((App) getApplication()).getEventsDb();
+        Toolbar toolbar = findViewById(R.id.toolbar_main_activity);
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         eventsDatabase = ((App) getApplication()).getEventsDb();
