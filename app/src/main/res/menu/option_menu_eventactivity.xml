@@ -9,7 +9,7 @@
 
     <item android:id="@+id/delete_event"
         android:title="@string/delete_event"
-        android:icon="@drawable/baseline_delete_black_18dp"
+        android:icon="@drawable/baseline_delete_white_18dp"
         android:orderInCategory="1"
         app:showAsAction="ifRoom" />
 </menu>

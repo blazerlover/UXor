@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -45,24 +47,16 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     private Event event;
     private EventsDatabase eventsDatabase;
     private Event.Category [] categoriesArray = Event.Category.values();
+    private final static String TAG = EventActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
-        eventsDatabase = ((App) getApplication()).getEventsDb();
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         eventsDatabase = ((App) getApplication()).getEventsDb();
         init();
-
-        buttonSaveEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                eventsDatabase.addEvent((EventActivity.this.getEvent()));
-            }
-        });
-
     }
 
     private void init() {
@@ -111,7 +105,20 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
                 timepickerdialog.show();
             }
         });
+
+        buttonSaveEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(EventActivity.this.getEvent().getName().length() == 0) {
+                    openEnterNameDialog();
+                }
+                else {eventsDatabase.addEvent((EventActivity.this.getEvent()));
+                EventActivity.this.finish();
+                }
+            }
+        });
         setInitialDateTime();
+        getIntentFromMain();
     }
 
     private void setInitialDateTime() {
@@ -119,6 +126,37 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         SimpleDateFormat stf = new SimpleDateFormat("hh:mm", Locale.getDefault());
         textViewDate.setText(sdf.format(calendar.getTimeInMillis()));
         textViewTime.setText(stf.format(calendar.getTimeInMillis()));
+    }
+
+    private void getIntentFromMain() {
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        Event.Category category = null;
+        int position;
+        try {
+            category = Event.Category.valueOf(intent.getStringExtra("category"));
+        }
+        catch (IllegalArgumentException ex) {
+            Log.e(TAG, ex.toString());
+        }
+        catch (NullPointerException ex) {
+            Log.e(TAG, ex.toString());
+            category = Event.Category.SOMETHING;
+            ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(this, android.R.layout.simple_list_item_1, categoriesArray);
+            spinnerCategory.setAdapter(arrayAdapter);
+            position = arrayAdapter.getPosition(category);
+            spinnerCategory.setSelection(position);
+        }
+
+        String description = intent.getStringExtra("description");
+        long time = intent.getLongExtra("time", calendar.getTimeInMillis());
+        editTextName.setText(name);
+        editTextDescription.setText(description);
+        SimpleDateFormat df = new SimpleDateFormat("dd MM yyyy", Locale.getDefault());
+        SimpleDateFormat tf = new SimpleDateFormat("hh:mm", Locale.getDefault());
+        textViewDate.setText(df.format(time));
+        textViewTime.setText(tf.format(time));
+        event = new Event(name, category, description, time);
     }
 
     public Event getEvent() {
@@ -152,12 +190,13 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     }
 
     @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
+    public void onDeleteDialogPositiveClick(DialogFragment dialog) {
         eventsDatabase.update(this.getEvent());
+        this.finish();
     }
 
     @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
+    public void onDeleteDialogNegativeClick(DialogFragment dialog) {
 
     }
 
@@ -168,11 +207,20 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 eventsDatabase.addEvent((EventActivity.this.getEvent()));
+                EventActivity.this.finish();
             }
         });
         quitDialog.setNegativeButton(R.string.cancel, null);
         quitDialog.create();
         quitDialog.show();
+    }
+
+    private void openEnterNameDialog () {
+        final AlertDialog.Builder namedialog = new AlertDialog.Builder(this);
+        namedialog.setTitle("Enter name");
+        namedialog.setNegativeButton(R.string.ok, null);
+        namedialog.create();
+        namedialog.show();
     }
 
     @Override
