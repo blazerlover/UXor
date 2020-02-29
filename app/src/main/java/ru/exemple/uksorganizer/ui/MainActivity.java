@@ -244,7 +244,9 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         protected ArrayList<Event> doInBackground(ArrayList<Event>... events) {
             try {
+
                 TimeUnit.SECONDS.sleep(1);
+
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
