@@ -190,7 +190,7 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
 
     @Override
     public void onDeleteDialogPositiveClick(DialogFragment dialog) {
-        eventsDatabase.update(this.getEvent());
+        eventsDatabase.delete(this.getEvent());
         this.finish();
     }
 

@@ -34,7 +34,7 @@ public class EventsDatabaseList implements EventsDatabase {
     }
 
     @Override
-    public void update(Event event) {
+    public void delete (Event event) {
 
     }
 

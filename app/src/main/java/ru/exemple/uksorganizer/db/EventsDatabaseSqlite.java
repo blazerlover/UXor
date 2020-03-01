@@ -74,7 +74,7 @@ public class EventsDatabaseSqlite implements EventsDatabase {
     }
 
     @Override
-    public void update(Event event) {
+    public void delete(Event event) {
         database.delete(DB_NAME, "NAME = ?", new String[]{event.getName()});
         Toast.makeText(context, "File deleted", Toast.LENGTH_SHORT).show();
     }
