@@ -1,7 +1,6 @@
 package ru.exemple.uksorganizer.db;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,18 +32,16 @@ public class EventsDatabaseFile implements EventsDatabase{
         filelist = directory.list();
         ArrayList<Event> events = new ArrayList<>();
 
-        try {
-                for (String filename : filelist) {
-                    File file = new File(directory, filename);
-                    FileInputStream fis = new FileInputStream(file);
-                    ObjectInputStream ois = new ObjectInputStream(fis);
-                    Event event = (Event) ois.readObject();
-                    ois.close();
-                    events.add(event);
-                }
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
+        for (String filename : filelist) {
+            try {
+                File file = new File(directory, filename);
+                FileInputStream fis = new FileInputStream(file);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                Event event = (Event) ois.readObject();
+                ois.close();
+                events.add(event);
+            } catch (Exception ignored) {
+            }
         }
         return events;
     }
@@ -68,9 +65,6 @@ public class EventsDatabaseFile implements EventsDatabase{
 
         File directory = new File(context.getFilesDir(), "saving_path");
         File file = new File(directory, event.getName());
-        boolean deleted = file.delete();
-        if (deleted) {
-            Toast.makeText(context, "file deleted", Toast.LENGTH_LONG).show();
-        }
+        file.delete();
     }
 }

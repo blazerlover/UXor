@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.exemple.uksorganizer.model.Event;
-import ru.exemple.uksorganizer.ui.MainActivity;
 
 //TODO Сделать реализацию через Sqlite
 public class EventsDatabaseSqlite implements EventsDatabase {
@@ -22,7 +21,6 @@ public class EventsDatabaseSqlite implements EventsDatabase {
     private ContentValues contentValues;
     private SQLiteDatabase database;
     private ArrayList<Event> events;
-    private Cursor cursor;
     private Event event;
 
     private final static String TAG = EventsDatabaseSqlite.class.getName();
@@ -34,34 +32,33 @@ public class EventsDatabaseSqlite implements EventsDatabase {
 
     public EventsDatabaseSqlite(Context context){
         this.context = context;
+        helper = new EventDataBaseHelper(context);
+        database = helper.getWritableDatabase();
     }
 
     @Override
     public List<Event> getAllEvents() {
         events = new ArrayList<>();
-        helper = new EventDataBaseHelper(context);
-        database = helper.getWritableDatabase();
-        cursor = database.query(DB_NAME, null, null, null, null, null, null);
-        while (cursor.moveToNext()) {
-            String name = cursor.getString(cursor.getColumnIndex(DB_NAME_COLUMN));
-            Event.Category category;
-            String categoryString = cursor.getString(cursor.getColumnIndex(DB_CATEGORY_COLUMN));
-            try {
-                category = Event.Category.valueOf(categoryString);
-            } catch (IllegalArgumentException e) {
-                Log.e(TAG, e.toString());
-                category = Event.Category.SOMETHING;
-            } catch (NullPointerException e) {
-                Log.e(TAG, e.toString());
-                category = Event.Category.SOMETHING;
+        try (Cursor cursor = database.query(DB_NAME, null, null, null, null, null, null)) {
+            while (cursor.moveToNext()) {
+                String name = cursor.getString(cursor.getColumnIndex(DB_NAME_COLUMN));
+                Event.Category category;
+                String categoryString = cursor.getString(cursor.getColumnIndex(DB_CATEGORY_COLUMN));
+                try {
+                    category = Event.Category.valueOf(categoryString);
+                } catch (IllegalArgumentException e) {
+                    Log.e(TAG, e.toString());
+                    category = Event.Category.SOMETHING;
+                } catch (NullPointerException e) {
+                    Log.e(TAG, e.toString());
+                    category = Event.Category.SOMETHING;
+                }
+                String description = cursor.getString(cursor.getColumnIndex(DB_DESCRIPTION_COLUMN));
+                long time = cursor.getLong(cursor.getColumnIndex(DB_TIME_COLUMN));
+                event = new Event(name, category, description, time);
+                events.add(event);
             }
-            String description = cursor.getString(cursor.getColumnIndex(DB_DESCRIPTION_COLUMN));
-            long time = cursor.getLong(cursor.getColumnIndex(DB_TIME_COLUMN));
-            event = new Event(name, category, description, time);
-            events.add(event);
         }
-        database.close();
-        cursor.close();
         return events;
     }
 
@@ -72,16 +69,12 @@ public class EventsDatabaseSqlite implements EventsDatabase {
         contentValues.put(DB_CATEGORY_COLUMN, event.getCategory().toString());
         contentValues.put(DB_DESCRIPTION_COLUMN, event.getDescription());
         contentValues.put(DB_TIME_COLUMN, event.getTime());
-        database = helper.getWritableDatabase();
         database.insert(DB_NAME, null, contentValues);
         contentValues.clear();
-        database.close();
     }
 
     @Override
     public void update(Event event) {
-        helper = new EventDataBaseHelper(context);
-        database = helper.getWritableDatabase();
         database.delete(DB_NAME, "NAME = ?", new String[]{event.getName()});
         Toast.makeText(context, "File deleted", Toast.LENGTH_SHORT).show();
     }
@@ -108,4 +101,5 @@ public class EventsDatabaseSqlite implements EventsDatabase {
 
         }
     }
+
 }

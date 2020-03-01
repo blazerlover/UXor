@@ -3,9 +3,11 @@ package ru.exemple.uksorganizer.ui;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +37,8 @@ import ru.exemple.uksorganizer.model.Event;
 
 public class EventActivity extends AppCompatActivity implements SimpleDialogFragment.SimpleDialogListener {
 
+    private static final String EXTRA_EVENT = "EVENT";
+
     private EditText editTextName, editTextDescription;
     private Spinner spinnerCategory;
     private TextView textViewTime;
@@ -49,6 +53,17 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     private Event.Category [] categoriesArray = Event.Category.values();
     private final static String TAG = EventActivity.class.getName();
 
+    public static void start(Context context, Event event) {
+        Intent intent = new Intent(context, EventActivity.class);
+        intent.putExtra(EXTRA_EVENT, event);
+        context.startActivity(intent);
+    }
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, EventActivity.class);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +75,6 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     }
 
     private void init() {
-
         editTextName = findViewById(R.id.editTextName);
         spinnerCategory = findViewById(R.id.spinnerCategory);
         editTextDescription = findViewById(R.id.editTextDescription);
@@ -109,11 +123,11 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         buttonSaveEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(EventActivity.this.getEvent().getName().length() == 0) {
+                if (EventActivity.this.getEvent().getName().length() == 0) {
                     openEnterNameDialog();
-                }
-                else {eventsDatabase.addEvent((EventActivity.this.getEvent()));
-                EventActivity.this.finish();
+                } else {
+                    eventsDatabase.addEvent((EventActivity.this.getEvent()));
+                    EventActivity.this.finish();
                 }
             }
         });
@@ -129,34 +143,19 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     }
 
     private void getIntentFromMain() {
-        Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
-        Event.Category category = null;
-        int position;
-        try {
-            category = Event.Category.valueOf(intent.getStringExtra("category"));
+        event = (Event) getIntent().getSerializableExtra(EXTRA_EVENT);
+        if (event == null) {
+            event = new Event("", Event.Category.SOMETHING, "", System.currentTimeMillis());
         }
-        catch (IllegalArgumentException ex) {
-            Log.e(TAG, ex.toString());
-        }
-        catch (NullPointerException ex) {
-            Log.e(TAG, ex.toString());
-            category = Event.Category.SOMETHING;
-            ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(this, android.R.layout.simple_list_item_1, categoriesArray);
-            spinnerCategory.setAdapter(arrayAdapter);
-            position = arrayAdapter.getPosition(category);
-            spinnerCategory.setSelection(position);
-        }
+        calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(event.getTime());
 
-        String description = intent.getStringExtra("description");
-        long time = intent.getLongExtra("time", calendar.getTimeInMillis());
-        editTextName.setText(name);
-        editTextDescription.setText(description);
+        editTextName.setText(event.getName());
+        editTextDescription.setText(event.getDescription());
         SimpleDateFormat df = new SimpleDateFormat("dd MM yyyy", Locale.getDefault());
         SimpleDateFormat tf = new SimpleDateFormat("hh:mm", Locale.getDefault());
-        textViewDate.setText(df.format(time));
-        textViewTime.setText(tf.format(time));
-        event = new Event(name, category, description, time);
+        textViewDate.setText(df.format(event.getTime()));
+        textViewTime.setText(tf.format(event.getTime()));
     }
 
     public Event getEvent() {
@@ -164,7 +163,7 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         Event.Category category = (Event.Category) spinnerCategory.getSelectedItem();
         String description = editTextDescription.getText().toString();
         long time = calendar.getTimeInMillis();
-        return event = new Event(name, category, description, time);
+        return new Event(name, category, description, time);
     }
 
     @Override
@@ -225,6 +224,16 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
 
     @Override
     public void onBackPressed() {
+        if (eventChanged()) {
             openQuitDialog();
+        } else {
+            super.onBackPressed();
+        }
     }
+
+    private boolean eventChanged() {
+        Event newEvent = getEvent();
+        return !event.equals(newEvent);
+    }
+
 }

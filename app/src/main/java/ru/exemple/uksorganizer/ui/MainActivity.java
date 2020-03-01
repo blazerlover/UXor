@@ -1,31 +1,26 @@
 package ru.exemple.uksorganizer.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
@@ -36,25 +31,25 @@ import ru.exemple.uksorganizer.model.Event;
 //TODO: сделть чтобы если нет events - отображалась вьюшка с текстом "Еще нет евентиов, добавьте"
 //TODO: сделать загрузку данных асинхронно (в другом потоке), пока грузится выводить прогресс
 public class MainActivity extends AppCompatActivity implements
-        View.OnClickListener, AsyncTaskListener, OnAdapterDataChange {
+        View.OnClickListener, EventsAdapter.Listener{
 
     private RecyclerView recycler;
     private ProgressBar progressBar;
     private ArrayList<Event> events;
     private DividerItemDecoration dividerItemDecoration;
     private LinearLayoutManager llManager;
-    private DataLoader dataLoader;
     private int rvManagerType;
-    private DataStateStorage storage;
 
     final static String TAG = "myLOG";
-    private EventsDatabase eventsDb;
+    private EventsViewModel eventsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        eventsDb = ((App) getApplication()).getEventsDb();
+        EventsViewModel.Factory factory = new EventsViewModel.Factory(
+                ((App) getApplication()).getEventsDb());
+        eventsViewModel = ViewModelProviders.of(this, factory).get(EventsViewModel.class);
 
         setContentView(R.layout.activity_main);
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -68,46 +63,20 @@ public class MainActivity extends AppCompatActivity implements
         if (savedInstanceState != null) {
             rvManagerType = savedInstanceState.getInt("rvManagerType");
             setCurrentOrientation(rvManagerType);
-        }
-        else
+        } else {
             recycler.setLayoutManager(llManager);
+        }
 
-        storage = (DataStateStorage) getLastCustomNonConfigurationInstance();
-        if (storage == null) {
-            storage = new DataStateStorage(dataLoader, events);
+        eventsViewModel.getLiveData().observe(this, this::onEventsLoaded);
+        if (savedInstanceState == null) {
+            eventsViewModel.load();
         }
-        events = storage.getList();
-        if (events != null) {
-            onAsyncTaskFinished(events);
-        }
-        /*dataLoader = storage.getDataLoader();
-        if (dataLoader == null) {
-            dataLoader = new DataLoader(this);
-            dataLoader.execute(events);
-        }
-        else dataLoader.execute(events);*/
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        asyncTaskExec();
-    }
-
-    public void asyncTaskExec() {
-        dataLoader = new DataLoader(this);
-        if (dataLoader == null)
-            dataLoader = new DataLoader(this);
-        dataLoader.execute(events);
-    }
-
-    @Override
-    public void onAsyncTaskFinished(ArrayList<Event> events) {
-        EventsAdapter eventsAdapter = new EventsAdapter(events, this);
-        recycler.setAdapter(eventsAdapter);
-        recycler.addItemDecoration(dividerItemDecoration);
-        checkEmptyList(events);
-        storage.saveDataState(this.dataLoader, events);
+    protected void onResume() {
+        super.onResume();
+        eventsViewModel.load();
     }
 
     @Override
@@ -151,14 +120,12 @@ public class MainActivity extends AppCompatActivity implements
         savedInstanceState.putInt("rvManagerType", rvManagerType);
     }
 
-    @Override
-    public Object onRetainCustomNonConfigurationInstance() {
-        return storage;
-    }
-
-    public void checkEmptyList(ArrayList<Event> events) {
-        if (events.size() == 0)
+    public void checkEmptyList(List<EventRow> events) {
+        if (events.size() == 0) {
             findViewById(R.id.tvEmpty).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.tvEmpty).setVisibility(View.GONE);
+        }
     }
 
     public void setCurrentOrientation(int currentOrientation) {
@@ -210,53 +177,27 @@ public class MainActivity extends AppCompatActivity implements
         deleteEventDialog.show();
     }
 
+    public void updateDB(Event event) {
+        progressBar.setVisibility(View.VISIBLE);
+        eventsViewModel.delete(event);
+    }
+
     @Override
-    public void onAdapterDataChanged(Event event) {
+    public void onEventClick(Event event) {
+        EventActivity.start(this, event);
+    }
+
+    @Override
+    public void onEventLongClick(Event event) {
         openDeleteDialog(event);
     }
 
-    public void updateDB(Event event) {
-        eventsDb.update(event);
-        progressBar.setVisibility(View.VISIBLE);
-        asyncTaskExec();
-    }
-
-    class DataLoader extends AsyncTask<ArrayList<Event>, Integer, ArrayList<Event>> {
-
-        MainActivity activity;
-
-        DataLoader(MainActivity activity){
-            this.activity = activity;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            Toast.makeText(MainActivity.this, "Data loading", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        protected ArrayList<Event> doInBackground(ArrayList<Event>... events) {
-            try {
-
-                TimeUnit.SECONDS.sleep(1);
-
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-            Log.d(TAG, "activity hash" + activity.hashCode() + " task hash" + dataLoader.hashCode());
-            events[0] = (ArrayList<Event>) eventsDb.getAllEvents();
-            return events[0];
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Event> events) {
-            super.onPostExecute(events);
-            progressBar.setVisibility(View.GONE);
-            activity.onAsyncTaskFinished(events);
-            Toast.makeText(MainActivity.this, "Data loaded", Toast.LENGTH_SHORT).show();
-        }
-
+    public void onEventsLoaded(List<EventRow> events) {
+        EventsAdapter eventsAdapter = new EventsAdapter(events, this);
+        recycler.setAdapter(eventsAdapter);
+        recycler.addItemDecoration(dividerItemDecoration);
+        progressBar.setVisibility(View.INVISIBLE);
+        checkEmptyList(events);
     }
 
 }

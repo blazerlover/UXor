@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/settings_item"
         android:title="@string/settings"
         app:showAsAction="never" />
 
-    <item android:id="@+id/delete_event"
-        android:title="@string/delete_event"
+    <item
+        android:id="@+id/delete_event"
         android:icon="@drawable/baseline_delete_white_18dp"
         android:orderInCategory="1"
+        android:title="@string/delete_event"
         app:showAsAction="ifRoom" />
+
 </menu>

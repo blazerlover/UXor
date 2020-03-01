@@ -3,6 +3,7 @@ package ru.exemple.uksorganizer.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -13,15 +14,15 @@ import ru.exemple.uksorganizer.R;
 
 public class SimpleDialogFragment extends DialogFragment {
 
+    //TODO: передавать строки параметрами
     public interface SimpleDialogListener {
         public void onDeleteDialogPositiveClick(DialogFragment dialog);
         public void onDeleteDialogNegativeClick(DialogFragment dialog);
     }
     SimpleDialogListener mListener;
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Context activity) {
         super.onAttach(activity);
         try {
             mListener = (SimpleDialogListener) activity;
@@ -33,7 +34,6 @@ public class SimpleDialogFragment extends DialogFragment {
 
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.delete_event_q)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
