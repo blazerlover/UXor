@@ -12,6 +12,6 @@ public interface EventsDatabase {
 
     void addEvent(Event event);
 
-    void update(Event event);
+    void delete(Event event);
 
 }

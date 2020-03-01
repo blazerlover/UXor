@@ -61,7 +61,7 @@ public class EventsDatabaseFile implements EventsDatabase{
     }
 
     @Override
-    public void update(Event event) {
+    public void delete(Event event) {
 
         File directory = new File(context.getFilesDir(), "saving_path");
         File file = new File(directory, event.getName());

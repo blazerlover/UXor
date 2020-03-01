@@ -53,7 +53,7 @@ public class EventsViewModel extends ViewModel {
         new Thread() {
             @Override
             public void run() {
-                eventsDatabase.update(event);
+                eventsDatabase.delete(event);
                 load();
             }
         }.start();
