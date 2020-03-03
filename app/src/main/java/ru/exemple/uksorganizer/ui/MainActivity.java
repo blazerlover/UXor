@@ -27,21 +27,16 @@ import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 
-//TODO: сделать чтобы можно было выбирать setLayoutManager recycler из UI
-//TODO: сделть чтобы если нет events - отображалась вьюшка с текстом "Еще нет евентиов, добавьте"
-//TODO: сделать загрузку данных асинхронно (в другом потоке), пока грузится выводить прогресс
-public class MainActivity extends AppCompatActivity implements
-        View.OnClickListener, EventsAdapter.Listener{
+public class MainActivity extends AppCompatActivity implements EventsAdapter.Listener{
 
     private RecyclerView recycler;
     private ProgressBar progressBar;
-    private ArrayList<Event> events;
     private DividerItemDecoration dividerItemDecoration;
     private LinearLayoutManager llManager;
+    private EventsViewModel eventsViewModel;
     private int rvManagerType;
 
     final static String TAG = "myLOG";
-    private EventsViewModel eventsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +49,8 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         FloatingActionButton fab = findViewById(R.id.fab);
         progressBar = findViewById(R.id.pbMain);
-        fab.setOnClickListener(this);
+        View.OnClickListener listener = v -> addEvent(v);
+        fab.setOnClickListener(listener);
         recycler = findViewById(R.id.rvEvents);
         llManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         dividerItemDecoration = new DividerItemDecoration(recycler.getContext(),
@@ -79,8 +75,7 @@ public class MainActivity extends AppCompatActivity implements
         eventsViewModel.load();
     }
 
-    @Override
-    public void onClick(View view){
+    public void addEvent(View view){
         Intent intent = new Intent(this, EventActivity.class);
         startActivity(intent);
     }
