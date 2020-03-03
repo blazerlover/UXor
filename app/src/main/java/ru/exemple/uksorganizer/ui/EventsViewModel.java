@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import ru.exemple.uksorganizer.R;
@@ -46,7 +48,8 @@ public class EventsViewModel extends ViewModel {
 
     private EventRow getEventRow(Event event) {
         //TODO: сделать нормальное преобразование в EventRow
-        return new EventRow(event.getName(), "cat", "time", R.drawable.category_alko_shape, event);
+        return new EventRow(event.getName(), event.getCategory().toString(),
+                bindTime(event), bindCategoryImage(event), event);
     }
 
     public void delete(Event event) {
@@ -59,41 +62,27 @@ public class EventsViewModel extends ViewModel {
         }.start();
     }
 
-//    @Override
-//    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-//        final EventRow event = events.get(position);
-//        holder.tvTitle.setText(event.getName());
-//        holder.tvCategory.setText(event.getCategory().toString());
-//        bindTime(holder, event);
-//        bindCategoryImage(holder, event);
-//
-//    }
-//
-//    private void bindCategoryImage(@NonNull ViewHolder holder, Event event) {
-//        switch(event.getCategory()) {
-//            case ALKO:
-//                holder.ivCategory.setImageResource(R.drawable.category_alko_shape);
-//                break;
-//            case MEETING:
-//                holder.ivCategory.setImageResource(R.drawable.category_meeting_shape);
-//                break;
-//            case SPORT:
-//                holder.ivCategory.setImageResource(R.drawable.category_sport_shape);
-//                break;
-//            case SOMETHING:
-//                holder.ivCategory.setImageResource(R.drawable.category_something_shape);
-//                break;
-//        }
-//    }
-//
-//    private void bindTime(@NonNull ViewHolder holder, Event event) {
-//        Date date = new Date();
-//        date.setTime(event.getTime());
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(date);
-//        String strTime = String.format("%tb %te %tR", calendar, calendar, calendar);
-//        holder.tvTime.setText(strTime);
-//    }
+    private int bindCategoryImage(Event event) {
+        switch (event.getCategory()) {
+            case ALKO:
+                return R.drawable.category_alko_shape;
+            case MEETING:
+                return R.drawable.category_meeting_shape;
+            case SPORT:
+                return R.drawable.category_sport_shape;
+            default:
+                return R.drawable.category_something_shape;
+        }
+    }
+
+    private String bindTime(Event event) {
+        Date date = new Date();
+        date.setTime(event.getTime());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        String strTime = String.format("%tb %te %tR", calendar, calendar, calendar);
+        return strTime;
+    }
 
     public static class Factory implements ViewModelProvider.Factory {
 
@@ -108,7 +97,6 @@ public class EventsViewModel extends ViewModel {
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             return (T) new EventsViewModel(eventsDatabase);
         }
-
     }
 
 }
