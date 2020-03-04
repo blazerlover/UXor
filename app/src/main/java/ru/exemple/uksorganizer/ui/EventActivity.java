@@ -6,20 +6,18 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,6 +45,8 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     private Calendar calendar = Calendar.getInstance();
     private TimePickerDialog timepickerdialog;
     private DatePickerDialog datePickerDialog;
+    private ImageButton imageButton;
+    private MediaPlayer mediaPlayer;
 
     private Event event;
     private EventsDatabase eventsDatabase;
@@ -81,55 +81,47 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         textViewTime = findViewById(R.id.textViewTime);
         textViewDate = findViewById(R.id.textViewDate);
         buttonSaveEvent = findViewById(R.id.buttonSaveEvent);
+        imageButton = findViewById(R.id.image_football);
 
         ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(this, android.R.layout.simple_list_item_1, categoriesArray);
         spinnerCategory.setAdapter(arrayAdapter);
 
-        textViewDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                datePickerDialog = new DatePickerDialog(EventActivity.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int day) {
-                        calendar.set(Calendar.YEAR, year);
-                        calendar.set(Calendar.MONTH, month);
-                        calendar.set(Calendar.DAY_OF_MONTH, day);
-                        setInitialDateTime();
-                    }
-                }, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-                datePickerDialog.show();
-            }
-        });
-
-        textViewTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                timepickerdialog = new TimePickerDialog(EventActivity.this,
-                        new TimePickerDialog.OnTimeSetListener() {
-
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay,
-                                                  int minute) {
-                                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                                calendar.set(Calendar.MINUTE, minute);
-                                setInitialDateTime();
-                            }
-                        }, Calendar.HOUR_OF_DAY, Calendar.MINUTE, true);
-                timepickerdialog.show();
-            }
-        });
-
-        buttonSaveEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (EventActivity.this.getEvent().getName().length() == 0) {
-                    openEnterNameDialog();
-                } else {
-                    eventsDatabase.addEvent((EventActivity.this.getEvent()));
-                    EventActivity.this.finish();
+        textViewDate.setOnClickListener(v -> {
+            datePickerDialog = new DatePickerDialog(EventActivity.this, new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int day) {
+                    calendar.set(Calendar.YEAR, year);
+                    calendar.set(Calendar.MONTH, month);
+                    calendar.set(Calendar.DAY_OF_MONTH, day);
+                    setInitialDateTime();
                 }
+            }, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
+            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+            datePickerDialog.show();
+        });
+
+        textViewTime.setOnClickListener(v -> {
+            timepickerdialog = new TimePickerDialog(EventActivity.this,
+                    (view, hourOfDay, minute) -> {
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        calendar.set(Calendar.MINUTE, minute);
+                        setInitialDateTime();
+                    }, Calendar.HOUR_OF_DAY, Calendar.MINUTE, true);
+            timepickerdialog.show();
+        });
+
+        buttonSaveEvent.setOnClickListener(v -> {
+            if (EventActivity.this.getEvent().getName().length() == 0) {
+                openEnterNameDialog();
+            } else {
+                eventsDatabase.addEvent((EventActivity.this.getEvent()));
+                EventActivity.this.finish();
             }
+        });
+
+        imageButton.setOnClickListener(v -> {
+            mediaPlayer = MediaPlayer.create(this, R.raw.pass);
+            mediaPlayer.start();
         });
         setInitialDateTime();
         getIntentFromMain();

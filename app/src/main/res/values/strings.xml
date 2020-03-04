@@ -8,7 +8,7 @@
     <string name="settings">Settings</string>
     <string name="setTime">Set Time</string>
     <string name="setDate">Set Date</string>
-    <string name="saveEvent">Save Event</string>
+    <string name="saveEvent">Save</string>
     <string name="setEventName">Set Event Name</string>
     <string name="setDescription">Description</string>
     <string name="delete_event">Delete Event</string>
@@ -19,4 +19,7 @@
     <string name="empty_view_text">You do not have any events!\n
     Create new Event</string>
     <string name="category_description_type">Type category</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
