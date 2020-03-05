@@ -8,12 +8,14 @@ public class Event implements Serializable {
     private final Category category;
     private final String description;
     private final long time;
+    private final int priority;
 
-    public Event(String name, Category category, String description, long time) {
+    public Event(String name, Category category, String description, long time, int priority) {
         this.name = name;
         this.category = category;
         this.description = description;
         this.time = time;
+        this.priority = priority;
     }
 
     public String getName() {
@@ -30,6 +32,10 @@ public class Event implements Serializable {
 
     public long getTime() {
         return time;
+    }
+
+    public int getPriority(){
+        return priority;
     }
 
     public enum Category {

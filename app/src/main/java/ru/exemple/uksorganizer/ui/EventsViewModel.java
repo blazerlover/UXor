@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,6 +39,8 @@ public class EventsViewModel extends ViewModel {
         return liveData;
     }
 
+
+    //подготовка пирожков для recycleView:
     private List<EventRow> getEventRows(List<Event> events) {
         List<EventRow> result = new ArrayList<>();
         for (Event event : events) {
@@ -46,10 +49,11 @@ public class EventsViewModel extends ViewModel {
         return result;
     }
 
+    //форматирование каждого event для прирожков:
     private EventRow getEventRow(Event event) {
         //TODO: сделать нормальное преобразование в EventRow
         return new EventRow(event.getName(), event.getCategory().toString(),
-                bindTime(event), bindCategoryImage(event), event);
+                bindTime(event), bindCategoryImage(event), bindPriorityColor(event), event);
     }
 
     public void delete(Event event) {
@@ -75,13 +79,23 @@ public class EventsViewModel extends ViewModel {
         }
     }
 
+    //TODO переделать форматирование текста:
     private String bindTime(Event event) {
-        Date date = new Date();
+        SimpleDateFormat df = new SimpleDateFormat("MMM d hh:mm");
+        String strTime = df.format(event.getTime());
+        /*Date date = new Date();
         date.setTime(event.getTime());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        String strTime = String.format("%tb %te %tR", calendar, calendar, calendar);
+        String strTime = String.format("%tb %te %tR", calendar, calendar, calendar);*/
         return strTime;
+    }
+
+    private int bindPriorityColor(Event event) {
+        if (event.getPriority() == 1) {
+        return R.color.colorPriorityHard;
+        }
+        else return R.color.colorPriorityLow;
     }
 
     public static class Factory implements ViewModelProvider.Factory {

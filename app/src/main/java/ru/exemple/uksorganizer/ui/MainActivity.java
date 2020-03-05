@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         EventsViewModel.Factory factory = new EventsViewModel.Factory(
                 ((App) getApplication()).getEventsDb());
         eventsViewModel = ViewModelProviders.of(this, factory).get(EventsViewModel.class);
+        deleteDatabase("EventDataBase");
 
         setContentView(R.layout.activity_main);
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         }
 
         eventsViewModel.getLiveData().observe(this, this::onEventsLoaded);
+        //не совсем понятно зачем если потом в он старте все равно вызывается???
         if (savedInstanceState == null) {
             eventsViewModel.load();
         }
@@ -182,12 +184,12 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         openDeleteDialog(event);
     }
 
-    public void onEventsLoaded(List<EventRow> events) {
-        EventsAdapter eventsAdapter = new EventsAdapter(events, this);
+    public void onEventsLoaded(List<EventRow> eventRows) {
+        EventsAdapter eventsAdapter = new EventsAdapter(eventRows, this);
         recycler.setAdapter(eventsAdapter);
         recycler.addItemDecoration(dividerItemDecoration);
         progressBar.setVisibility(View.INVISIBLE);
-        checkEmptyList(events);
+        checkEmptyList(eventRows);
     }
 
 }

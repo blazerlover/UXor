@@ -16,11 +16,12 @@ import ru.exemple.uksorganizer.model.Event;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
-    private final List<EventRow> events;
+    private final List<EventRow> eventRows;
     private final Listener listener;
+    private View view;
 
-    public EventsAdapter(List<EventRow> events, Listener listener) {
-        this.events = events;
+    public EventsAdapter(List<EventRow> eventRows, Listener listener) {
+        this.eventRows = eventRows;
         this.listener = listener;
     }
 
@@ -28,17 +29,18 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.row_event, parent, false);
+        view = layoutInflater.inflate(R.layout.row_event, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EventRow eventRow = events.get(position);
+        EventRow eventRow = eventRows.get(position);
         holder.tvTitle.setText(eventRow.title);
         holder.tvCategory.setText(eventRow.category);
         holder.tvTime.setText(eventRow.time);
         holder.ivCategory.setImageResource(eventRow.image);
+        view.setBackgroundColor(view.getResources().getColor(eventRow.priority));
         holder.itemView.setOnClickListener(v -> listener.onEventClick(eventRow.event));
         holder.itemView.setOnLongClickListener(v -> {
             listener.onEventLongClick(eventRow.event);
@@ -48,7 +50,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return events.size();
+        return eventRows.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

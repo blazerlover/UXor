@@ -15,16 +15,16 @@ public class EventsDatabaseList implements EventsDatabase {
     @Override
     public List<Event> getAllEvents() {
         ArrayList<Event> events = new ArrayList<>();
-        events.add(new Event("HUI", categoryCreate(), "hu hui", random.nextLong()));
-        events.add(new Event("HUI1", categoryCreate(), "hu hui", System.currentTimeMillis()));
-        events.add(new Event("HUI2", categoryCreate(), "hu hui", System.currentTimeMillis()));
-        events.add(new Event("HUI3", categoryCreate(), "hu hui", System.currentTimeMillis()));
-        events.add(new Event("HUI4", categoryCreate(), "hu hui", System.currentTimeMillis()));
-        events.add(new Event("HUI5", categoryCreate(), "hu hui", System.currentTimeMillis()));
-        events.add(new Event("HUI6", categoryCreate(), "hu hui", System.currentTimeMillis()));
-        events.add(new Event("HUI7", categoryCreate(), "hu hui", System.currentTimeMillis()));
-        events.add(new Event("HUI8", categoryCreate(), "hu hui", System.currentTimeMillis()));
-        events.add(new Event("HUI9", categoryCreate(), "hu hui", System.currentTimeMillis()));
+        events.add(new Event("HUI", categoryCreate(), "hu hui", random.nextLong(), 1));
+        events.add(new Event("HUI1", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
+        events.add(new Event("HUI2", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
+        events.add(new Event("HUI3", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
+        events.add(new Event("HUI4", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
+        events.add(new Event("HUI5", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
+        events.add(new Event("HUI6", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
+        events.add(new Event("HUI7", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
+        events.add(new Event("HUI8", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
+        events.add(new Event("HUI9", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
         return events;
     }
 

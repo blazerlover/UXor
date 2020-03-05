@@ -29,11 +29,13 @@ public class EventsDatabaseSqlite implements EventsDatabase {
     private final static String DB_CATEGORY_COLUMN = "CATEGORY";
     private final static String DB_DESCRIPTION_COLUMN = "DESCRIPTION";
     private final static String DB_TIME_COLUMN = "TIME";
+    private final static String DB_PRIORITY_COLUMN = "PRIORITY";
 
     public EventsDatabaseSqlite(Context context){
         this.context = context;
         helper = new EventDataBaseHelper(context);
         database = helper.getWritableDatabase();
+        //database.execSQL("DROP TABLE EventDataBase");
     }
 
     @Override
@@ -41,6 +43,8 @@ public class EventsDatabaseSqlite implements EventsDatabase {
         events = new ArrayList<>();
         try (Cursor cursor = database.query(DB_NAME, null, null, null, null, null, null)) {
             while (cursor.moveToNext()) {
+                Log.d(TAG, "database = " + database);
+                Log.d(TAG, "cursor = " + cursor);
                 String name = cursor.getString(cursor.getColumnIndex(DB_NAME_COLUMN));
                 Event.Category category;
                 String categoryString = cursor.getString(cursor.getColumnIndex(DB_CATEGORY_COLUMN));
@@ -54,8 +58,11 @@ public class EventsDatabaseSqlite implements EventsDatabase {
                     category = Event.Category.SOMETHING;
                 }
                 String description = cursor.getString(cursor.getColumnIndex(DB_DESCRIPTION_COLUMN));
+                Log.d(TAG, "index = " + cursor.getColumnIndex(DB_TIME_COLUMN));
                 long time = cursor.getLong(cursor.getColumnIndex(DB_TIME_COLUMN));
-                event = new Event(name, category, description, time);
+                Log.d(TAG, "index = " + cursor.getColumnIndex(DB_PRIORITY_COLUMN));
+                int priority = cursor.getInt(cursor.getColumnIndex(DB_PRIORITY_COLUMN));
+                event = new Event(name, category, description, time, priority);
                 events.add(event);
             }
         }
@@ -69,6 +76,7 @@ public class EventsDatabaseSqlite implements EventsDatabase {
         contentValues.put(DB_CATEGORY_COLUMN, event.getCategory().toString());
         contentValues.put(DB_DESCRIPTION_COLUMN, event.getDescription());
         contentValues.put(DB_TIME_COLUMN, event.getTime());
+        contentValues.put(DB_PRIORITY_COLUMN, event.getPriority());
         database.insert(DB_NAME, null, contentValues);
         contentValues.clear();
     }
@@ -76,7 +84,6 @@ public class EventsDatabaseSqlite implements EventsDatabase {
     @Override
     public void delete(Event event) {
         database.delete(DB_NAME, "NAME = ?", new String[]{event.getName()});
-        Toast.makeText(context, "File deleted", Toast.LENGTH_SHORT).show();
     }
 
     class EventDataBaseHelper extends SQLiteOpenHelper {
@@ -93,7 +100,8 @@ public class EventsDatabaseSqlite implements EventsDatabase {
                     "NAME TEXT, " +
                     "CATEGORY TEXT, " +
                     "DESCRIPTION TEXT, " +
-                    "TIME INTEGER) ;");
+                    "TIME INTEGER, " +
+                    "PRIORITY INTEGER ) ;");
         }
 
         @Override
@@ -101,5 +109,8 @@ public class EventsDatabaseSqlite implements EventsDatabase {
 
         }
     }
+
+    //для очистки ДБ при коррективах
+    //helper.getWritableDatabase().delete("EventDataBase", null, null);
 
 }

@@ -145,7 +145,7 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     private void getIntentFromMain() {
         event = (Event) getIntent().getSerializableExtra(EXTRA_EVENT);
         if (event == null) {
-            event = new Event("", Event.Category.SOMETHING, "", System.currentTimeMillis());
+            event = new Event("", Event.Category.SOMETHING, "", System.currentTimeMillis(), 0);
         }
         calendar = Calendar.getInstance();
         calendar.setTimeInMillis(event.getTime());
@@ -163,7 +163,9 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         Event.Category category = (Event.Category) spinnerCategory.getSelectedItem();
         String description = editTextDescription.getText().toString();
         long time = calendar.getTimeInMillis();
-        return new Event(name, category, description, time);
+        //временно приоритет чтоб запустить тупо:
+        int priority = 0;
+        return new Event(name, category, description, time, priority);
     }
 
     @Override
