@@ -29,6 +29,7 @@ public class EventsDatabaseSqlite implements EventsDatabase {
     private final static String DB_CATEGORY_COLUMN = "CATEGORY";
     private final static String DB_DESCRIPTION_COLUMN = "DESCRIPTION";
     private final static String DB_TIME_COLUMN = "TIME";
+    private final static String DB_PRIORITY_COLUMN = "PRIORITY";
 
     public EventsDatabaseSqlite(Context context){
         this.context = context;
@@ -55,7 +56,8 @@ public class EventsDatabaseSqlite implements EventsDatabase {
                 }
                 String description = cursor.getString(cursor.getColumnIndex(DB_DESCRIPTION_COLUMN));
                 long time = cursor.getLong(cursor.getColumnIndex(DB_TIME_COLUMN));
-                event = new Event(name, category, description, time);
+                int priority = cursor.getInt(cursor.getColumnIndex(DB_PRIORITY_COLUMN));
+                event = new Event(name, category, description, time, priority);
                 events.add(event);
             }
         }
