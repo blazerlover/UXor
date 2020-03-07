@@ -1,7 +1,6 @@
 package ru.exemple.uksorganizer.ui;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -22,12 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
-import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 
 public class MainActivity extends AppCompatActivity implements EventsAdapter.Listener{
@@ -200,5 +197,8 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         progressBar.setVisibility(View.INVISIBLE);
         checkEmptyList(eventRows);
     }
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }
