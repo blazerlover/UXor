@@ -59,8 +59,7 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         toggle.syncState();
         FloatingActionButton fab = findViewById(R.id.fab);
         progressBar = findViewById(R.id.pbMain);
-        View.OnClickListener listener = v -> addEvent(v);
-        fab.setOnClickListener(listener);
+        fab.setOnClickListener(this::addEvent);
         recycler = findViewById(R.id.rvEvents);
         llManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         dividerItemDecoration = new DividerItemDecoration(recycler.getContext(),

@@ -22,9 +22,12 @@ public class EventsDatabaseSqlite implements EventsDatabase {
     private SQLiteDatabase database;
     private ArrayList<Event> events;
     private Event event;
+    private boolean deleted = false;
 
     private final static String TAG = EventsDatabaseSqlite.class.getName();
     private final static String DB_NAME = "EventDataBase";
+    private final static String DB_EVENTS_TABLE = "Events";
+    private final static String DB_TRASH_TABLE = "Events";
     private final static String DB_NAME_COLUMN = "NAME";
     private final static String DB_CATEGORY_COLUMN = "CATEGORY";
     private final static String DB_DESCRIPTION_COLUMN = "DESCRIPTION";
@@ -35,13 +38,12 @@ public class EventsDatabaseSqlite implements EventsDatabase {
         this.context = context;
         helper = new EventDataBaseHelper(context);
         database = helper.getWritableDatabase();
-        //database.execSQL("DROP TABLE EventDataBase");
     }
 
     @Override
     public List<Event> getAllEvents() {
         events = new ArrayList<>();
-        try (Cursor cursor = database.query(DB_NAME, null, null, null, null, null, null)) {
+        try (Cursor cursor = database.query(DB_EVENTS_TABLE, null, null, null, null, null, null)) {
             while (cursor.moveToNext()) {
                 Log.d(TAG, "database = " + database);
                 Log.d(TAG, "cursor = " + cursor);
@@ -71,19 +73,18 @@ public class EventsDatabaseSqlite implements EventsDatabase {
 
     @Override
     public void addEvent(Event event) {
-        contentValues = new ContentValues();
-        contentValues.put(DB_NAME_COLUMN, event.getName());
-        contentValues.put(DB_CATEGORY_COLUMN, event.getCategory().toString());
-        contentValues.put(DB_DESCRIPTION_COLUMN, event.getDescription());
-        contentValues.put(DB_TIME_COLUMN, event.getTime());
-        contentValues.put(DB_PRIORITY_COLUMN, event.getPriority());
-        database.insert(DB_NAME, null, contentValues);
+        contentValues = fillContentValuesByEvent(event);
+        //нужны ли какие-либо проверки того что событие уже удалилось из DB?
+        insertEvent(contentValues);
         contentValues.clear();
     }
 
     @Override
     public void delete(Event event) {
-        database.delete(DB_NAME, "NAME = ?", new String[]{event.getName()});
+        database.delete(DB_EVENTS_TABLE, "NAME = ?", new String[]{event.getName()});
+        //флаг для добавления в trash DB (см. метод insertEvent)
+        deleted = true;
+        addEvent(event);
     }
 
     class EventDataBaseHelper extends SQLiteOpenHelper {
@@ -96,7 +97,14 @@ public class EventsDatabaseSqlite implements EventsDatabase {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE EventDataBase ( _id INTEGER PRIMARY KEY AUTOINCREMENT," +
+            db.execSQL("CREATE TABLE EVENTS ( _id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "NAME TEXT, " +
+                    "CATEGORY TEXT, " +
+                    "DESCRIPTION TEXT, " +
+                    "TIME INTEGER, " +
+                    "PRIORITY INTEGER ) ;");
+
+            db.execSQL("CREATE TABLE TRASH ( _id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "NAME TEXT, " +
                     "CATEGORY TEXT, " +
                     "DESCRIPTION TEXT, " +
@@ -108,6 +116,25 @@ public class EventsDatabaseSqlite implements EventsDatabase {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         }
+    }
+
+    private ContentValues fillContentValuesByEvent(Event event) {
+        contentValues = new ContentValues();
+        contentValues.put(DB_NAME_COLUMN, event.getName());
+        contentValues.put(DB_CATEGORY_COLUMN, event.getCategory().toString());
+        contentValues.put(DB_DESCRIPTION_COLUMN, event.getDescription());
+        contentValues.put(DB_TIME_COLUMN, event.getTime());
+        contentValues.put(DB_PRIORITY_COLUMN, event.getPriority());
+        return contentValues;
+    }
+
+    private void insertEvent(ContentValues contentValues){
+        if (deleted) {
+            database.insert(DB_TRASH_TABLE, null, contentValues);
+            deleted = false;
+
+        }
+        else database.insert(DB_EVENTS_TABLE, null, contentValues);
     }
 
     //для очистки ДБ при коррективах
