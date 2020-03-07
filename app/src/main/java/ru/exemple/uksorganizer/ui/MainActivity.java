@@ -10,7 +10,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -47,6 +50,13 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         eventsViewModel = ViewModelProviders.of(this, factory).get(EventsViewModel.class);
 
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.nav_open_drawer, R.string.nav_close_drawer);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
         FloatingActionButton fab = findViewById(R.id.fab);
         progressBar = findViewById(R.id.pbMain);
         View.OnClickListener listener = v -> addEvent(v);
@@ -54,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         recycler = findViewById(R.id.rvEvents);
         llManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         dividerItemDecoration = new DividerItemDecoration(recycler.getContext(),
+
                 llManager.getOrientation());
 
         if (savedInstanceState != null) {
@@ -64,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         }
 
         eventsViewModel.getLiveData().observe(this, this::onEventsLoaded);
+        //не совсем понятно зачем если потом в он старте все равно вызывается???
         if (savedInstanceState == null) {
             eventsViewModel.load();
         }
@@ -182,12 +194,12 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         openDeleteDialog(event);
     }
 
-    public void onEventsLoaded(List<EventRow> events) {
-        EventsAdapter eventsAdapter = new EventsAdapter(events, this);
+    public void onEventsLoaded(List<EventRow> eventRows) {
+        EventsAdapter eventsAdapter = new EventsAdapter(eventRows, this);
         recycler.setAdapter(eventsAdapter);
         recycler.addItemDecoration(dividerItemDecoration);
         progressBar.setVisibility(View.INVISIBLE);
-        checkEmptyList(events);
+        checkEmptyList(eventRows);
     }
 
 }

@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
 import java.text.SimpleDateFormat;
@@ -70,8 +71,13 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        //Добавление toolbar и кнопки up на него:
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        /*ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);*/
         eventsDatabase = ((App) getApplication()).getEventsDb();
         init();
     }
@@ -162,6 +168,8 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         if (checkBox.isChecked()) {
             priority = 1;
         }
+        //временно приоритет чтоб запустить тупо:
+        //int priority = 1;
         return new Event(name, category, description, time, priority);
     }
 
