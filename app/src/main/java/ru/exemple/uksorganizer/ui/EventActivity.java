@@ -20,7 +20,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
@@ -62,10 +61,10 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         context.startActivity(intent);
     }
 
-    public static void start(Context context) {
+    /*public static void start(Context context) {
         Intent intent = new Intent(context, EventActivity.class);
         context.startActivity(intent);
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +75,6 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        /*ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);*/
         eventsDatabase = ((App) getApplication()).getEventsDb();
         init();
     }
@@ -92,7 +89,7 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         checkBox = findViewById(R.id.priority);
         imageButton = findViewById(R.id.image_football);
 
-        ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(this, android.R.layout.simple_list_item_1, categoriesArray);
+        ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categoriesArray);
         spinnerCategory.setAdapter(arrayAdapter);
 
         textViewDate.setOnClickListener(v -> {
@@ -128,8 +125,6 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         imageButton.setOnClickListener(v -> {
             Intent intent = new Intent(EventActivity.this, MediaIntentService.class);
             startService(intent);
-           /* mediaPlayer = MediaPlayer.create(this, R.raw.pass);
-            mediaPlayer.start();*/
             Toast.makeText(EventActivity.this, "49rs SUCKS!", Toast.LENGTH_LONG).show();
         });
         setInitialDateTime();
@@ -152,11 +147,23 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         calendar.setTimeInMillis(event.getTime());
 
         editTextName.setText(event.getName());
+
+        Event.Category category = event.getCategory();
+        ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categoriesArray);
+        spinnerCategory.setAdapter(arrayAdapter);
+        int position = arrayAdapter.getPosition(category);
+        spinnerCategory.setSelection(position);
+
         editTextDescription.setText(event.getDescription());
         SimpleDateFormat df = new SimpleDateFormat("dd MM yyyy", Locale.getDefault());
         SimpleDateFormat tf = new SimpleDateFormat("hh:mm", Locale.getDefault());
         textViewDate.setText(df.format(event.getTime()));
         textViewTime.setText(tf.format(event.getTime()));
+        boolean checked = false;
+        if (event.getPriority() == 1) {
+            checked = true;
+        }
+        checkBox.setChecked(checked);
     }
 
     public Event getEvent() {
@@ -168,8 +175,6 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         if (checkBox.isChecked()) {
             priority = 1;
         }
-        //временно приоритет чтоб запустить тупо:
-        //int priority = 1;
         return new Event(name, category, description, time, priority);
     }
 
@@ -223,7 +228,7 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
 
     private void openEnterNameDialog () {
         final AlertDialog.Builder namedialog = new AlertDialog.Builder(this);
-        namedialog.setTitle("Enter name");
+        namedialog.setTitle(R.string.enter_name);
         namedialog.setNegativeButton(R.string.ok, null);
         namedialog.create();
         namedialog.show();
