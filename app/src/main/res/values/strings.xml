@@ -18,6 +18,7 @@
     <string name="cancel">Cancel</string>
     <string name="enter_name">Enter event name</string>
     <string name="high_priority">High priority</string>
+    <string name="volume_up">Volume Up and Click me!</string>
     <string name="empty_view_text">You do not have any events!\n
     Create new Event</string>
     <string name="category_description_type">Type category</string>
