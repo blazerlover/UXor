@@ -69,6 +69,7 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
+        //Добавление toolbar и кнопки up на него:
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -169,7 +170,7 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         String description = editTextDescription.getText().toString();
         long time = calendar.getTimeInMillis();
         //временно приоритет чтоб запустить тупо:
-        int priority = 0;
+        int priority = 1;
         return new Event(name, category, description, time, priority);
     }
 

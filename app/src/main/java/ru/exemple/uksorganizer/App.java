@@ -15,7 +15,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        eventsDatabase = new EventsDatabaseFile(this);
+        eventsDatabase = new EventsDatabaseSqlite(this);
     }
 
     public EventsDatabase getEventsDb() {

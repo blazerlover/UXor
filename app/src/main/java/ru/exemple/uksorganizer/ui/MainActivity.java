@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         EventsViewModel.Factory factory = new EventsViewModel.Factory(
                 ((App) getApplication()).getEventsDb());
         eventsViewModel = ViewModelProviders.of(this, factory).get(EventsViewModel.class);
-        deleteDatabase("EventDataBase");
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -65,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         recycler = findViewById(R.id.rvEvents);
         llManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         dividerItemDecoration = new DividerItemDecoration(recycler.getContext(),
+
                 llManager.getOrientation());
 
         if (savedInstanceState != null) {
