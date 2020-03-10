@@ -10,9 +10,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service
-            android:name=".ui.MediaIntentService"
-            android:exported="false"></service>
 
         <activity android:name=".ui.MainActivity">
             <intent-filter>
