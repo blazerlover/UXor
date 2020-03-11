@@ -1,14 +1,12 @@
 package ru.exemple.uksorganizer.db;
 
-import android.content.Context;
-
 import java.util.List;
 
 import ru.exemple.uksorganizer.model.Event;
 
 public interface EventsDatabase {
 
-    List<Event> getAllEvents();
+    List<Event> getAllEvents(boolean isDeletedRequestFlag);
 
     void addEvent(Event event);
 

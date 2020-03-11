@@ -5,18 +5,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.exemple.uksorganizer.model.Event;
 
-//TODO Сделать реализацию через Sqlite
+
 public class EventsDatabaseSqlite implements EventsDatabase {
 
-    private Context context;
     private EventDataBaseHelper helper;
     private ContentValues contentValues;
     private SQLiteDatabase database;
@@ -25,70 +22,89 @@ public class EventsDatabaseSqlite implements EventsDatabase {
 
     private final static String TAG = EventsDatabaseSqlite.class.getName();
     private final static String DB_NAME = "EventDataBase";
+    private final static String DB_EVENTS_TABLE = "EVENTS";
     private final static String DB_NAME_COLUMN = "NAME";
     private final static String DB_CATEGORY_COLUMN = "CATEGORY";
     private final static String DB_DESCRIPTION_COLUMN = "DESCRIPTION";
     private final static String DB_TIME_COLUMN = "TIME";
     private final static String DB_PRIORITY_COLUMN = "PRIORITY";
+    private final static String DB_DELETED_COLUMN = "DELETED";
 
     public EventsDatabaseSqlite(Context context){
-        this.context = context;
         helper = new EventDataBaseHelper(context);
         database = helper.getWritableDatabase();
-        //database.execSQL("DROP TABLE EventDataBase");
     }
 
     @Override
-    public List<Event> getAllEvents() {
-        events = new ArrayList<>();
-        try (Cursor cursor = database.query(DB_NAME, null, null, null, null, null, null)) {
-            while (cursor.moveToNext()) {
-                Log.d(TAG, "database = " + database);
-                Log.d(TAG, "cursor = " + cursor);
-                String name = cursor.getString(cursor.getColumnIndex(DB_NAME_COLUMN));
-                Event.Category category;
-                String categoryString = cursor.getString(cursor.getColumnIndex(DB_CATEGORY_COLUMN));
-                try {
-                    category = Event.Category.valueOf(categoryString);
-                } catch (IllegalArgumentException e) {
-                    Log.e(TAG, e.toString());
-                    category = Event.Category.SOMETHING;
-                } catch (NullPointerException e) {
-                    Log.e(TAG, e.toString());
-                    category = Event.Category.SOMETHING;
-                }
-                String description = cursor.getString(cursor.getColumnIndex(DB_DESCRIPTION_COLUMN));
-                Log.d(TAG, "index = " + cursor.getColumnIndex(DB_TIME_COLUMN));
-                long time = cursor.getLong(cursor.getColumnIndex(DB_TIME_COLUMN));
-                Log.d(TAG, "index = " + cursor.getColumnIndex(DB_PRIORITY_COLUMN));
-                int priority = cursor.getInt(cursor.getColumnIndex(DB_PRIORITY_COLUMN));
-                event = new Event(name, category, description, time, priority);
-                events.add(event);
-            }
+    public List<Event> getAllEvents(boolean isDeletedRequestFlag) {
+        int isDeletedRequest = 1;
+        if (!isDeletedRequestFlag) {
+            isDeletedRequest = 0;
         }
+        events = new ArrayList<>();
+            try (Cursor cursor = database.query(DB_EVENTS_TABLE, null, "DELETED = ?",
+                    new String[] {Integer.toString(isDeletedRequest)}, null, null, null)) {
+                while (cursor.moveToNext()) {
+                    String name = cursor.getString(cursor.getColumnIndex(DB_NAME_COLUMN));
+                    Event.Category category;
+                    String categoryString = cursor.getString(cursor.getColumnIndex(DB_CATEGORY_COLUMN));
+                    try {
+                        category = Event.Category.valueOf(categoryString);
+                    } catch (IllegalArgumentException e) {
+                        category = Event.Category.SOMETHING;
+                    } catch (NullPointerException e) {
+                        category = Event.Category.SOMETHING;
+                    }
+                    String description = cursor.getString(cursor.getColumnIndex(DB_DESCRIPTION_COLUMN));
+                    long time = cursor.getLong(cursor.getColumnIndex(DB_TIME_COLUMN));
+                    int priority = cursor.getInt(cursor.getColumnIndex(DB_PRIORITY_COLUMN));
+                    event = new Event(name, category, description, time, priority);
+                    events.add(event);
+                }
+            }
+
+            /*try (Cursor cursor = database.query(DB_EVENTS_TABLE, null, "DELETED = ?",
+                    new String[] {Integer.toString(0)}, null, null, null)) {
+                while (cursor.moveToNext()) {
+                    String name = cursor.getString(cursor.getColumnIndex(DB_NAME_COLUMN));
+                    Event.Category category;
+                    String categoryString = cursor.getString(cursor.getColumnIndex(DB_CATEGORY_COLUMN));
+                    try {
+                        category = Event.Category.valueOf(categoryString);
+                    } catch (IllegalArgumentException e) {
+                        category = Event.Category.SOMETHING;
+                    } catch (NullPointerException e) {
+                        category = Event.Category.SOMETHING;
+                    }
+                    String description = cursor.getString(cursor.getColumnIndex(DB_DESCRIPTION_COLUMN));
+                    long time = cursor.getLong(cursor.getColumnIndex(DB_TIME_COLUMN));
+                    int priority = cursor.getInt(cursor.getColumnIndex(DB_PRIORITY_COLUMN));
+                    event = new Event(name, category, description, time, priority);
+                    events.add(event);
+                }
+            }*/
         return events;
     }
 
     @Override
     public void addEvent(Event event) {
-        contentValues = new ContentValues();
-        contentValues.put(DB_NAME_COLUMN, event.getName());
-        contentValues.put(DB_CATEGORY_COLUMN, event.getCategory().toString());
-        contentValues.put(DB_DESCRIPTION_COLUMN, event.getDescription());
-        contentValues.put(DB_TIME_COLUMN, event.getTime());
-        contentValues.put(DB_PRIORITY_COLUMN, event.getPriority());
-        database.insert(DB_NAME, null, contentValues);
+        contentValues = fillContentValuesByEvent(event);
+        database.insert(DB_EVENTS_TABLE, null, contentValues);
         contentValues.clear();
     }
 
     @Override
     public void delete(Event event) {
-        database.delete(DB_NAME, "NAME = ?", new String[]{event.getName()});
+        //database.delete(DB_EVENTS_TABLE, "NAME = ?", new String[]{event.getName()});
+        contentValues = fillContentValuesByEvent(event);
+        contentValues.put(DB_DELETED_COLUMN, 1);
+        database.update(DB_EVENTS_TABLE, contentValues, "NAME = ?",
+                new String[]{event.getName()});
     }
 
     class EventDataBaseHelper extends SQLiteOpenHelper {
 
-        private final static int DB_VERSION = 1;
+        private final static int DB_VERSION = 2;
 
         public EventDataBaseHelper(Context context) {
          super(context, DB_NAME, null, DB_VERSION);
@@ -96,21 +112,32 @@ public class EventsDatabaseSqlite implements EventsDatabase {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE EventDataBase ( _id INTEGER PRIMARY KEY AUTOINCREMENT," +
+            db.execSQL("CREATE TABLE EVENTS ( _id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "NAME TEXT, " +
                     "CATEGORY TEXT, " +
                     "DESCRIPTION TEXT, " +
                     "TIME INTEGER, " +
-                    "PRIORITY INTEGER ) ;");
+                    "PRIORITY INTEGER, " +
+                    "DELETED INTEGER) ;");
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+            if (oldVersion == 1) {
+                db.execSQL("ALTER TABLE EVENTSDATABASE RENAME TO EVENTS");
+                db.execSQL("ALTER TABLE EVENTS ADD COLUMN DELETED INTEGER;");
+            }
         }
     }
 
-    //для очистки ДБ при коррективах
-    //helper.getWritableDatabase().delete("EventDataBase", null, null);
-
+    private ContentValues fillContentValuesByEvent(Event event) {
+        contentValues = new ContentValues();
+        contentValues.put(DB_NAME_COLUMN, event.getName());
+        contentValues.put(DB_CATEGORY_COLUMN, event.getCategory().toString());
+        contentValues.put(DB_DESCRIPTION_COLUMN, event.getDescription());
+        contentValues.put(DB_TIME_COLUMN, event.getTime());
+        contentValues.put(DB_PRIORITY_COLUMN, event.getPriority());
+        contentValues.put(DB_DELETED_COLUMN, 0);
+        return contentValues;
+    }
 }

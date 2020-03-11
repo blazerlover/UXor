@@ -11,7 +11,7 @@ public class EventsDatabaseList implements EventsDatabase {
     Random random = new Random();
 
     @Override
-    public List<Event> getAllEvents() {
+    public List<Event> getAllEvents(boolean isDeletedRequestFlag) {
         ArrayList<Event> events = new ArrayList<>();
         events.add(new Event("HUI", categoryCreate(), "hu hui", random.nextLong(), 1));
         events.add(new Event("HUI1", categoryCreate(), "hu hui", System.currentTimeMillis(),1));

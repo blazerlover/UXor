@@ -23,10 +23,12 @@
         android:title="@string/support">
         <menu>
             <item
+                android:id="@+id/nav_help"
                 android:title="@string/help"
                 android:icon="@android:drawable/ic_menu_help">
             </item>
             <item
+                android:id="@+id/nav_feedback"
                 android:title="@string/feedback"
                 android:icon="@android:drawable/ic_menu_send">
             </item>
