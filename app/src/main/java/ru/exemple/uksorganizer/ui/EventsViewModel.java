@@ -7,8 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -26,11 +25,11 @@ public class EventsViewModel extends ViewModel {
         this.eventsDatabase = eventsDatabase;
     }
 
-    public void load() {
+    public void load(boolean isDeletedRequestFlag) {
         new Thread() {
             @Override
             public void run() {
-                List<Event> events = eventsDatabase.getAllEvents();
+                List<Event> events = eventsDatabase.getAllEvents(isDeletedRequestFlag);
                 liveData.postValue(getEventRows(events));
             }
         }.start();
@@ -52,17 +51,16 @@ public class EventsViewModel extends ViewModel {
 
     //форматирование каждого event для прирожков:
     private EventRow getEventRow(Event event) {
-        //TODO: сделать нормальное преобразование в EventRow
         return new EventRow(event.getName(), event.getCategory().toString(),
                 bindTime(event), bindCategoryImage(event), bindPriorityColor(event), event);
     }
 
-    public void delete(Event event) {
+    public void delete(Event event, boolean isDeletedRequestFlag) {
         new Thread() {
             @Override
             public void run() {
                 eventsDatabase.delete(event);
-                load();
+                load(isDeletedRequestFlag);
             }
         }.start();
     }

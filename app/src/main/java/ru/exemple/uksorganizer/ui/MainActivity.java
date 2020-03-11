@@ -9,9 +9,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -20,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
@@ -27,7 +30,8 @@ import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.model.Event;
 
-public class MainActivity extends AppCompatActivity implements EventsAdapter.Listener{
+public class MainActivity extends AppCompatActivity implements EventsAdapter.Listener,
+        NavigationView.OnNavigationItemSelectedListener {
 
     private RecyclerView recycler;
     private ProgressBar progressBar;
@@ -35,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
     private LinearLayoutManager llManager;
     private EventsViewModel eventsViewModel;
     private int rvManagerType;
+    private DrawerLayout drawerLayout;
+    private boolean isDeletedRequestFlag = false;
 
     final static String TAG = "myLOG";
 
@@ -49,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
+        drawerLayout = findViewById(R.id.drawerLayout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.nav_open_drawer, R.string.nav_close_drawer);
         drawerLayout.addDrawerListener(toggle);
@@ -57,14 +63,16 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         FloatingActionButton fab = findViewById(R.id.fab);
         progressBar = findViewById(R.id.pbMain);
         fab.setOnClickListener(this::addEvent);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         recycler = findViewById(R.id.rvEvents);
         llManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         dividerItemDecoration = new DividerItemDecoration(recycler.getContext(),
-
                 llManager.getOrientation());
 
         if (savedInstanceState != null) {
             rvManagerType = savedInstanceState.getInt("rvManagerType");
+            isDeletedRequestFlag = savedInstanceState.getBoolean("isDeletedRequestFlag");
             setCurrentOrientation(rvManagerType);
         } else {
             recycler.setLayoutManager(llManager);
@@ -73,14 +81,14 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         eventsViewModel.getLiveData().observe(this, this::onEventsLoaded);
         //не совсем понятно зачем если потом в он старте все равно вызывается???
         if (savedInstanceState == null) {
-            eventsViewModel.load();
+            eventsViewModel.load(isDeletedRequestFlag);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        eventsViewModel.load();
+        eventsViewModel.load(isDeletedRequestFlag);
     }
 
     public void addEvent(View view){
@@ -121,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
     public void onSaveInstanceState(Bundle savedInstanceState){
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putInt("rvManagerType", rvManagerType);
+        savedInstanceState.putBoolean("isDeletedRequestFlag", isDeletedRequestFlag);
     }
 
     public void checkEmptyList(List<EventRow> events) {
@@ -146,22 +155,19 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
     }
 
     public void onVerticalOrientation() {
-        llManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        recycler.setLayoutManager(llManager);
+        recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         dividerItemDecoration.setOrientation(RecyclerView.VERTICAL);
         rvManagerType = 0;
     }
 
     public void onHorizontalOrientation() {
-        llManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
-        recycler.setLayoutManager(llManager);
+        recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         dividerItemDecoration.setOrientation(RecyclerView.HORIZONTAL);
         rvManagerType = 1;
     }
 
     public void onGridOrientation() {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-        recycler.setLayoutManager(gridLayoutManager);
+        recycler.setLayoutManager(new GridLayoutManager(this, 2));
         rvManagerType = 2;
     }
 
@@ -177,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
 
     public void updateDB(Event event) {
         progressBar.setVisibility(View.VISIBLE);
-        eventsViewModel.delete(event);
+        eventsViewModel.delete(event, isDeletedRequestFlag);
     }
 
     @Override
@@ -190,6 +196,40 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         openDeleteDialog(event);
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.nav_events:
+                menuItem.setChecked(true);
+                eventsViewModel.load(false);
+                isDeletedRequestFlag = false;
+                break;
+            case R.id.nav_trash:
+                menuItem.setChecked(true);
+                eventsViewModel.load(true);
+                isDeletedRequestFlag = true;
+                break;
+            case R.id.nav_search:
+                menuItem.setChecked(true);
+                break;
+            case R.id.nav_help:
+                break;
+            case R.id.nav_feedback:
+                break;
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     public void onEventsLoaded(List<EventRow> eventRows) {
         EventsAdapter eventsAdapter = new EventsAdapter(eventRows, this);
         recycler.setAdapter(eventsAdapter);
@@ -197,8 +237,6 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         progressBar.setVisibility(View.INVISIBLE);
         checkEmptyList(eventRows);
     }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
+
+
 }

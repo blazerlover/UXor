@@ -24,7 +24,7 @@ public class EventsDatabaseFile implements EventsDatabase{
     public static final String TAG = EventsDatabaseFile.class.getName();
 
     @Override
-    public List<Event> getAllEvents() {
+    public List<Event> getAllEvents(boolean isDeletedRequestFlag) {
         File directory = new File(context.getFilesDir(), "saving_path");
         if(!directory.exists()) {
             directory.mkdirs();
