@@ -4,9 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,14 +13,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.DialogFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,7 +29,7 @@ import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 
 
-public class EventActivity extends AppCompatActivity implements SimpleDialogFragment.SimpleDialogListener {
+public class EventActivity extends AppCompatActivity {
 
     private static final String EXTRA_EVENT = "EVENT";
 
@@ -47,8 +42,6 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     private Calendar calendar = Calendar.getInstance();
     private TimePickerDialog timepickerdialog;
     private DatePickerDialog datePickerDialog;
-    private ImageButton imageButton;
-    private MediaPlayer mediaPlayer;
 
     private Event event;
     private EventsDatabase eventsDatabase;
@@ -60,11 +53,6 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         intent.putExtra(EXTRA_EVENT, event);
         context.startActivity(intent);
     }
-
-    /*public static void start(Context context) {
-        Intent intent = new Intent(context, EventActivity.class);
-        context.startActivity(intent);
-    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +75,6 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         textViewDate = findViewById(R.id.textViewDate);
         buttonSaveEvent = findViewById(R.id.buttonSaveEvent);
         checkBox = findViewById(R.id.priority);
-        imageButton = findViewById(R.id.image_football);
 
         ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categoriesArray);
         spinnerCategory.setAdapter(arrayAdapter);
@@ -122,11 +109,6 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
             }
         });
 
-        imageButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventActivity.this, MediaIntentService.class);
-            startService(intent);
-            Toast.makeText(EventActivity.this, "49rs SUCKS!", Toast.LENGTH_LONG).show();
-        });
         setInitialDateTime();
         getIntentFromMain();
     }
@@ -189,8 +171,7 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_event:
-                DialogFragment dialog = new SimpleDialogFragment();
-                dialog.show(getSupportFragmentManager(), "SimpleDialogFragment");
+                openDeleteDialog();
                 return true;
             case R.id.settings_item:
                 return true;
@@ -200,26 +181,16 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
 
     }
 
-    @Override
-    public void onDeleteDialogPositiveClick(DialogFragment dialog) {
-        eventsDatabase.delete(this.getEvent());
-        this.finish();
-    }
-
-    @Override
-    public void onDeleteDialogNegativeClick(DialogFragment dialog) {
-
-    }
-
     private void openQuitDialog() {
         AlertDialog.Builder quitDialog = new AlertDialog.Builder(this);
         quitDialog.setTitle(R.string.save_changed);
-        quitDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                eventsDatabase.addEvent((EventActivity.this.getEvent()));
-                EventActivity.this.finish();
+        quitDialog.setPositiveButton(R.string.ok, (dialog, which) -> {
+            if (EventActivity.this.getEvent().getName().length() == 0) {
+                openEnterNameDialog();
             }
+            else {
+            eventsDatabase.addEvent((EventActivity.this.getEvent()));
+            EventActivity.this.finish();}
         });
         quitDialog.setNegativeButton(R.string.cancel, null);
         quitDialog.create();
@@ -227,11 +198,23 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
     }
 
     private void openEnterNameDialog () {
-        final AlertDialog.Builder namedialog = new AlertDialog.Builder(this);
-        namedialog.setTitle(R.string.enter_name);
-        namedialog.setNegativeButton(R.string.ok, null);
-        namedialog.create();
-        namedialog.show();
+        AlertDialog.Builder nameDialog = new AlertDialog.Builder(this);
+        nameDialog.setTitle(R.string.enter_name);
+        nameDialog.setNegativeButton(R.string.ok, null);
+        nameDialog.create();
+        nameDialog.show();
+    }
+
+    private void openDeleteDialog () {
+        AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
+        deleteDialog.setTitle(R.string.delete_event_question);
+        deleteDialog.setPositiveButton(R.string.ok, (dialog, which) -> {
+            eventsDatabase.delete(this.getEvent());
+            this.finish();
+        });
+        deleteDialog.setNegativeButton(R.string.cancel, null);
+        deleteDialog.create();
+        deleteDialog.show();
     }
 
     @Override
@@ -247,5 +230,4 @@ public class EventActivity extends AppCompatActivity implements SimpleDialogFrag
         Event newEvent = getEvent();
         return !event.equals(newEvent);
     }
-
 }

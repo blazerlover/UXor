@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
     public void openDeleteDialog(Event event) {
         final Event eventInner = event;
         AlertDialog.Builder deleteEventDialog = new AlertDialog.Builder(this);
-        deleteEventDialog.setTitle(R.string.delete_event_q);
+        deleteEventDialog.setTitle(R.string.delete_event_question);
         deleteEventDialog.setPositiveButton(R.string.ok, (dialog, which) -> updateDB(eventInner));
         deleteEventDialog.setNegativeButton(R.string.cancel, null);
         deleteEventDialog.create();
