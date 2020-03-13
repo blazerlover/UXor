@@ -8,6 +8,6 @@
     <color name="colorCategoryMeeting">#CE93D8</color>
     <color name="colorCategorySomething">#546E7A</color>
     <color name="colorFab">#6002ee</color>
-    <color name="colorPriorityHard">#E91E63</color>
+    <color name="colorPriorityHard">#f186c0</color>
     <color name="colorPriorityLow">#ffffff</color>
 </resources>

@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -36,9 +37,8 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
     private RecyclerView recycler;
     private ProgressBar progressBar;
     private DividerItemDecoration dividerItemDecoration;
-    private LinearLayoutManager llManager;
     private EventsViewModel eventsViewModel;
-    private int rvManagerType;
+    private int rvManagerType = 0;
     private DrawerLayout drawerLayout;
     private boolean isDeletedRequestFlag = false;
 
@@ -66,19 +66,25 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         recycler = findViewById(R.id.rvEvents);
-        llManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        LinearLayoutManager llManager = new LinearLayoutManager(this,
+                RecyclerView.VERTICAL, false);
         dividerItemDecoration = new DividerItemDecoration(recycler.getContext(),
                 llManager.getOrientation());
 
         if (savedInstanceState != null) {
             rvManagerType = savedInstanceState.getInt("rvManagerType");
             isDeletedRequestFlag = savedInstanceState.getBoolean("isDeletedRequestFlag");
-            setCurrentOrientation(rvManagerType);
+            changeView(rvManagerType);
         } else {
             recycler.setLayoutManager(llManager);
         }
 
-        eventsViewModel.getLiveData().observe(this, this::onEventsLoaded);
+        eventsViewModel.getLiveData().observe(this, new Observer<List<EventRow>>() {
+            @Override
+            public void onChanged(List<EventRow> eventRows) {
+                MainActivity.this.onEventsLoaded(eventRows);
+            }
+        });
         //не совсем понятно зачем если потом в он старте все равно вызывается???
         if (savedInstanceState == null) {
             eventsViewModel.load(isDeletedRequestFlag);
@@ -91,13 +97,8 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         eventsViewModel.load(isDeletedRequestFlag);
     }
 
-    public void addEvent(View view){
-        Intent intent = new Intent(this, EventActivity.class);
-        startActivity(intent);
-    }
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.option_menu_main, menu);
         return super.onCreateOptionsMenu(menu);
@@ -109,81 +110,29 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
             case R.id.new_event_item:
                 return true;
             case R.id.recycle_view_orientation_vertical_item:
-                onVerticalOrientation();
+                //onVerticalOrientation();
+                changeView(0);
                 return true;
             case R.id.recycle_view_orientation_horizontal_item:
-                onHorizontalOrientation();
+                //onHorizontalOrientation();
+                changeView(1);
                 return true;
             case R.id.recycle_view_orientation_grid_item:
-                onGridOrientation();
+                //onGridOrientation();
+                changeView(2);
                 return true;
             case R.id.settings_item:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState){
+    public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putInt("rvManagerType", rvManagerType);
         savedInstanceState.putBoolean("isDeletedRequestFlag", isDeletedRequestFlag);
-    }
-
-    public void checkEmptyList(List<EventRow> events) {
-        if (events.size() == 0) {
-            findViewById(R.id.tvEmpty).setVisibility(View.VISIBLE);
-        } else {
-            findViewById(R.id.tvEmpty).setVisibility(View.GONE);
-        }
-    }
-
-    public void setCurrentOrientation(int currentOrientation) {
-        switch (currentOrientation) {
-            case 0:
-                onVerticalOrientation();
-                break;
-            case 1:
-                onHorizontalOrientation();
-                break;
-            case 2:
-                onGridOrientation();
-                break;
-        }
-    }
-
-    public void onVerticalOrientation() {
-        recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        dividerItemDecoration.setOrientation(RecyclerView.VERTICAL);
-        rvManagerType = 0;
-    }
-
-    public void onHorizontalOrientation() {
-        recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
-        dividerItemDecoration.setOrientation(RecyclerView.HORIZONTAL);
-        rvManagerType = 1;
-    }
-
-    public void onGridOrientation() {
-        recycler.setLayoutManager(new GridLayoutManager(this, 2));
-        rvManagerType = 2;
-    }
-
-    public void openDeleteDialog(Event event) {
-        final Event eventInner = event;
-        AlertDialog.Builder deleteEventDialog = new AlertDialog.Builder(this);
-        deleteEventDialog.setTitle(R.string.delete_event_question);
-        deleteEventDialog.setPositiveButton(R.string.ok, (dialog, which) -> updateDB(eventInner));
-        deleteEventDialog.setNegativeButton(R.string.cancel, null);
-        deleteEventDialog.create();
-        deleteEventDialog.show();
-    }
-
-    public void updateDB(Event event) {
-        progressBar.setVisibility(View.VISIBLE);
-        eventsViewModel.delete(event, isDeletedRequestFlag);
     }
 
     @Override
@@ -230,13 +179,58 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         }
     }
 
-    public void onEventsLoaded(List<EventRow> eventRows) {
+    public void addEvent(View view) {
+        Intent intent = new Intent(this, EventActivity.class);
+        startActivity(intent);
+    }
+
+    private void checkEmptyList(List<EventRow> events) {
+        if (events.size() == 0) {
+            findViewById(R.id.tvEmpty).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.tvEmpty).setVisibility(View.GONE);
+        }
+    }
+
+    private void changeView(int rvManagerType) {
+        switch (rvManagerType) {
+            case 0:
+                recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+                dividerItemDecoration.setOrientation(RecyclerView.VERTICAL);
+                this.rvManagerType = 0;
+                break;
+            case 1:
+                recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+                dividerItemDecoration.setOrientation(RecyclerView.HORIZONTAL);
+                this.rvManagerType = 1;
+                break;
+            case 2:
+                recycler.setLayoutManager(new GridLayoutManager(this, 2));
+                this.rvManagerType = 2;
+                break;
+        }
+    }
+
+    private void openDeleteDialog(Event event) {
+        final Event eventInner = event;
+        AlertDialog.Builder deleteEventDialog = new AlertDialog.Builder(this);
+        deleteEventDialog.setTitle(R.string.delete_event_question);
+        deleteEventDialog.setPositiveButton(R.string.ok, (dialog, which) -> deleteEvent(eventInner));
+        deleteEventDialog.setNegativeButton(R.string.cancel, null);
+        deleteEventDialog.create();
+        deleteEventDialog.show();
+    }
+
+    private void deleteEvent(Event event) {
+        progressBar.setVisibility(View.VISIBLE);
+        eventsViewModel.delete(event, isDeletedRequestFlag);
+    }
+
+    private void onEventsLoaded(List<EventRow> eventRows) {
         EventsAdapter eventsAdapter = new EventsAdapter(eventRows, this);
         recycler.setAdapter(eventsAdapter);
         recycler.addItemDecoration(dividerItemDecoration);
         progressBar.setVisibility(View.INVISIBLE);
         checkEmptyList(eventRows);
     }
-
-
 }
