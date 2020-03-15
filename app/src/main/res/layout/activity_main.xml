@@ -25,10 +25,9 @@
 
             <fragment
                 android:name="ru.exemple.uksorganizer.ui.EventsListFragment"
-                android:id="@+id/eventListFragment"
+                android:id="@+id/eventsListFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </fragment>
+                android:layout_height="match_parent"/>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
