@@ -93,9 +93,10 @@ public class EventsListFragment extends Fragment implements EventsAdapter.Listen
 
     public void initData(List<EventRow> eventRows) {
         this.eventRows = eventRows;
-        //adapter.notifyDataSetChanged();
-        adapter = new EventsAdapter(eventRows, this);
-        recyclerView.setAdapter(adapter);
+        adapter.setEventRows(eventRows);
+        adapter.notifyDataSetChanged();
+        //adapter = new EventsAdapter(eventRows, this);
+        //recyclerView.setAdapter(adapter);
     }
 
     public void setRecyclerViewManagerType(LayoutManagerType layoutManagerType) {

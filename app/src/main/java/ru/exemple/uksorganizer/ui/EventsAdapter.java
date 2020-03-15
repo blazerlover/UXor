@@ -16,7 +16,8 @@ import ru.exemple.uksorganizer.model.Event;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
-    private final List<EventRow> eventRows;
+    //почему здесь был модификатор final?
+    private List<EventRow> eventRows;
     private final Listener listener;
     private View view;
 
@@ -72,6 +73,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             ivCategory = itemView.findViewById(R.id.ivCategory);
         }
 
+    }
+
+    public void setEventRows(List<EventRow> eventRows) {
+        this.eventRows = eventRows;
     }
 
     public interface Listener {
