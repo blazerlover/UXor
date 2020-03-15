@@ -46,19 +46,20 @@ public class EventDetailFragment extends Fragment {
 
     private Event event;
     private EventsDatabase eventsDatabase;
+    private Listener listener;
     private Event.Category [] categoriesArray = Event.Category.values();
     private final static String TAG = EventActivity.class.getName();
 
-    public EventDetailFragment() {
+       public EventDetailFragment() {
+    }
 
+    interface Listener {
+        void itemClicked(long id);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
-
         return inflater.inflate(R.layout.fragment_event_detail, container, false);
     }
 
@@ -174,7 +175,12 @@ public class EventDetailFragment extends Fragment {
         nameDialog.show();
     }
 
-    public void setEventID(long id) {
+    void setEventID(long id) {
         this.eventID = id;
+    }
+
+    boolean eventChanged() {
+        Event newEvent = this.getEvent();
+        return !event.equals(newEvent);
     }
 }
