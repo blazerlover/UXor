@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -19,9 +18,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
@@ -58,16 +55,18 @@ public class EventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
-        //Добавление toolbar и кнопки up на него:
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         eventsDatabase = ((App) getApplication()).getEventsDb();
-        init();
+        //init();
+
+        EventDetailFragment frag = (EventDetailFragment) getSupportFragmentManager().findFragmentById(R.id.eventDetailFragment);
+        frag.setEventID(1);
     }
 
-    private void init() {
+    /*private void init() {
         editTextName = findViewById(R.id.editTextName);
         spinnerCategory = findViewById(R.id.spinnerCategory);
         editTextDescription = findViewById(R.id.editTextDescription);
@@ -146,7 +145,7 @@ public class EventActivity extends AppCompatActivity {
             checked = true;
         }
         checkBox.setChecked(checked);
-    }
+    }*/
 
     public Event getEvent() {
         String name = editTextName.getText().toString();
