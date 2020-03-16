@@ -31,18 +31,19 @@ import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.model.Event;
 
-public class MainActivity extends AppCompatActivity implements EventsAdapter.Listener,
-        NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener, EventsListFragment.Listener {
 
-    private RecyclerView recycler;
+    public final static String TAG = "myLOG";
+
+    private EventsListFragment eventsListFragment;
+    //private RecyclerView recycler;
     private ProgressBar progressBar;
-    private DividerItemDecoration dividerItemDecoration;
+    //private DividerItemDecoration dividerItemDecoration;
     private EventsViewModel eventsViewModel;
-    private int rvManagerType = 0;
+    private EventsListFragment.LayoutManagerType layoutManagerType;
     private DrawerLayout drawerLayout;
     private boolean isDeletedRequestFlag = false;
-
-    final static String TAG = "myLOG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         eventsViewModel = ViewModelProviders.of(this, factory).get(EventsViewModel.class);
 
         setContentView(R.layout.activity_main);
+        eventsListFragment =(EventsListFragment) getSupportFragmentManager().findFragmentById(R.id.eventsListFragment);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -65,18 +67,20 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         fab.setOnClickListener(this::addEvent);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        recycler = findViewById(R.id.rvEvents);
-        LinearLayoutManager llManager = new LinearLayoutManager(this,
-                RecyclerView.VERTICAL, false);
-        dividerItemDecoration = new DividerItemDecoration(recycler.getContext(),
-                llManager.getOrientation());
+        //recycler = findViewById(R.id.rvEvents);
+        //LinearLayoutManager llManager = new LinearLayoutManager(this,
+        //      RecyclerView.VERTICAL, false);
+        //dividerItemDecoration = new DividerItemDecoration(recycler.getContext(),
+        //      llManager.getOrientation());
 
         if (savedInstanceState != null) {
-            rvManagerType = savedInstanceState.getInt("rvManagerType");
+         //   layoutManagerType = savedInstanceState.getInt("layoutManagerType");
             isDeletedRequestFlag = savedInstanceState.getBoolean("isDeletedRequestFlag");
-            changeView(rvManagerType);
+         //   setRecyclerViewManagerType(layoutManagerType);
         } else {
-            recycler.setLayoutManager(llManager);
+         //   recycler.setLayoutManager(llManager);
+         //не совсем понятно зачем если потом в он старте все равно вызывается???
+            eventsViewModel.load(isDeletedRequestFlag);
         }
 
         eventsViewModel.getLiveData().observe(this, new Observer<List<EventRow>>() {
@@ -85,10 +89,7 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
                 MainActivity.this.onEventsLoaded(eventRows);
             }
         });
-        //не совсем понятно зачем если потом в он старте все равно вызывается???
-        if (savedInstanceState == null) {
-            eventsViewModel.load(isDeletedRequestFlag);
-        }
+
     }
 
     @Override
@@ -111,15 +112,18 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
                 return true;
             case R.id.recycle_view_orientation_vertical_item:
                 //onVerticalOrientation();
-                changeView(0);
+                layoutManagerType = EventsListFragment.LayoutManagerType.LINEAR_LAYOUT_MANAGER_VERTICAL;
+                eventsListFragment.setRecyclerViewManagerType(layoutManagerType);
                 return true;
             case R.id.recycle_view_orientation_horizontal_item:
                 //onHorizontalOrientation();
-                changeView(1);
+                layoutManagerType = EventsListFragment.LayoutManagerType.LINEAR_LAYOUT_MANAGER_HORIZONTAL;
+                eventsListFragment.setRecyclerViewManagerType(layoutManagerType);
                 return true;
             case R.id.recycle_view_orientation_grid_item:
                 //onGridOrientation();
-                changeView(2);
+                layoutManagerType = EventsListFragment.LayoutManagerType.GRID_LAYOUT_MANAGER;
+                eventsListFragment.setRecyclerViewManagerType(layoutManagerType);
                 return true;
             case R.id.settings_item:
                 return true;
@@ -131,18 +135,8 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putInt("rvManagerType", rvManagerType);
+        //savedInstanceState.putInt("layoutManagerType", layoutManagerType);
         savedInstanceState.putBoolean("isDeletedRequestFlag", isDeletedRequestFlag);
-    }
-
-    @Override
-    public void onEventClick(Event event) {
-        EventActivity.start(this, event);
-    }
-
-    @Override
-    public void onEventLongClick(Event event) {
-        openDeleteDialog(event);
     }
 
     @Override
@@ -192,24 +186,24 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
         }
     }
 
-    private void changeView(int rvManagerType) {
+    /*private void setRecyclerViewManagerType(int rvManagerType) {
         switch (rvManagerType) {
             case 0:
                 recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
                 dividerItemDecoration.setOrientation(RecyclerView.VERTICAL);
-                this.rvManagerType = 0;
+                this.layoutManagerType = 0;
                 break;
             case 1:
                 recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
                 dividerItemDecoration.setOrientation(RecyclerView.HORIZONTAL);
-                this.rvManagerType = 1;
+                this.layoutManagerType = 1;
                 break;
             case 2:
                 recycler.setLayoutManager(new GridLayoutManager(this, 2));
-                this.rvManagerType = 2;
+                this.layoutManagerType = 2;
                 break;
         }
-    }
+    }*/
 
     private void openDeleteDialog(Event event) {
         final Event eventInner = event;
@@ -227,10 +221,31 @@ public class MainActivity extends AppCompatActivity implements EventsAdapter.Lis
     }
 
     private void onEventsLoaded(List<EventRow> eventRows) {
-        EventsAdapter eventsAdapter = new EventsAdapter(eventRows, this);
-        recycler.setAdapter(eventsAdapter);
-        recycler.addItemDecoration(dividerItemDecoration);
+        eventsListFragment.initData(eventRows);
+        //EventsAdapter eventsAdapter = new EventsAdapter(eventRows, this);
+        //recycler.setAdapter(eventsAdapter);
+        //recycler.addItemDecoration(dividerItemDecoration);
         progressBar.setVisibility(View.INVISIBLE);
         checkEmptyList(eventRows);
+    }
+
+    /*@Override
+    public void onEventClick(Event event) {
+        EventActivity.start(this, event);
+    }
+
+    @Override
+    public void onEventLongClick(Event event) {
+        openDeleteDialog(event);
+    }*/
+
+    @Override
+    public void onEventListFragmentItemClick(Event event) {
+        EventActivity.start(this, event);
+    }
+
+    @Override
+    public void onEventListFragmentItemLongClick(Event event) {
+        openDeleteDialog(event);
     }
 }

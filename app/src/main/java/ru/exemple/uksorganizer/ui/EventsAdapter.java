@@ -40,7 +40,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         holder.tvCategory.setText(eventRow.category);
         holder.tvTime.setText(eventRow.time);
         holder.ivCategory.setImageResource(eventRow.image);
-        view.setBackgroundColor(view.getResources().getColor(eventRow.priority));
+        try {
+            view.setBackgroundColor(view.getResources().getColor(eventRow.priority));
+        } catch (Exception e) {
+            view.setBackgroundColor(view.getResources().getColor(R.color.colorCategorySomething));
+        }
         holder.itemView.setOnClickListener(v -> listener.onEventClick(eventRow.event));
         holder.itemView.setOnLongClickListener(v -> {
             listener.onEventLongClick(eventRow.event);
@@ -68,6 +72,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             ivCategory = itemView.findViewById(R.id.ivCategory);
         }
 
+    }
+
+    public void setEventRows(List<EventRow> eventRows) {
+        this.eventRows.clear();
+        this.eventRows.addAll(eventRows);
+        notifyDataSetChanged();
     }
 
     public interface Listener {
