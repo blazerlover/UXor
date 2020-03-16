@@ -16,8 +16,7 @@ import ru.exemple.uksorganizer.model.Event;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
-    //почему здесь был модификатор final?
-    private List<EventRow> eventRows;
+    private final List<EventRow> eventRows;
     private final Listener listener;
     private View view;
 
@@ -76,7 +75,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     }
 
     public void setEventRows(List<EventRow> eventRows) {
-        this.eventRows = eventRows;
+        this.eventRows.clear();
+        this.eventRows.addAll(eventRows);
+        notifyDataSetChanged();
     }
 
     public interface Listener {

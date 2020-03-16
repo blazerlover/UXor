@@ -17,11 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import ru.exemple.uksorganizer.R;
-import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 
 public class EventsListFragment extends Fragment implements EventsAdapter.Listener {
@@ -33,7 +31,6 @@ public class EventsListFragment extends Fragment implements EventsAdapter.Listen
     private LayoutManagerType currentLayoutManagerType;
     private List<EventRow> eventRows;
     private EventsAdapter adapter;
-    private EventsDatabase eventsDatabase;
 
     protected enum LayoutManagerType {
         LINEAR_LAYOUT_MANAGER_VERTICAL,
@@ -47,7 +44,6 @@ public class EventsListFragment extends Fragment implements EventsAdapter.Listen
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //получить данные от активити
     }
 
     @Override
@@ -55,8 +51,6 @@ public class EventsListFragment extends Fragment implements EventsAdapter.Listen
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_events_list, container, false);
         eventRows = new ArrayList<>();
-        //Event event = new Event("q", Event.Category.ALKO, "q", System.currentTimeMillis(), 0);
-        //eventRows.add(new EventRow("q", "q", "22 22 22", R.drawable.category_something_shape, 0, event));
         adapter = new EventsAdapter(eventRows, this);
         recyclerView = view.findViewById(R.id.rvEvents);
         recyclerView.setAdapter(adapter);
@@ -72,7 +66,7 @@ public class EventsListFragment extends Fragment implements EventsAdapter.Listen
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        this.listener = (Listener)context;
+        this.listener = (Listener) context;
     }
 
     @Override
@@ -94,9 +88,6 @@ public class EventsListFragment extends Fragment implements EventsAdapter.Listen
     public void initData(List<EventRow> eventRows) {
         this.eventRows = eventRows;
         adapter.setEventRows(eventRows);
-        adapter.notifyDataSetChanged();
-        //adapter = new EventsAdapter(eventRows, this);
-        //recyclerView.setAdapter(adapter);
     }
 
     public void setRecyclerViewManagerType(LayoutManagerType layoutManagerType) {
@@ -104,7 +95,7 @@ public class EventsListFragment extends Fragment implements EventsAdapter.Listen
         LinearLayoutManager linearLayoutManager;
         switch (layoutManagerType) {
             case LINEAR_LAYOUT_MANAGER_VERTICAL:
-                linearLayoutManager = new LinearLayoutManager(getActivity(),RecyclerView.VERTICAL, false);
+                linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
                 recyclerView.setLayoutManager(linearLayoutManager);
                 dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                         linearLayoutManager.getOrientation());
@@ -112,7 +103,7 @@ public class EventsListFragment extends Fragment implements EventsAdapter.Listen
                 this.currentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER_VERTICAL;
                 break;
             case LINEAR_LAYOUT_MANAGER_HORIZONTAL:
-                linearLayoutManager = new LinearLayoutManager(getActivity(),RecyclerView.HORIZONTAL, false);
+                linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
                 dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                         linearLayoutManager.getOrientation());
@@ -128,6 +119,7 @@ public class EventsListFragment extends Fragment implements EventsAdapter.Listen
 
     public interface Listener {
         void onEventListFragmentItemClick(Event event);
+
         void onEventListFragmentItemLongClick(Event event);
     }
 }
