@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
@@ -29,6 +30,9 @@ public class EventsViewModel extends ViewModel {
         new Thread() {
             @Override
             public void run() {
+                try{TimeUnit.SECONDS.sleep(1);} catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 List<Event> events = eventsDatabase.getAllEvents(isDeletedRequestFlag);
                 liveData.postValue(getEventRows(events));
             }
@@ -60,6 +64,16 @@ public class EventsViewModel extends ViewModel {
             @Override
             public void run() {
                 eventsDatabase.delete(event);
+                load(isDeletedRequestFlag);
+            }
+        }.start();
+    }
+
+    public void clearTrash(boolean isDeletedRequestFlag) {
+        new Thread() {
+            @Override
+            public void run() {
+                eventsDatabase.clearTrash();
                 load(isDeletedRequestFlag);
             }
         }.start();
