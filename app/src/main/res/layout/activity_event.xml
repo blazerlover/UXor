@@ -10,11 +10,38 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
-    <fragment
-        android:id="@+id/eventDetailFragment"
-        android:name="ru.exemple.uksorganizer.ui.EventDetailFragment"
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:context=".ui.EventActivity">
+
+        <!--<fragment
+            android:id="@+id/eventDetailFragment"
+            android:name="ru.exemple.uksorganizer.ui.EventDetailFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        />-->
+
+        <fragment
+            android:id="@+id/eventDetailReadOnlyFragment"
+            android:name="ru.exemple.uksorganizer.ui.EventDetailReadOnlyFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_edit_event"
+            android:layout_width="56dp"
+            android:layout_height="53dp"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="20dp"
+            android:src="@drawable/baseline_create_white_24dp"
+            app:backgroundTint="@color/colorPrimary" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

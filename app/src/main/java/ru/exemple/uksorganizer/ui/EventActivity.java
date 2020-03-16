@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
@@ -19,11 +21,12 @@ import ru.exemple.uksorganizer.model.Event;
 
 public class EventActivity extends AppCompatActivity {
 
-    private static final String EXTRA_EVENT = "EVENT";
     public static final String EXTRA_EVENTDETAIL_ID = "id";
     private final static String TAG = EventActivity.class.getName();
+    private static final String EXTRA_EVENT = "EVENT";
 
-    private EventDetailFragment frag;
+    private EventDetailFragment fragment;
+    private EventDetailReadOnlyFragment fragmenteadnly;
 
     private EventsDatabase eventsDatabase;
 
@@ -37,15 +40,26 @@ public class EventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, new EventDetailReadOnlyFragment())
+                    .commit();
+        }
+
+        fragmenteadnly = (EventDetailReadOnlyFragment) getSupportFragmentManager().findFragmentById(R.id.eventDetailReadOnlyFragment);
+        fragment = new EventDetailFragment();
+        //int eventID = (int) getIntent().getExtras().get(EXTRA_EVENTDETAIL_ID);
+        //fragmenteadnly.setEventID(R.id.eventDetailReadOnlyFragment);
+        //fragment.setEventID(R.id.fragment_container);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        FloatingActionButton floatingActionButton = findViewById(R.id.fab_edit_event);
+        floatingActionButton.setOnClickListener(v -> getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit());
         eventsDatabase = ((App) getApplication()).getEventsDb();
-
-        frag = (EventDetailFragment) getSupportFragmentManager().findFragmentById(R.id.eventDetailFragment);
-        //int eventID = (int) getIntent().getExtras().get(EXTRA_EVENTDETAIL_ID);
-        frag.setEventID(1);
     }
 
     @Override
@@ -73,11 +87,11 @@ public class EventActivity extends AppCompatActivity {
         AlertDialog.Builder quitDialog = new AlertDialog.Builder(this);
         quitDialog.setTitle(R.string.save_changed);
         quitDialog.setPositiveButton(R.string.ok, (dialog, which) -> {
-            if (frag.getEvent().getName().length() == 0) {
+            if (fragment.getEvent().getName().length() == 0) {
                 openEnterNameDialog();
             }
             else {
-            eventsDatabase.addEvent((frag.getEvent()));
+            eventsDatabase.addEvent((fragment.getEvent()));
             EventActivity.this.finish();}
         });
         quitDialog.setNegativeButton(R.string.cancel, null);
@@ -89,7 +103,7 @@ public class EventActivity extends AppCompatActivity {
         AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
         deleteDialog.setTitle(R.string.delete_event_question);
         deleteDialog.setPositiveButton(R.string.ok, (dialog, which) -> {
-            eventsDatabase.delete(frag.getEvent());
+            eventsDatabase.delete(fragment.getEvent());
             this.finish();
         });
         deleteDialog.setNegativeButton(R.string.cancel, null);
@@ -107,7 +121,7 @@ public class EventActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (frag.eventChanged()) {
+        if (fragment.eventChanged()) {
             openQuitDialog();
         } else {
             super.onBackPressed();

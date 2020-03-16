@@ -1,9 +1,6 @@
 package ru.exemple.uksorganizer.ui;
 
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,13 +19,12 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 
-import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 
 
-public class EventDetailFragment extends Fragment {
+public class EventDetailReadOnlyFragment extends Fragment {
 
     private int eventID;
 
@@ -41,32 +37,20 @@ public class EventDetailFragment extends Fragment {
     private Button buttonSaveEvent;
     private CheckBox checkBox;
     private Calendar calendar = Calendar.getInstance();
-    private TimePickerDialog timepickerdialog;
-    private DatePickerDialog datePickerDialog;
 
     private Event event;
     private EventsDatabase eventsDatabase;
-    private Listener listener;
+    private EventDetailFragment.Listener listener;
     private Event.Category [] categoriesArray = Event.Category.values();
     private final static String TAG = EventActivity.class.getName();
 
-       public EventDetailFragment() {
-    }
-
-    interface Listener {
-        void itemClicked(long id);
+    public EventDetailReadOnlyFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_event_detail, container, false);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        eventsDatabase = ((App) getActivity().getApplication()).getEventsDb();
+        return inflater.inflate(R.layout.fragment_event_detail_read_only, container, false);
     }
 
     @Override
@@ -84,36 +68,6 @@ public class EventDetailFragment extends Fragment {
 
             ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, categoriesArray);
             spinnerCategory.setAdapter(arrayAdapter);
-
-            textViewDate.setOnClickListener(v -> {
-                datePickerDialog = new DatePickerDialog(getActivity(), (view, year, month, day) -> {
-                    calendar.set(Calendar.YEAR, year);
-                    calendar.set(Calendar.MONTH, month);
-                    calendar.set(Calendar.DAY_OF_MONTH, day);
-                    setInitialDateTime();
-                }, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-                datePickerDialog.show();
-            });
-
-            textViewTime.setOnClickListener(v -> {
-                timepickerdialog = new TimePickerDialog(getActivity(),
-                        (view, hourOfDay, minute) -> {
-                            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                            calendar.set(Calendar.MINUTE, minute);
-                            setInitialDateTime();
-                        }, Calendar.HOUR_OF_DAY, Calendar.MINUTE, true);
-                timepickerdialog.show();
-            });
-
-            buttonSaveEvent.setOnClickListener(v -> {
-                if (this.getEvent().getName().length() == 0) {
-                    openEnterNameDialog();
-                } else {
-                    eventsDatabase.addEvent((this.getEvent()));
-                    getActivity().finish();
-                }
-            });
 
             setInitialDateTime();
             getIntentFromMain();
@@ -167,20 +121,7 @@ public class EventDetailFragment extends Fragment {
         checkBox.setChecked(checked);
     }
 
-    private void openEnterNameDialog () {
-        AlertDialog.Builder nameDialog = new AlertDialog.Builder(getActivity());
-        nameDialog.setTitle(R.string.enter_name);
-        nameDialog.setNegativeButton(R.string.ok, null);
-        nameDialog.create();
-        nameDialog.show();
-    }
-
     void setEventID(int id) {
         this.eventID = id;
-    }
-
-    boolean eventChanged() {
-        Event newEvent = this.getEvent();
-        return !event.equals(newEvent);
     }
 }
