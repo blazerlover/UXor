@@ -1,5 +1,6 @@
 package ru.exemple.uksorganizer.ui;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.model.Event;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
+
+    public final static String TAG = "myLOG";
 
     private final List<EventRow> eventRows;
     private final Listener listener;
@@ -75,6 +78,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     }
 
     public void setEventRows(List<EventRow> eventRows) {
+        for (EventRow eventRow:eventRows) {
+            Log.d(TAG, "priority = " + eventRow.priority);
+        }
         this.eventRows.clear();
         this.eventRows.addAll(eventRows);
         notifyDataSetChanged();

@@ -79,6 +79,7 @@ public class EventsDatabaseSqlite implements EventsDatabase {
                 new String[]{event.getName()});
     }
 
+    @Override
     public void clearTrash() {
         database.delete(DB_EVENTS_TABLE,  "DELETED = ?", new String[]{"1"});
     }

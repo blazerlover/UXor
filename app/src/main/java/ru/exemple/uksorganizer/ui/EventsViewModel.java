@@ -1,5 +1,7 @@
 package ru.exemple.uksorganizer.ui;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -17,6 +19,8 @@ import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 
 public class EventsViewModel extends ViewModel {
+
+    public final static String TAG = "myLOG";
 
     private final EventsDatabase eventsDatabase;
 
@@ -46,6 +50,7 @@ public class EventsViewModel extends ViewModel {
 
     //подготовка пирожков для recycleView:
     private List<EventRow> getEventRows(List<Event> events) {
+        Log.d(TAG, "Создание нового Rows");
         List<EventRow> result = new ArrayList<>();
         for (Event event : events) {
             result.add(getEventRow(event));
@@ -55,6 +60,8 @@ public class EventsViewModel extends ViewModel {
 
     //форматирование каждого event для прирожков:
     private EventRow getEventRow(Event event) {
+
+        Log.d(TAG, "priority = " + event.getPriority());
         return new EventRow(event.getName(), event.getCategory().toString(),
                 bindTime(event), bindCategoryImage(event), bindPriorityColor(event), event);
     }
