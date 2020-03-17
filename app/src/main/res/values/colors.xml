@@ -10,4 +10,5 @@
     <color name="colorFab">#6002ee</color>
     <color name="colorPriorityHard">#f186c0</color>
     <color name="colorPriorityLow">#ffffff</color>
+    <color name="colorSortSpinnerBackGround">#2979FF</color>
 </resources>

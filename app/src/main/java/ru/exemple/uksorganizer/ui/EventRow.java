@@ -1,5 +1,7 @@
 package ru.exemple.uksorganizer.ui;
 
+import java.util.Comparator;
+
 import ru.exemple.uksorganizer.model.Event;
 
 public class EventRow {
@@ -20,4 +22,42 @@ public class EventRow {
         this.event = event;
     }
 
+    public static class PriorityComparator implements Comparator<EventRow> {
+
+        @Override
+        public int compare(EventRow o1, EventRow o2) {
+            return o2.priority - o1.priority;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return false;
+        }
+    }
+
+    public static class TitleComparator implements Comparator<EventRow> {
+
+        @Override
+        public int compare(EventRow o1, EventRow o2) {
+            return o1.title.compareTo(o2.title);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return false;
+        }
+    }
+
+    public class TimeComparator implements Comparator<EventRow> {
+
+        @Override
+        public int compare(EventRow o1, EventRow o2) {
+            return 0;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return false;
+        }
+    }
 }

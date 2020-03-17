@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -18,6 +19,8 @@ import ru.exemple.uksorganizer.model.Event;
 public class EventsViewModel extends ViewModel {
 
     private final EventsDatabase eventsDatabase;
+
+    private List<EventRow> eventRows;
 
     private MutableLiveData<List<EventRow>> liveData = new MutableLiveData<>();
 
@@ -30,7 +33,8 @@ public class EventsViewModel extends ViewModel {
             @Override
             public void run() {
                 List<Event> events = eventsDatabase.getAllEvents(isDeletedRequestFlag);
-                liveData.postValue(getEventRows(events));
+                eventRows = getEventRows(events);
+                liveData.postValue(eventRows);
             }
         }.start();
     }
@@ -63,6 +67,18 @@ public class EventsViewModel extends ViewModel {
                 load(isDeletedRequestFlag);
             }
         }.start();
+    }
+
+    public void sortEventRowsByPriority() {
+        Collections.sort(eventRows, new EventRow.PriorityComparator());
+    }
+
+    public void sortEventRowsByTitle() {
+        Collections.sort(eventRows, new EventRow.TitleComparator());
+    }
+
+    public List<EventRow> getEventRows() {
+        return eventRows;
     }
 
     private int bindCategoryImage(Event event) {
