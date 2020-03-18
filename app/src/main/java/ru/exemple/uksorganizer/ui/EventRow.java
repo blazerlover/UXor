@@ -22,7 +22,7 @@ public class EventRow {
         this.event = event;
     }
 
-    public static class PriorityComparator implements Comparator<EventRow> {
+    /*public static class PriorityComparator implements Comparator<EventRow> {
 
         @Override
         public int compare(EventRow o1, EventRow o2) {
@@ -48,16 +48,16 @@ public class EventRow {
         }
     }
 
-    public class TimeComparator implements Comparator<EventRow> {
+    public static class TimeComparator implements Comparator<EventRow> {
 
         @Override
         public int compare(EventRow o1, EventRow o2) {
-            return 0;
+            return (int)(o1.event.getTime() - o2.event.getTime());
         }
 
         @Override
         public boolean equals(Object obj) {
             return false;
         }
-    }
+    }*/
 }

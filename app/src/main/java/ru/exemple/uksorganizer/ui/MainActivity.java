@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressBar progressBar;
     private EventsViewModel eventsViewModel;
     private DrawerLayout drawerLayout;
-    private Spinner sortSpinner;
     private boolean isDeletedRequestFlag = false;
 
     @Override
@@ -55,8 +54,7 @@ public class MainActivity extends AppCompatActivity implements
         eventsViewModel = ViewModelProviders.of(this, factory).get(EventsViewModel.class);
 
         setContentView(R.layout.activity_main);
-        String[] sortTypes = {"By priority", "By title"};
-        sortSpinner = findViewById(R.id.spinnerSort);
+        Spinner sortSpinner = findViewById(R.id.spinnerSort);
         ArrayAdapter<?> adapter =
                 ArrayAdapter.createFromResource(this, R.array.sort_types, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
@@ -68,10 +66,14 @@ public class MainActivity extends AppCompatActivity implements
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        eventsViewModel.sortEventRowsByPriority();
+                        eventsViewModel.sortEventRowsByTime();
                         eventsListFragment.initData(eventsViewModel.getEventRows());
                         break;
                     case 1:
+                        eventsViewModel.sortEventRowsByPriority();
+                        eventsListFragment.initData(eventsViewModel.getEventRows());
+                        break;
+                    case 2:
                         eventsViewModel.sortEventRowsByTitle();
                         eventsListFragment.initData(eventsViewModel.getEventRows());
                         break;
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                eventsViewModel.sortEventRowsByTitle();
+                //eventsViewModel.sortEventRowsByTitle();
             }
         });
         eventsListFragment =(EventsListFragment) getSupportFragmentManager().findFragmentById(R.id.eventsListFragment);

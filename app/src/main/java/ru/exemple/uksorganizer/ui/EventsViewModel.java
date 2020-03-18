@@ -70,11 +70,15 @@ public class EventsViewModel extends ViewModel {
     }
 
     public void sortEventRowsByPriority() {
-        Collections.sort(eventRows, new EventRow.PriorityComparator());
+        Collections.sort(eventRows, (o1, o2) -> (o1.priority - o2.priority));
     }
 
     public void sortEventRowsByTitle() {
-        Collections.sort(eventRows, new EventRow.TitleComparator());
+        Collections.sort(eventRows, (o1, o2) -> o1.title.compareTo(o2.title));
+    }
+
+    public void sortEventRowsByTime() {
+        Collections.sort(eventRows, ((o1, o2) -> (int)(o1.event.getTime() - o2.event.getTime())));
     }
 
     public List<EventRow> getEventRows() {
@@ -95,7 +99,7 @@ public class EventsViewModel extends ViewModel {
     }
 
     private String bindTime(Event event) {
-        SimpleDateFormat df = new SimpleDateFormat("MMM d hh:mm", Locale.getDefault());
+        SimpleDateFormat df = new SimpleDateFormat("MMM dd hh:mm", Locale.getDefault());
         return df.format(event.getTime());
     }
 
