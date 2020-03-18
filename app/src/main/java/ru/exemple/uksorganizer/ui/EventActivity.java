@@ -7,11 +7,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
@@ -25,8 +24,8 @@ public class EventActivity extends AppCompatActivity {
     private final static String TAG = EventActivity.class.getName();
     private static final String EXTRA_EVENT = "EVENT";
 
-    private EventDetailFragment fragment;
-    private EventDetailReadOnlyFragment fragmenteadnly;
+    private EventDetailFragment eventDetailFragment;
+    private EventDetailReadOnlyFragment eventDetailReadOnlyFragment;
 
     private EventsDatabase eventsDatabase;
 
@@ -41,24 +40,19 @@ public class EventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, new EventDetailReadOnlyFragment())
-                    .commit();
-        }
+        eventDetailFragment = new EventDetailFragment();
+        eventDetailReadOnlyFragment = new EventDetailReadOnlyFragment();
 
-        fragmenteadnly = (EventDetailReadOnlyFragment) getSupportFragmentManager().findFragmentById(R.id.eventDetailReadOnlyFragment);
-        fragment = new EventDetailFragment();
-        //int eventID = (int) getIntent().getExtras().get(EXTRA_EVENTDETAIL_ID);
-        //fragmenteadnly.setEventID(R.id.eventDetailReadOnlyFragment);
-        //fragment.setEventID(R.id.fragment_container);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, eventDetailReadOnlyFragment).commit();
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        FloatingActionButton floatingActionButton = findViewById(R.id.fab_edit_event);
-        floatingActionButton.setOnClickListener(v -> getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit());
+        ImageButton imageButton = findViewById(R.id.imageEditEventButton);
+        imageButton.setOnClickListener(v -> getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, eventDetailFragment).commit());
         eventsDatabase = ((App) getApplication()).getEventsDb();
     }
 
@@ -87,11 +81,11 @@ public class EventActivity extends AppCompatActivity {
         AlertDialog.Builder quitDialog = new AlertDialog.Builder(this);
         quitDialog.setTitle(R.string.save_changed);
         quitDialog.setPositiveButton(R.string.ok, (dialog, which) -> {
-            if (fragment.getEvent().getName().length() == 0) {
+            if (eventDetailFragment.getEvent().getName().length() == 0) {
                 openEnterNameDialog();
             }
             else {
-            eventsDatabase.addEvent((fragment.getEvent()));
+            eventsDatabase.addEvent((eventDetailFragment.getEvent()));
             EventActivity.this.finish();}
         });
         quitDialog.setNegativeButton(R.string.cancel, null);
@@ -103,8 +97,15 @@ public class EventActivity extends AppCompatActivity {
         AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
         deleteDialog.setTitle(R.string.delete_event_question);
         deleteDialog.setPositiveButton(R.string.ok, (dialog, which) -> {
-            eventsDatabase.delete(fragment.getEvent());
-            this.finish();
+            //нужна проверка на фрагмент, из которого хотим удалить
+            try {
+                eventsDatabase.delete(eventDetailFragment.getEvent());
+                this.finish();
+                }
+            catch (NullPointerException ex){
+                eventsDatabase.delete(eventDetailReadOnlyFragment.getEvent());
+                this.finish();
+            }
         });
         deleteDialog.setNegativeButton(R.string.cancel, null);
         deleteDialog.create();
@@ -121,7 +122,7 @@ public class EventActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (fragment.eventChanged()) {
+        if (eventDetailFragment.eventChanged()) {
             openQuitDialog();
         } else {
             super.onBackPressed();

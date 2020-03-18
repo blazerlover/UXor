@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -30,7 +29,7 @@ public class EventDetailReadOnlyFragment extends Fragment {
 
     private static final String EXTRA_EVENT = "EVENT";
 
-    private EditText editTextName, editTextDescription;
+    private TextView editTextName, editTextDescription;
     private Spinner spinnerCategory;
     private TextView textViewTime;
     private TextView textViewDate;
@@ -67,7 +66,10 @@ public class EventDetailReadOnlyFragment extends Fragment {
             checkBox = viewFrag.findViewById(R.id.priority);
 
             ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, categoriesArray);
+            spinnerCategory.setEnabled(false);
+            spinnerCategory.setClickable(false);
             spinnerCategory.setAdapter(arrayAdapter);
+
 
             setInitialDateTime();
             getIntentFromMain();
@@ -111,7 +113,7 @@ public class EventDetailReadOnlyFragment extends Fragment {
 
         editTextDescription.setText(event.getDescription());
         SimpleDateFormat df = new SimpleDateFormat("dd MM yyyy", Locale.getDefault());
-        SimpleDateFormat tf = new SimpleDateFormat("hh:mm", Locale.getDefault());
+        SimpleDateFormat tf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         textViewDate.setText(df.format(event.getTime()));
         textViewTime.setText(tf.format(event.getTime()));
         boolean checked = false;
@@ -121,7 +123,8 @@ public class EventDetailReadOnlyFragment extends Fragment {
         checkBox.setChecked(checked);
     }
 
-    void setEventID(int id) {
-        this.eventID = id;
+    boolean eventChanged() {
+        Event newEvent = this.getEvent();
+        return !event.equals(newEvent);
     }
 }

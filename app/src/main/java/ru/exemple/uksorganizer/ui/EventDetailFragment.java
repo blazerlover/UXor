@@ -134,7 +134,7 @@ public class EventDetailFragment extends Fragment {
 
     private void setInitialDateTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MM yyyy", Locale.getDefault());
-        SimpleDateFormat stf = new SimpleDateFormat("hh:mm", Locale.getDefault());
+        SimpleDateFormat stf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         textViewDate.setText(sdf.format(calendar.getTimeInMillis()));
         textViewTime.setText(stf.format(calendar.getTimeInMillis()));
     }
@@ -157,7 +157,7 @@ public class EventDetailFragment extends Fragment {
 
         editTextDescription.setText(event.getDescription());
         SimpleDateFormat df = new SimpleDateFormat("dd MM yyyy", Locale.getDefault());
-        SimpleDateFormat tf = new SimpleDateFormat("hh:mm", Locale.getDefault());
+        SimpleDateFormat tf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         textViewDate.setText(df.format(event.getTime()));
         textViewTime.setText(tf.format(event.getTime()));
         boolean checked = false;
@@ -173,10 +173,6 @@ public class EventDetailFragment extends Fragment {
         nameDialog.setNegativeButton(R.string.ok, null);
         nameDialog.create();
         nameDialog.show();
-    }
-
-    void setEventID(int id) {
-        this.eventID = id;
     }
 
     boolean eventChanged() {

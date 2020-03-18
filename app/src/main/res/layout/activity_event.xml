@@ -13,35 +13,28 @@
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="500dp"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:context=".ui.EventActivity">
-
-        <!--<fragment
-            android:id="@+id/eventDetailFragment"
-            android:name="ru.exemple.uksorganizer.ui.EventDetailFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        />-->
-
-        <fragment
-            android:id="@+id/eventDetailReadOnlyFragment"
-            android:name="ru.exemple.uksorganizer.ui.EventDetailReadOnlyFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_edit_event"
-            android:layout_width="56dp"
-            android:layout_height="53dp"
-            android:layout_gravity="end|bottom"
-            android:layout_margin="20dp"
-            android:src="@drawable/baseline_create_white_24dp"
-            app:backgroundTint="@color/colorPrimary" />
+        tools:context=".ui.EventActivity"
+        tools:layout_editor_absoluteX="-2dp">
 
     </FrameLayout>
+
+    <ImageButton
+        android:id="@+id/imageEditEventButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="50dp"
+        android:backgroundTint="#2196F3"
+        android:backgroundTintMode="src_atop"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/baseline_create_white_24dp"
+        android:tint="#02030A"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_container">
+
+    </ImageButton>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
