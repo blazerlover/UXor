@@ -44,9 +44,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         holder.tvTime.setText(eventRow.time);
         holder.ivCategory.setImageResource(eventRow.image);
         try {
-            view.setBackgroundColor(view.getResources().getColor(eventRow.priority));
+            holder.itemView.setBackgroundColor(holder.itemView.getResources().getColor(eventRow.priority));
         } catch (Exception e) {
-            view.setBackgroundColor(view.getResources().getColor(R.color.colorCategorySomething));
+            holder.itemView.setBackgroundColor(holder.itemView.getResources().getColor(R.color.colorPriorityLow));
         }
         holder.itemView.setOnClickListener(v -> listener.onEventClick(eventRow.event));
         holder.itemView.setOnLongClickListener(v -> {
@@ -78,9 +78,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     }
 
     public void setEventRows(List<EventRow> eventRows) {
-        for (EventRow eventRow:eventRows) {
-            Log.d(TAG, "priority = " + eventRow.priority);
-        }
         this.eventRows.clear();
         this.eventRows.addAll(eventRows);
         notifyDataSetChanged();

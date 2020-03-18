@@ -14,12 +14,6 @@ import ru.exemple.uksorganizer.model.Event;
 
 public class EventsDatabaseSqlite implements EventsDatabase {
 
-    private EventDataBaseHelper helper;
-    private ContentValues contentValues;
-    private SQLiteDatabase database;
-    private ArrayList<Event> events;
-    private Event event;
-
     private final static String TAG = EventsDatabaseSqlite.class.getName();
     private final static String DB_NAME = "EventDataBase";
     private final static String DB_EVENTS_TABLE = "EVENTS";
@@ -29,6 +23,12 @@ public class EventsDatabaseSqlite implements EventsDatabase {
     private final static String DB_TIME_COLUMN = "TIME";
     private final static String DB_PRIORITY_COLUMN = "PRIORITY";
     private final static String DB_DELETED_COLUMN = "DELETED";
+
+    private EventDataBaseHelper helper;
+    private ContentValues contentValues;
+    private SQLiteDatabase database;
+    private ArrayList<Event> events;
+    private Event event;
 
     public EventsDatabaseSqlite(Context context){
         helper = new EventDataBaseHelper(context);

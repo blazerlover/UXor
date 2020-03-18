@@ -32,7 +32,7 @@ public class EventsListFragment extends Fragment implements EventsAdapter.Listen
     private List<EventRow> eventRows;
     private EventsAdapter adapter;
 
-    protected enum LayoutManagerType {
+    enum LayoutManagerType {
         LINEAR_LAYOUT_MANAGER_VERTICAL,
         LINEAR_LAYOUT_MANAGER_HORIZONTAL,
         GRID_LAYOUT_MANAGER
