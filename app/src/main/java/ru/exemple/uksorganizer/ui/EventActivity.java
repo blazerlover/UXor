@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
@@ -94,15 +95,15 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void openDeleteDialog () {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
         deleteDialog.setTitle(R.string.delete_event_question);
         deleteDialog.setPositiveButton(R.string.ok, (dialog, which) -> {
-            //нужна проверка на фрагмент, из которого хотим удалить
-            try {
+            if (fragment instanceof EventDetailFragment) {
                 eventsDatabase.delete(eventDetailFragment.getEvent());
                 this.finish();
-                }
-            catch (NullPointerException ex){
+            }
+            else if (fragment instanceof EventDetailReadOnlyFragment) {
                 eventsDatabase.delete(eventDetailReadOnlyFragment.getEvent());
                 this.finish();
             }
