@@ -26,7 +26,8 @@ public class EventsViewModel extends ViewModel {
     private final EventsDatabase eventsDatabase;
 
     private MutableLiveData<List<EventRow>> liveData = new MutableLiveData<>();
-    private List<EventRow> eventRows;
+    //так лучше не делать?
+    private List<EventRow> eventRows = new ArrayList<>();
 
     public EventsViewModel(EventsDatabase eventsDatabase) {
         this.eventsDatabase = eventsDatabase;
@@ -58,7 +59,7 @@ public class EventsViewModel extends ViewModel {
         Collections.sort(eventRows, ((o1, o2) -> (int)(o1.event.getTime() - o2.event.getTime())));
     }
 
-    public List<EventRow> getEventRows2() {
+    public List<EventRow> getEventRows() {
         return eventRows;
     }
 

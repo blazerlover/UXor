@@ -69,22 +69,21 @@ public class MainActivity extends AppCompatActivity implements
                 switch (position) {
                     case 0:
                         eventsViewModel.sortEventRowsByTime();
-                        eventsListFragment.initData(eventsViewModel.getEventRows2());
+                        eventsListFragment.initData(eventsViewModel.getEventRows());
                         break;
                     case 1:
                         eventsViewModel.sortEventRowsByPriority();
-                        eventsListFragment.initData(eventsViewModel.getEventRows2());
+                        eventsListFragment.initData(eventsViewModel.getEventRows());
                         break;
                     case 2:
                         eventsViewModel.sortEventRowsByTitle();
-                        eventsListFragment.initData(eventsViewModel.getEventRows2());
+                        eventsListFragment.initData(eventsViewModel.getEventRows());
                         break;
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                //eventsViewModel.sortEventRowsByTitle();
             }
         });
         eventsListFragment = (EventsListFragment) getSupportFragmentManager().findFragmentById(R.id.eventsListFragment);
