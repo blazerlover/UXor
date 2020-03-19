@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +26,7 @@ public class EventsViewModel extends ViewModel {
     private final EventsDatabase eventsDatabase;
 
     private MutableLiveData<List<EventRow>> liveData = new MutableLiveData<>();
+    private List<EventRow> eventRows;
 
     public EventsViewModel(EventsDatabase eventsDatabase) {
         this.eventsDatabase = eventsDatabase;
@@ -38,9 +40,26 @@ public class EventsViewModel extends ViewModel {
                     e.printStackTrace();
                 }
                 List<Event> events = eventsDatabase.getAllEvents(isDeletedRequestFlag);
-                liveData.postValue(getEventRows(events));
+                eventRows = getEventRows(events);
+                liveData.postValue(eventRows);
             }
         }.start();
+    }
+
+    public void sortEventRowsByPriority() {
+        Collections.sort(eventRows, (o1, o2) -> (o1.priority - o2.priority));
+    }
+
+    public void sortEventRowsByTitle() {
+        Collections.sort(eventRows, (o1, o2) -> o1.title.compareTo(o2.title));
+    }
+
+    public void sortEventRowsByTime() {
+        Collections.sort(eventRows, ((o1, o2) -> (int)(o1.event.getTime() - o2.event.getTime())));
+    }
+
+    public List<EventRow> getEventRows2() {
+        return eventRows;
     }
 
     public MutableLiveData<List<EventRow>> getLiveData() {
@@ -97,7 +116,7 @@ public class EventsViewModel extends ViewModel {
     }
 
     private String bindTime(Event event) {
-        SimpleDateFormat df = new SimpleDateFormat("MMM d hh:mm", Locale.getDefault());
+        SimpleDateFormat df = new SimpleDateFormat("MMM dd hh:mm", Locale.getDefault());
         return df.format(event.getTime());
     }
 

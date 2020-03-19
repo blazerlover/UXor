@@ -8,7 +8,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -53,6 +56,37 @@ public class MainActivity extends AppCompatActivity implements
         eventsViewModel = ViewModelProviders.of(this, factory).get(EventsViewModel.class);
 
         setContentView(R.layout.activity_main);
+        Spinner sortSpinner = findViewById(R.id.spinnerSort);
+        ArrayAdapter<?> adapter =
+                ArrayAdapter.createFromResource(this, R.array.sort_types, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        sortSpinner.setAdapter(adapter);
+        sortSpinner.setSelection(0);
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        eventsViewModel.sortEventRowsByTime();
+                        eventsListFragment.initData(eventsViewModel.getEventRows2());
+                        break;
+                    case 1:
+                        eventsViewModel.sortEventRowsByPriority();
+                        eventsListFragment.initData(eventsViewModel.getEventRows2());
+                        break;
+                    case 2:
+                        eventsViewModel.sortEventRowsByTitle();
+                        eventsListFragment.initData(eventsViewModel.getEventRows2());
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //eventsViewModel.sortEventRowsByTitle();
+            }
+        });
         eventsListFragment = (EventsListFragment) getSupportFragmentManager().findFragmentById(R.id.eventsListFragment);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
