@@ -1,5 +1,6 @@
 package ru.exemple.uksorganizer.ui;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.model.Event;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
+
+    public final static String TAG = "myLOG";
 
     private final List<EventRow> eventRows;
     private final Listener listener;
@@ -41,9 +44,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         holder.tvTime.setText(eventRow.time);
         holder.ivCategory.setImageResource(eventRow.image);
         try {
-            view.setBackgroundColor(view.getResources().getColor(eventRow.priority));
+            holder.itemView.setBackgroundColor(holder.itemView.getResources().getColor(eventRow.priority));
         } catch (Exception e) {
-            view.setBackgroundColor(view.getResources().getColor(R.color.colorCategorySomething));
+            holder.itemView.setBackgroundColor(holder.itemView.getResources().getColor(R.color.colorPriorityLow));
         }
         holder.itemView.setOnClickListener(v -> listener.onEventClick(eventRow.event));
         holder.itemView.setOnLongClickListener(v -> {

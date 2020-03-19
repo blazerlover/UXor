@@ -12,4 +12,6 @@ public interface EventsDatabase {
 
     void delete(Event event);
 
+    void clearTrash();
+
 }

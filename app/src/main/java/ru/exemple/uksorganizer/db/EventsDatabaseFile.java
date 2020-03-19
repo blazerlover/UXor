@@ -67,4 +67,9 @@ public class EventsDatabaseFile implements EventsDatabase{
         File file = new File(directory, event.getName());
         file.delete();
     }
+
+    @Override
+    public void clearTrash() {
+
+    }
 }

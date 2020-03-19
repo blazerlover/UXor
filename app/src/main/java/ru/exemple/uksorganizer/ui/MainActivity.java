@@ -3,6 +3,7 @@ package ru.exemple.uksorganizer.ui;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.exemple.uksorganizer.App;
@@ -37,11 +39,8 @@ public class MainActivity extends AppCompatActivity implements
     public final static String TAG = "myLOG";
 
     private EventsListFragment eventsListFragment;
-    //private RecyclerView recycler;
     private ProgressBar progressBar;
-    //private DividerItemDecoration dividerItemDecoration;
     private EventsViewModel eventsViewModel;
-    private EventsListFragment.LayoutManagerType layoutManagerType;
     private DrawerLayout drawerLayout;
     private boolean isDeletedRequestFlag = false;
 
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements
         eventsViewModel = ViewModelProviders.of(this, factory).get(EventsViewModel.class);
 
         setContentView(R.layout.activity_main);
-        eventsListFragment =(EventsListFragment) getSupportFragmentManager().findFragmentById(R.id.eventsListFragment);
+        eventsListFragment = (EventsListFragment) getSupportFragmentManager().findFragmentById(R.id.eventsListFragment);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -67,18 +66,10 @@ public class MainActivity extends AppCompatActivity implements
         fab.setOnClickListener(this::addEvent);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        //recycler = findViewById(R.id.rvEvents);
-        //LinearLayoutManager llManager = new LinearLayoutManager(this,
-        //      RecyclerView.VERTICAL, false);
-        //dividerItemDecoration = new DividerItemDecoration(recycler.getContext(),
-        //      llManager.getOrientation());
 
         if (savedInstanceState != null) {
-         //   layoutManagerType = savedInstanceState.getInt("layoutManagerType");
             isDeletedRequestFlag = savedInstanceState.getBoolean("isDeletedRequestFlag");
-         //   setRecyclerViewManagerType(layoutManagerType);
         } else {
-         //   recycler.setLayoutManager(llManager);
          //не совсем понятно зачем если потом в он старте все равно вызывается???
             eventsViewModel.load(isDeletedRequestFlag);
         }
@@ -89,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements
                 MainActivity.this.onEventsLoaded(eventRows);
             }
         });
-
     }
 
     @Override
@@ -107,24 +97,24 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        EventsListFragment.LayoutManagerType layoutManagerType;
         switch (item.getItemId()) {
             case R.id.new_event_item:
                 return true;
             case R.id.recycle_view_orientation_vertical_item:
-                //onVerticalOrientation();
                 layoutManagerType = EventsListFragment.LayoutManagerType.LINEAR_LAYOUT_MANAGER_VERTICAL;
                 eventsListFragment.setRecyclerViewManagerType(layoutManagerType);
                 return true;
             case R.id.recycle_view_orientation_horizontal_item:
-                //onHorizontalOrientation();
                 layoutManagerType = EventsListFragment.LayoutManagerType.LINEAR_LAYOUT_MANAGER_HORIZONTAL;
                 eventsListFragment.setRecyclerViewManagerType(layoutManagerType);
                 return true;
             case R.id.recycle_view_orientation_grid_item:
-                //onGridOrientation();
                 layoutManagerType = EventsListFragment.LayoutManagerType.GRID_LAYOUT_MANAGER;
                 eventsListFragment.setRecyclerViewManagerType(layoutManagerType);
                 return true;
+            case R.id.clear_trash_item:
+                eventsViewModel.clearTrash(isDeletedRequestFlag);
             case R.id.settings_item:
                 return true;
             default:
@@ -135,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        //savedInstanceState.putInt("layoutManagerType", layoutManagerType);
         savedInstanceState.putBoolean("isDeletedRequestFlag", isDeletedRequestFlag);
     }
 
@@ -186,25 +175,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    /*private void setRecyclerViewManagerType(int rvManagerType) {
-        switch (rvManagerType) {
-            case 0:
-                recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-                dividerItemDecoration.setOrientation(RecyclerView.VERTICAL);
-                this.layoutManagerType = 0;
-                break;
-            case 1:
-                recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
-                dividerItemDecoration.setOrientation(RecyclerView.HORIZONTAL);
-                this.layoutManagerType = 1;
-                break;
-            case 2:
-                recycler.setLayoutManager(new GridLayoutManager(this, 2));
-                this.layoutManagerType = 2;
-                break;
-        }
-    }*/
-
     private void openDeleteDialog(Event event) {
         final Event eventInner = event;
         AlertDialog.Builder deleteEventDialog = new AlertDialog.Builder(this);
@@ -222,22 +192,9 @@ public class MainActivity extends AppCompatActivity implements
 
     private void onEventsLoaded(List<EventRow> eventRows) {
         eventsListFragment.initData(eventRows);
-        //EventsAdapter eventsAdapter = new EventsAdapter(eventRows, this);
-        //recycler.setAdapter(eventsAdapter);
-        //recycler.addItemDecoration(dividerItemDecoration);
         progressBar.setVisibility(View.INVISIBLE);
         checkEmptyList(eventRows);
     }
-
-    /*@Override
-    public void onEventClick(Event event) {
-        EventActivity.start(this, event);
-    }
-
-    @Override
-    public void onEventLongClick(Event event) {
-        openDeleteDialog(event);
-    }*/
 
     @Override
     public void onEventListFragmentItemClick(Event event) {

@@ -27,6 +27,12 @@
     </item>
 
     <item
+        android:id="@+id/clear_trash_item"
+        android:title="@string/clear_trash"
+        app:showAsAction="never">
+    </item>
+
+    <item
         android:id="@+id/settings_item"
         android:title="@string/settings"
         app:showAsAction="never" />
