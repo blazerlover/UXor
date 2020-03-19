@@ -36,6 +36,11 @@ public class EventsDatabaseList implements EventsDatabase {
 
     }
 
+    @Override
+    public void clearTrash() {
+
+    }
+
     public Event.Category categoryCreate() {
         Event.Category randomCategory;
         int categoryNum = random.nextInt(3);

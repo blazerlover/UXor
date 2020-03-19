@@ -1,4 +1,6 @@
-package ru.exemple.uksorganizer.ui;
+﻿package ru.exemple.uksorganizer.ui;
+
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -11,12 +13,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 
 public class EventsViewModel extends ViewModel {
+
+    public final static String TAG = "myLOG";
 
     private final EventsDatabase eventsDatabase;
 
@@ -32,6 +37,9 @@ public class EventsViewModel extends ViewModel {
         new Thread() {
             @Override
             public void run() {
+                try{TimeUnit.SECONDS.sleep(1);} catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 List<Event> events = eventsDatabase.getAllEvents(isDeletedRequestFlag);
                 eventRows = getEventRows(events);
                 liveData.postValue(eventRows);
@@ -83,6 +91,16 @@ public class EventsViewModel extends ViewModel {
 
     public List<EventRow> getEventRows() {
         return eventRows;
+
+    public void clearTrash(boolean isDeletedRequestFlag) {
+        new Thread() {
+            @Override
+            public void run() {
+                eventsDatabase.clearTrash();
+                load(isDeletedRequestFlag);
+            }
+        }.start();
+
     }
 
     private int bindCategoryImage(Event event) {

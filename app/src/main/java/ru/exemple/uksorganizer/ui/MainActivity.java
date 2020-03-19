@@ -1,8 +1,9 @@
-package ru.exemple.uksorganizer.ui;
+﻿package ru.exemple.uksorganizer.ui;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.exemple.uksorganizer.App;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements
         eventsViewModel = ViewModelProviders.of(this, factory).get(EventsViewModel.class);
 
         setContentView(R.layout.activity_main);
+
         Spinner sortSpinner = findViewById(R.id.spinnerSort);
         ArrayAdapter<?> adapter =
                 ArrayAdapter.createFromResource(this, R.array.sort_types, android.R.layout.simple_spinner_item);
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements
                 //eventsViewModel.sortEventRowsByTitle();
             }
         });
-        eventsListFragment =(EventsListFragment) getSupportFragmentManager().findFragmentById(R.id.eventsListFragment);
+        eventsListFragment = (EventsListFragment) getSupportFragmentManager().findFragmentById(R.id.eventsListFragment);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -112,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements
                 MainActivity.this.onEventsLoaded(eventRows);
             }
         });
-
     }
 
     @Override
@@ -146,6 +148,8 @@ public class MainActivity extends AppCompatActivity implements
                 layoutManagerType = EventsListFragment.LayoutManagerType.GRID_LAYOUT_MANAGER;
                 eventsListFragment.setRecyclerViewManagerType(layoutManagerType);
                 return true;
+            case R.id.clear_trash_item:
+                eventsViewModel.clearTrash(isDeletedRequestFlag);
             case R.id.settings_item:
                 return true;
             default:
