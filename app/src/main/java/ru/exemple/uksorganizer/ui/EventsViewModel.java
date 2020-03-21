@@ -119,6 +119,15 @@ public class EventsViewModel extends ViewModel {
     }
 
     private int bindPriorityColor(Event event) {
+        switch (event.getPriority()) {
+            case 0:
+                return R.color.colorPriorityLow;
+            case 1:
+                return R.color.colorPriorityMiddle;
+            case 2:
+                return R.color.colorPriorityHard;
+        }
+
         if (event.getPriority() == 1) {
         return R.color.colorPriorityHard;
         }
