@@ -1,7 +1,5 @@
 package ru.exemple.uksorganizer.ui;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -26,8 +24,7 @@ public class EventsViewModel extends ViewModel {
     private final EventsDatabase eventsDatabase;
 
     private MutableLiveData<List<EventRow>> liveData = new MutableLiveData<>();
-    //так лучше не делать?
-    private List<EventRow> eventRows = new ArrayList<>();
+    private List<EventRow> eventRows;
 
     public EventsViewModel(EventsDatabase eventsDatabase) {
         this.eventsDatabase = eventsDatabase;
@@ -41,7 +38,7 @@ public class EventsViewModel extends ViewModel {
                     e.printStackTrace();
                 }
                 List<Event> events = eventsDatabase.getAllEvents(isDeletedRequestFlag);
-                eventRows = getEventRows(events);
+                eventRows = getSortEventRows(events);
                 liveData.postValue(eventRows);
             }
         }.start();
@@ -59,7 +56,7 @@ public class EventsViewModel extends ViewModel {
         Collections.sort(eventRows, ((o1, o2) -> (int)(o1.event.getTime() - o2.event.getTime())));
     }
 
-    public List<EventRow> getEventRows() {
+    public List<EventRow> getSortEventRows() {
         return eventRows;
     }
 
@@ -69,7 +66,7 @@ public class EventsViewModel extends ViewModel {
 
 
     //подготовка пирожков для recycleView:
-    private List<EventRow> getEventRows(List<Event> events) {
+    private List<EventRow> getSortEventRows(List<Event> events) {
         List<EventRow> result = new ArrayList<>();
         for (Event event : events) {
             result.add(getEventRow(event));
