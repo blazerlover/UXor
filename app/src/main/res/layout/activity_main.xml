@@ -18,6 +18,16 @@
             layout="@layout/toolbar">
         </include>
 
+        <Spinner
+            android:id="@+id/spinnerSort"
+            android:spinnerMode="dialog"
+            android:entries="@array/sort_types"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:prompt="@string/sort"
+            android:textAlignment="center">
+        </Spinner>
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
