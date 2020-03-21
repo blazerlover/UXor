@@ -3,12 +3,14 @@ package ru.exemple.uksorganizer.ui;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -18,15 +20,10 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.exemple.uksorganizer.App;
@@ -42,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressBar progressBar;
     private EventsViewModel eventsViewModel;
     private DrawerLayout drawerLayout;
+    private Spinner sortSpinner;
     private boolean isDeletedRequestFlag = false;
 
     @Override
@@ -53,6 +51,12 @@ public class MainActivity extends AppCompatActivity implements
         eventsViewModel = ViewModelProviders.of(this, factory).get(EventsViewModel.class);
 
         setContentView(R.layout.activity_main);
+        sortSpinner = findViewById(R.id.spinnerSort);
+        ArrayAdapter<?> adapter =
+                ArrayAdapter.createFromResource(this, R.array.sort_types, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        sortSpinner.setAdapter(adapter);
+        sortSpinner.setSelection(0);
         eventsListFragment = (EventsListFragment) getSupportFragmentManager().findFragmentById(R.id.eventsListFragment);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -175,6 +179,33 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private void setSpinnerListener() {
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        eventsViewModel.sortEventRowsByTime();
+                        eventsListFragment.initData(eventsViewModel.getSortEventRows());
+                        break;
+                    case 1:
+                        eventsViewModel.sortEventRowsByPriority();
+                        eventsListFragment.initData(eventsViewModel.getSortEventRows());
+                        break;
+                    case 2:
+                        eventsViewModel.sortEventRowsByTitle();
+                        eventsListFragment.initData(eventsViewModel.getSortEventRows());
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
     private void openDeleteDialog(Event event) {
         final Event eventInner = event;
         AlertDialog.Builder deleteEventDialog = new AlertDialog.Builder(this);
@@ -192,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void onEventsLoaded(List<EventRow> eventRows) {
         eventsListFragment.initData(eventRows);
+        setSpinnerListener();
         progressBar.setVisibility(View.INVISIBLE);
         checkEmptyList(eventRows);
     }

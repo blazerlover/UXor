@@ -1,7 +1,5 @@
 package ru.exemple.uksorganizer.ui;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -10,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +24,7 @@ public class EventsViewModel extends ViewModel {
     private final EventsDatabase eventsDatabase;
 
     private MutableLiveData<List<EventRow>> liveData = new MutableLiveData<>();
+    private List<EventRow> eventRows;
 
     public EventsViewModel(EventsDatabase eventsDatabase) {
         this.eventsDatabase = eventsDatabase;
@@ -38,9 +38,26 @@ public class EventsViewModel extends ViewModel {
                     e.printStackTrace();
                 }
                 List<Event> events = eventsDatabase.getAllEvents(isDeletedRequestFlag);
-                liveData.postValue(getEventRows(events));
+                eventRows = getSortEventRows(events);
+                liveData.postValue(eventRows);
             }
         }.start();
+    }
+
+    public void sortEventRowsByPriority() {
+        Collections.sort(eventRows, (o1, o2) -> (o1.priority - o2.priority));
+    }
+
+    public void sortEventRowsByTitle() {
+        Collections.sort(eventRows, (o1, o2) -> o1.title.compareTo(o2.title));
+    }
+
+    public void sortEventRowsByTime() {
+        Collections.sort(eventRows, ((o1, o2) -> (int)(o1.event.getTime() - o2.event.getTime())));
+    }
+
+    public List<EventRow> getSortEventRows() {
+        return eventRows;
     }
 
     public MutableLiveData<List<EventRow>> getLiveData() {
@@ -49,7 +66,7 @@ public class EventsViewModel extends ViewModel {
 
 
     //подготовка пирожков для recycleView:
-    private List<EventRow> getEventRows(List<Event> events) {
+    private List<EventRow> getSortEventRows(List<Event> events) {
         List<EventRow> result = new ArrayList<>();
         for (Event event : events) {
             result.add(getEventRow(event));
@@ -97,11 +114,20 @@ public class EventsViewModel extends ViewModel {
     }
 
     private String bindTime(Event event) {
-        SimpleDateFormat df = new SimpleDateFormat("MMM d hh:mm", Locale.getDefault());
+        SimpleDateFormat df = new SimpleDateFormat("MMM dd hh:mm", Locale.getDefault());
         return df.format(event.getTime());
     }
 
     private int bindPriorityColor(Event event) {
+        switch (event.getPriority()) {
+            case 0:
+                return R.color.colorPriorityLow;
+            case 1:
+                return R.color.colorPriorityMiddle;
+            case 2:
+                return R.color.colorPriorityHard;
+        }
+
         if (event.getPriority() == 1) {
         return R.color.colorPriorityHard;
         }
