@@ -123,9 +123,15 @@ public class EventActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (eventDetailFragment.eventChanged()) {
-            openQuitDialog();
-        } else {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (fragment instanceof EventDetailFragment) {
+            if (eventDetailFragment.eventChanged()) {
+                openQuitDialog();
+            } else {
+                super.onBackPressed();
+            }
+        }
+        else if (fragment instanceof EventDetailReadOnlyFragment) {
             super.onBackPressed();
         }
     }
