@@ -76,8 +76,8 @@ public class EventsViewModel extends ViewModel {
 
     //форматирование каждого event для прирожков:
     private EventRow getEventRow(Event event) {
-        return new EventRow(event.getName(), event.getCategory().toString(),
-                bindTime(event), bindCategoryImage(event), bindPriorityColor(event), event);
+        return new EventRow(event.getName(), bindCategory(event),
+                bindTime(event), bindCategoryBackground(event), bindPriority(), bindPriorityColor(event), event);
     }
 
     public void delete(Event event, boolean isDeletedRequestFlag) {
@@ -100,7 +100,25 @@ public class EventsViewModel extends ViewModel {
         }.start();
     }
 
-    private int bindCategoryImage(Event event) {
+    private int bindCategory(Event event) {
+        switch (event.getCategory()) {
+            case WORK:
+                return R.drawable.ic_work_outline_black_24dp;
+            case MEETING:
+                return R.drawable.ic_people_black_24dp;
+            case SPORT:
+                return R.drawable.ic_sports_basketball_black_24dp;
+            default:
+                return R.drawable.ic_description_24px;
+        }
+    }
+
+    private String bindTime(Event event) {
+        SimpleDateFormat df = new SimpleDateFormat("MMM dd hh:mm", Locale.getDefault());
+        return df.format(event.getTime());
+    }
+
+    private int bindCategoryBackground(Event event) {
         switch (event.getCategory()) {
             case WORK:
                 return R.drawable.category_work_shape;
@@ -113,9 +131,8 @@ public class EventsViewModel extends ViewModel {
         }
     }
 
-    private String bindTime(Event event) {
-        SimpleDateFormat df = new SimpleDateFormat("MMM dd hh:mm", Locale.getDefault());
-        return df.format(event.getTime());
+    private int bindPriority() {
+        return R.drawable.ic_priority_high_white_24dp;
     }
 
     private int bindPriorityColor(Event event) {
@@ -126,12 +143,14 @@ public class EventsViewModel extends ViewModel {
                 return R.color.colorPriorityMiddle;
             case 2:
                 return R.color.colorPriorityHard;
+
+            default: return R.color.colorPriorityLow;
         }
 
-        if (event.getPriority() == 1) {
+       /* if (event.getPriority() == 1) {
         return R.color.colorPriorityHard;
         }
-        else return R.color.colorPriorityLow;
+        else return R.color.colorPriorityLow;*/
     }
 
     public static class Factory implements ViewModelProvider.Factory {

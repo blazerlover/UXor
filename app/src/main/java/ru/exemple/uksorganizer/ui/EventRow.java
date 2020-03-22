@@ -7,18 +7,20 @@ import ru.exemple.uksorganizer.model.Event;
 public class EventRow {
 
     public final String title;
-    public final String category;
     public final String time;
-    public final int image;
+    public final int category;
+    public final int categoryBackground;
     public final int priority;
+    public final int priorityBackground;
     public final Event event;
 
-    public EventRow(String title, String category, String time, int image, int priority, Event event) {
+    public EventRow(String title, int category, String time, int categoryBackground, int priority, int priorityBackground, Event event) {
         this.title = title;
         this.category = category;
         this.time = time;
-        this.image = image;
+        this.categoryBackground = categoryBackground;
         this.priority = priority;
+        this.priorityBackground = priorityBackground;
         this.event = event;
     }
 
