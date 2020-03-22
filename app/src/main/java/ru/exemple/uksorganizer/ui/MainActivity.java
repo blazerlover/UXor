@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             case R.id.clear_trash_item:
                 eventsViewModel.clearTrash(isDeletedRequestFlag);
+                return true;
             case R.id.settings_item:
                 return true;
             default:
@@ -167,8 +168,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void addEvent(View view) {
-        Intent intent = new Intent(this, EventActivity.class);
-        startActivity(intent);
+        EventActivity.start(this, null);
+/*        Intent intent = new Intent(this, EventActivity.class);
+        startActivity(intent);*/
     }
 
     private void checkEmptyList(List<EventRow> events) {

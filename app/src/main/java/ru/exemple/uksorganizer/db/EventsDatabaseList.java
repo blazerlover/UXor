@@ -13,16 +13,16 @@ public class EventsDatabaseList implements EventsDatabase {
     @Override
     public List<Event> getAllEvents(boolean isDeletedRequestFlag) {
         ArrayList<Event> events = new ArrayList<>();
-        events.add(new Event("HUI", categoryCreate(), "hu hui", random.nextLong(), 1));
-        events.add(new Event("HUI1", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
-        events.add(new Event("HUI2", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
-        events.add(new Event("HUI3", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
-        events.add(new Event("HUI4", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
-        events.add(new Event("HUI5", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
-        events.add(new Event("HUI6", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
-        events.add(new Event("HUI7", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
-        events.add(new Event("HUI8", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
-        events.add(new Event("HUI9", categoryCreate(), "hu hui", System.currentTimeMillis(),1));
+        events.add(new Event("0", categoryCreate(), "go 0", random.nextLong(), 1));
+        events.add(new Event("1", categoryCreate(), "go 1", System.currentTimeMillis(),0));
+        events.add(new Event("2", categoryCreate(), "go 2", System.currentTimeMillis(),1));
+        events.add(new Event("3", categoryCreate(), "go 3", System.currentTimeMillis(),0));
+        events.add(new Event("4", categoryCreate(), "go 4", System.currentTimeMillis(),1));
+        events.add(new Event("5", categoryCreate(), "go 5", System.currentTimeMillis(),0));
+        events.add(new Event("6", categoryCreate(), "go 6", System.currentTimeMillis(),1));
+        events.add(new Event("7", categoryCreate(), "go 7", System.currentTimeMillis(),0));
+        events.add(new Event("8", categoryCreate(), "go 8", System.currentTimeMillis(),1));
+        events.add(new Event("9", categoryCreate(), "go 9", System.currentTimeMillis(),0));
         return events;
     }
 
@@ -45,7 +45,7 @@ public class EventsDatabaseList implements EventsDatabase {
         Event.Category randomCategory;
         int categoryNum = random.nextInt(3);
         switch (categoryNum) {
-            case 0: randomCategory = Event.Category.ALKO;
+            case 0: randomCategory = Event.Category.WORK;
                 break;
             case 1: randomCategory = Event.Category.MEETING;
                 break;

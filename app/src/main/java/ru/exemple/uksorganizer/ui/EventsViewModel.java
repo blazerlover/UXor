@@ -45,7 +45,7 @@ public class EventsViewModel extends ViewModel {
     }
 
     public void sortEventRowsByPriority() {
-        Collections.sort(eventRows, (o1, o2) -> (o1.priority - o2.priority));
+        Collections.sort(eventRows, (o1, o2) -> (o2.priority - o1.priority));
     }
 
     public void sortEventRowsByTitle() {
@@ -102,8 +102,8 @@ public class EventsViewModel extends ViewModel {
 
     private int bindCategoryImage(Event event) {
         switch (event.getCategory()) {
-            case ALKO:
-                return R.drawable.category_alko_shape;
+            case WORK:
+                return R.drawable.category_work_shape;
             case MEETING:
                 return R.drawable.category_meeting_shape;
             case SPORT:
