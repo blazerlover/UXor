@@ -44,7 +44,10 @@ public class EventActivity extends AppCompatActivity {
         eventDetailFragment = new EventDetailFragment();
         eventDetailReadOnlyFragment = new EventDetailReadOnlyFragment();
 
-        if (savedInstanceState == null) {
+        Event event =(Event) getIntent().getSerializableExtra(EXTRA_EVENT);
+        if (event == null) {
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, eventDetailFragment).commit();
+        } else {
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, eventDetailReadOnlyFragment).commit();
         }
 

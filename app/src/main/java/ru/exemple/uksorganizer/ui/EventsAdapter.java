@@ -1,6 +1,5 @@
 package ru.exemple.uksorganizer.ui;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        view = layoutInflater.inflate(R.layout.row_event, parent, false);
+        view = layoutInflater.inflate(R.layout.row_event_second_edition, parent, false);
         return new ViewHolder(view);
     }
 
@@ -40,11 +39,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         EventRow eventRow = eventRows.get(position);
         holder.tvTitle.setText(eventRow.title);
-        holder.tvCategory.setText(eventRow.category);
+        holder.ivCategorySecondEdition.setImageResource(eventRow.category);
         holder.tvTime.setText(eventRow.time);
-        holder.ivCategory.setImageResource(eventRow.image);
+        holder.ivCategoryBackGround.setImageResource(eventRow.categoryBackground);
+        holder.ivPriority.setImageResource(eventRow.priority);
+        //holder.ivPriority.setColorFilter(R.color.colorPriorityHard);
+
         try {
-            holder.itemView.setBackgroundColor(holder.itemView.getResources().getColor(eventRow.priority));
+            holder.ivPriority.setColorFilter(holder.itemView.getResources().getColor(eventRow.priorityBackground));
         } catch (Exception e) {
             holder.itemView.setBackgroundColor(holder.itemView.getResources().getColor(R.color.colorPriorityLow));
         }
@@ -63,19 +65,38 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView tvTitle;
+        private final ImageView ivPriority;
+        private final TextView tvTime;
+        private final ImageView ivCategorySecondEdition;
+        private final ImageView ivCategoryBackGround;
+
+        ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvTitle = itemView.findViewById(R.id.tvEventTitle);
+            ivCategorySecondEdition = itemView.findViewById(R.id.ivCategorySecondEdition);
+            ivPriority = itemView.findViewById(R.id.ivPriority);
+            tvTime = itemView.findViewById(R.id.tvEventTime);
+            ivCategoryBackGround = itemView.findViewById(R.id.ivCategoryBackground);
+        }
+
+    }
+
+    /*static class ViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView tvTitle;
         private final TextView tvCategory;
         private final TextView tvTime;
-        private final ImageView ivCategory;
+        private final ImageView ivCategorySecondEdition;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvEventTitle);
             tvCategory = itemView.findViewById(R.id.tvEventCategory);
             tvTime = itemView.findViewById(R.id.tvEventTime);
-            ivCategory = itemView.findViewById(R.id.ivCategory);
+            ivCategorySecondEdition = itemView.findViewById(R.id.ivCategorySecondEdition);
         }
 
-    }
+    }*/
 
     public void setEventRows(List<EventRow> eventRows) {
         this.eventRows.clear();
