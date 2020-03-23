@@ -20,27 +20,50 @@ public class EventsDatabaseFile implements EventsDatabase{
     }
     private Context context;
 
-    String [] filelist;
+    private String [] filelist, trashfilelist;
     public static final String TAG = EventsDatabaseFile.class.getName();
 
     @Override
     public List<Event> getAllEvents(boolean isDeletedRequestFlag) {
+
         File directory = new File(context.getFilesDir(), "saving_path");
+        File trashDirectory = new File(context.getFilesDir(), "trash_path");
+
         if(!directory.exists()) {
             directory.mkdirs();
         }
+        if(!trashDirectory.exists()) {
+            trashDirectory.mkdirs();
+        }
         filelist = directory.list();
+        trashfilelist = trashDirectory.list();
         ArrayList<Event> events = new ArrayList<>();
-
-        for (String filename : filelist) {
-            try {
-                File file = new File(directory, filename);
-                FileInputStream fis = new FileInputStream(file);
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                Event event = (Event) ois.readObject();
-                ois.close();
-                events.add(event);
-            } catch (Exception ignored) {
+        if (!isDeletedRequestFlag) {
+            for (String filename : filelist) {
+                try {
+                    File file = new File(directory, filename);
+                    FileInputStream fis = new FileInputStream(file);
+                    ObjectInputStream ois = new ObjectInputStream(fis);
+                    Event event = (Event) ois.readObject();
+                    ois.close();
+                    events.add(event);
+                    } catch (Exception ex) {
+                    ex.printStackTrace();
+                    }
+            }
+        }
+        if (isDeletedRequestFlag) {
+            for (String filename : trashfilelist) {
+                try {
+                    File file = new File(trashDirectory, filename);
+                    FileInputStream fis = new FileInputStream(file);
+                    ObjectInputStream ois = new ObjectInputStream(fis);
+                    Event event = (Event) ois.readObject();
+                    ois.close();
+                    events.add(event);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         }
         return events;
@@ -62,14 +85,18 @@ public class EventsDatabaseFile implements EventsDatabase{
 
     @Override
     public void delete(Event event) {
-
         File directory = new File(context.getFilesDir(), "saving_path");
+        File trashDirectory = new File(context.getFilesDir(), "trash_path");
         File file = new File(directory, event.getName());
-        file.delete();
+        File trashFile = new File(trashDirectory, event.getName());
+        file.renameTo(trashFile);
     }
 
     @Override
     public void clearTrash() {
-
+        File trashDirectory = new File(context.getFilesDir(), "trash_path");
+        if (trashDirectory.isDirectory()) {
+            trashDirectory.delete();
+        }
     }
 }
