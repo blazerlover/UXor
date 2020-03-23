@@ -1,9 +1,13 @@
 package ru.exemple.uksorganizer.ui;
 
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +20,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,6 +29,8 @@ import java.util.Locale;
 import java.util.Objects;
 
 import ru.exemple.uksorganizer.App;
+import ru.exemple.uksorganizer.EventNotification.MyWorker;
+import ru.exemple.uksorganizer.EventNotification.Receiver;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
@@ -107,10 +115,17 @@ public class EventDetailFragment extends Fragment {
             });
 
             buttonSaveEvent.setOnClickListener(v -> {
-                if (this.getEvent().getName().length() == 0) {
+                Event event = this.getEvent();
+                if (event.getName().length() == 0) {
                     openEnterNameDialog();
                 } else {
-                    eventsDatabase.addEvent((this.getEvent()));
+                    //EventActivity.this.getEvent() - надо вынести это в переменную,
+                    //в оповещении используется это значение
+                    eventsDatabase.addEvent((event));
+                    //мой код по оповещению:
+                    //bindNotificationInfo(event);
+                    //createNotification();
+                    createWork();
                     getActivity().finish();
                 }
             });
@@ -179,4 +194,18 @@ public class EventDetailFragment extends Fragment {
         Event newEvent = this.getEvent();
         return !event.equals(newEvent);
     }
+
+    private void createWork() {
+        OneTimeWorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(MyWorker.class)
+                .build();
+        WorkManager.getInstance(getContext()).enqueue(myWorkRequest);
+    }
+
+    /*private void createAlarmManager(Event event) {
+        Intent notifyIntent = new Intent(getContext(), Receiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast
+                (getContext(), 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC, event.getTime() + 5000, pendingIntent);
+    }*/
 }

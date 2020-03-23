@@ -19,7 +19,7 @@ import ru.exemple.uksorganizer.model.Event;
 
 public class EventsViewModel extends ViewModel {
 
-    public final static String TAG = "myLOG";
+    public final static String TAG = EventsViewModel.class.getName();
 
     private final EventsDatabase eventsDatabase;
 
@@ -44,7 +44,21 @@ public class EventsViewModel extends ViewModel {
         }.start();
     }
 
-    public void sortEventRowsByPriority() {
+    public void sortEventRowsBy(int sortTag) {
+        switch (sortTag) {
+            case 0:
+                Collections.sort(eventRows, ((o1, o2) -> (int) (o1.event.getTime() - o2.event.getTime())));
+                break;
+            case 1:
+                Collections.sort(eventRows, (o1, o2) -> o1.title.compareTo(o2.title));
+                break;
+            case 2:
+                Collections.sort(eventRows, (o1, o2) -> (o2.priority - o1.priority));
+                break;
+        }
+    }
+
+    /*public void sortEventRowsByPriority() {
         Collections.sort(eventRows, (o1, o2) -> (o2.priority - o1.priority));
     }
 
@@ -54,7 +68,7 @@ public class EventsViewModel extends ViewModel {
 
     public void sortEventRowsByTime() {
         Collections.sort(eventRows, ((o1, o2) -> (int)(o1.event.getTime() - o2.event.getTime())));
-    }
+    }*/
 
     public List<EventRow> getSortEventRows() {
         return eventRows;
