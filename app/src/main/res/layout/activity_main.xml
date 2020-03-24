@@ -25,7 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:prompt="@string/sort"
-            android:textAlignment="center">
+            android:textAlignment="center"
+            android:background="@drawable/main_activity_spinner_bg2">
         </Spinner>
 
         <FrameLayout
