@@ -22,7 +22,7 @@
             <item>
 
                 <bitmap android:gravity="center|right"
-                        android:src="@drawable/baseline_arrow_drop_down_white_24dp"/>
+                        android:src="@drawable/baseline_arrow_drop_down_black_24dp"/>
 
             </item>
 
