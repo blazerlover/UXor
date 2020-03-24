@@ -15,8 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:context=".ui.EventActivity"
-        tools:layout_editor_absoluteX="-2dp">
+        tools:context=".ui.EventActivity">
 
     </FrameLayout>
 
@@ -26,11 +25,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="100dp"
+        android:background="@drawable/background_circle"
         android:backgroundTint="#2196F3"
         android:backgroundTintMode="src_atop"
         android:clickable="true"
         android:focusable="true"
-        android:src="@drawable/baseline_create_white_24dp"
+        android:src="@drawable/ic_mode_edit_black_24dp"
         android:tint="#02030A"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

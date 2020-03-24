@@ -17,7 +17,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.15" />
+        app:layout_constraintVertical_bias="0.10" />
 
     <Spinner
         android:id="@+id/spinnerCategory"
@@ -71,12 +71,14 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextDescription"
         app:layout_constraintVertical_bias="0.05" />
 
+
     <Button
         android:id="@+id/buttonSaveEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#2196F3"
         android:text="@string/saveEvent"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textViewTime"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -89,11 +91,23 @@
         android:id="@+id/priority"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:buttonTint="#2196F3"
         android:text="@string/high_priority"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/buttonSaveEvent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewDate"/>
+        app:layout_constraintTop_toBottomOf="@+id/textViewDate" />
+
+    <!--<ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/priority"
+        app:layout_constraintEnd_toStartOf="@+id/textViewDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextDescription"
+        app:srcCompat="@drawable/ic_add_alarm_black_24dp" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

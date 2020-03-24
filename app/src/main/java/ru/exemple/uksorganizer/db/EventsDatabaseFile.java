@@ -95,8 +95,12 @@ public class EventsDatabaseFile implements EventsDatabase{
     @Override
     public void clearTrash() {
         File trashDirectory = new File(context.getFilesDir(), "trash_path");
+        trashfilelist = trashDirectory.list();
         if (trashDirectory.isDirectory()) {
-            trashDirectory.delete();
+            for (String filename : trashfilelist) {
+                File file = new File(trashDirectory, filename);
+                file.delete();
+            }
         }
     }
 }
