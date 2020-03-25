@@ -21,7 +21,6 @@ import ru.exemple.uksorganizer.model.Event;
 
 public class EventActivity extends AppCompatActivity {
 
-    public static final String EXTRA_EVENTDETAIL_ID = "id";
     private final static String TAG = EventActivity.class.getName();
     private static final String EXTRA_EVENT = "EVENT";
 
