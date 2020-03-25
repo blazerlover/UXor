@@ -23,7 +23,7 @@ public class NotificationIntentService extends IntentService {
 
     /*@Override
     protected void onHandleWork(@NonNull Intent intent) {
-        Notification.Builder builder = new Notification.Builder(this);
+        UksNotification.Builder builder = new UksNotification.Builder(this);
         builder.setContentTitle("My Title");
         builder.setContentText("This is the Body");
         builder.setSmallIcon(R.drawable.ic_launcher_background);
@@ -31,14 +31,14 @@ public class NotificationIntentService extends IntentService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 2, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         //to be able to launch your activity from the notification
         builder.setContentIntent(pendingIntent);
-        Notification notification = builder.build();
+        UksNotification notification = builder.build();
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
         managerCompat.notify(NOTIFICATION_ID, notification);
     }*/
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        /*Notification.Builder builder = new Notification.Builder(this);
+        /*UksNotification.Builder builder = new UksNotification.Builder(this);
         builder.setContentTitle("My Title");
         builder.setContentText("This is the Body");
         builder.setSmallIcon(R.drawable.ic_launcher_background);
@@ -46,7 +46,7 @@ public class NotificationIntentService extends IntentService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 2, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         //to be able to launch your activity from the notification
         builder.setContentIntent(pendingIntent);
-        Notification notification = builder.build();
+        UksNotification notification = builder.build();
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
         managerCompat.notify(NOTIFICATION_ID, notification);*/
     }

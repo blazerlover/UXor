@@ -38,7 +38,7 @@ public class EventsViewModel extends ViewModel {
                     e.printStackTrace();
                 }
                 List<Event> events = eventsDatabase.getAllEvents(isDeletedRequestFlag);
-                eventRows = getSortEventRows(events);
+                eventRows = getEventRows(events);
                 liveData.postValue(eventRows);
             }
         }.start();
@@ -50,27 +50,15 @@ public class EventsViewModel extends ViewModel {
                 Collections.sort(eventRows, ((o1, o2) -> (int) (o1.event.getTime() - o2.event.getTime())));
                 break;
             case 1:
-                Collections.sort(eventRows, (o1, o2) -> o1.title.compareTo(o2.title));
+                Collections.sort(eventRows, (o1, o2) -> (o2.event.getPriority() - o1.event.getPriority()));
                 break;
             case 2:
-                Collections.sort(eventRows, (o1, o2) -> (o2.priority - o1.priority));
+                Collections.sort(eventRows, (o1, o2) -> o1.title.compareTo(o2.title));
                 break;
         }
     }
 
-    /*public void sortEventRowsByPriority() {
-        Collections.sort(eventRows, (o1, o2) -> (o2.priority - o1.priority));
-    }
-
-    public void sortEventRowsByTitle() {
-        Collections.sort(eventRows, (o1, o2) -> o1.title.compareTo(o2.title));
-    }
-
-    public void sortEventRowsByTime() {
-        Collections.sort(eventRows, ((o1, o2) -> (int)(o1.event.getTime() - o2.event.getTime())));
-    }*/
-
-    public List<EventRow> getSortEventRows() {
+    public List<EventRow> getSortedEventRows() {
         return eventRows;
     }
 
@@ -80,7 +68,7 @@ public class EventsViewModel extends ViewModel {
 
 
     //подготовка пирожков для recycleView:
-    private List<EventRow> getSortEventRows(List<Event> events) {
+    private List<EventRow> getEventRows(List<Event> events) {
         List<EventRow> result = new ArrayList<>();
         for (Event event : events) {
             result.add(getEventRow(event));

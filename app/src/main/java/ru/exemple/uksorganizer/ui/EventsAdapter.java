@@ -16,11 +16,10 @@ import ru.exemple.uksorganizer.model.Event;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
-    public final static String TAG = "myLOG";
+    public final static String TAG = EventsAdapter.class.getName();
 
     private final List<EventRow> eventRows;
     private final Listener listener;
-    private View view;
 
     public EventsAdapter(List<EventRow> eventRows, Listener listener) {
         this.eventRows = eventRows;
@@ -31,7 +30,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        view = layoutInflater.inflate(R.layout.row_event_second_edition, parent, false);
+        View view = layoutInflater.inflate(R.layout.row_event_second_edition, parent, false);
         return new ViewHolder(view);
     }
 
@@ -43,8 +42,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         holder.tvTime.setText(eventRow.time);
         holder.ivCategoryBackGround.setImageResource(eventRow.categoryBackground);
         holder.ivPriority.setImageResource(eventRow.priority);
-        //holder.ivPriority.setColorFilter(R.color.colorPriorityHard);
-
         try {
             holder.ivPriority.setColorFilter(holder.itemView.getResources().getColor(eventRow.priorityBackground));
         } catch (Exception e) {
@@ -78,7 +75,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             tvTime = itemView.findViewById(R.id.tvEventTime);
             ivCategoryBackGround = itemView.findViewById(R.id.ivCategoryBackground);
         }
-
     }
 
     /*static class ViewHolder extends RecyclerView.ViewHolder {
