@@ -33,7 +33,7 @@ import ru.exemple.uksorganizer.model.Event;
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, EventsListFragment.Listener {
 
-    public final static String TAG = "myLOG";
+    public final static String TAG = MainActivity.class.getName();
 
     private EventsListFragment eventsListFragment;
     private ProgressBar progressBar;
@@ -169,8 +169,6 @@ public class MainActivity extends AppCompatActivity implements
 
     public void addEvent(View view) {
         EventActivity.start(this, null);
-/*        Intent intent = new Intent(this, EventActivity.class);
-        startActivity(intent);*/
     }
 
     private void checkEmptyList(List<EventRow> events) {
@@ -183,23 +181,11 @@ public class MainActivity extends AppCompatActivity implements
 
     private void setSpinnerListener() {
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
-
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        eventsViewModel.sortEventRowsByTime();
-                        eventsListFragment.initData(eventsViewModel.getSortEventRows());
-                        break;
-                    case 1:
-                        eventsViewModel.sortEventRowsByPriority();
-                        eventsListFragment.initData(eventsViewModel.getSortEventRows());
-                        break;
-                    case 2:
-                        eventsViewModel.sortEventRowsByTitle();
-                        eventsListFragment.initData(eventsViewModel.getSortEventRows());
-                        break;
-                }
+                int sortTag = position;
+                 eventsViewModel.sortEventRowsBy(sortTag);
+                 eventsListFragment.initData(eventsViewModel.getSortedEventRows());
             }
 
             @Override
@@ -224,8 +210,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void onEventsLoaded(List<EventRow> eventRows) {
-        eventsListFragment.initData(eventRows);
         setSpinnerListener();
+        eventsListFragment.initData(eventRows);
         progressBar.setVisibility(View.INVISIBLE);
         checkEmptyList(eventRows);
     }

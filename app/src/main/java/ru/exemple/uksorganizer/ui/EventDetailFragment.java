@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import ru.exemple.uksorganizer.App;
+import ru.exemple.uksorganizer.EventNotification.EventNotification;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
@@ -67,6 +68,7 @@ public class EventDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         eventsDatabase = ((App) getActivity().getApplication()).getEventsDb();
+
     }
 
     @Override
@@ -107,10 +109,18 @@ public class EventDetailFragment extends Fragment {
             });
 
             buttonSaveEvent.setOnClickListener(v -> {
-                if (this.getEvent().getName().length() == 0) {
+                Event event = this.getEvent();
+                if (event.getName().length() == 0) {
                     openEnterNameDialog();
                 } else {
-                    eventsDatabase.addEvent((this.getEvent()));
+                    //EventActivity.this.getEvent() - надо вынести это в переменную,
+                    //в оповещении используется это значение
+                    eventsDatabase.addEvent((event));
+                    //мой код по оповещению:
+                    //правильно ли создавать здесь экземпляр?
+                    EventNotification notification = new EventNotification(getContext(), event);
+                    notification.createNotificationChannel();
+                    notification.createWorkNotification();
                     getActivity().finish();
                 }
             });
