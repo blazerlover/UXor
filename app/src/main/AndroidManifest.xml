@@ -23,17 +23,6 @@
             android:parentActivityName=".ui.MainActivity">
         </activity>
 
-        <receiver
-            android:name=".EventNotification.Receiver"
-            android:enabled="true"
-            android:exported="false" >
-        </receiver>
-
-        <service
-            android:name=".EventNotification.NotificationIntentService"
-            android:exported="false" >
-        </service>
-
     </application>
 
 </manifest>

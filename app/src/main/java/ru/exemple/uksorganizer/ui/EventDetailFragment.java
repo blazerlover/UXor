@@ -16,8 +16,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -25,8 +23,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import ru.exemple.uksorganizer.App;
-import ru.exemple.uksorganizer.EventNotification.MyWorker;
-import ru.exemple.uksorganizer.EventNotification.UksNotification;
+import ru.exemple.uksorganizer.EventNotification.EventNotification;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
@@ -52,7 +49,6 @@ public class EventDetailFragment extends Fragment {
     private EventsDatabase eventsDatabase;
     private Listener listener;
     private Event.Category [] categoriesArray = Event.Category.values();
-    private UksNotification notification;
     private final static String TAG = EventActivity.class.getName();
 
        public EventDetailFragment() {
@@ -121,12 +117,10 @@ public class EventDetailFragment extends Fragment {
                     //в оповещении используется это значение
                     eventsDatabase.addEvent((event));
                     //мой код по оповещению:
-                    //bindNotificationInfo(event);
                     //правильно ли создавать здесь экземпляр?
-                    notification = new UksNotification(getContext(), event);
+                    EventNotification notification = new EventNotification(getContext(), event);
                     notification.createNotificationChannel();
-                    notification.createNotification();
-                    createWork();
+                    notification.createWorkNotification();
                     getActivity().finish();
                 }
             });
@@ -194,11 +188,5 @@ public class EventDetailFragment extends Fragment {
     boolean eventChanged() {
         Event newEvent = this.getEvent();
         return !event.equals(newEvent);
-    }
-
-    private void createWork() {
-        OneTimeWorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(MyWorker.class)
-                .build();
-        WorkManager.getInstance(getContext()).enqueue(myWorkRequest);
     }
 }
