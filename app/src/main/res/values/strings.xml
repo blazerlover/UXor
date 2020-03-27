@@ -21,6 +21,7 @@
     <string name="high_priority">High priority</string>
     <string name="empty_view_text">You do not have any events!\n
     Create new Event</string>
+    <string name="empty_trash_view_text">Trash is empty!</string>
     <string name="category_description_type">Type category</string>
     <string name="trash">Trash</string>
     <string name="events">Events</string>

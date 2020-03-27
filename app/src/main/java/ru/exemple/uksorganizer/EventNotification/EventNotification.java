@@ -37,7 +37,7 @@ public class EventNotification {
     private Context context;
     private Event event;
 
-    public EventNotification(Context context, Event event){
+    public EventNotification(Context context, Event event) {
         this.context = context;
         this.event = event;
     }
@@ -81,7 +81,7 @@ public class EventNotification {
             channel.enableVibration(false);
 
             NotificationManager notificationManager =
-                    (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             if (notificationManager != null) {
                 notificationManager.createNotificationChannel(channel);
             }

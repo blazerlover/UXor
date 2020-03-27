@@ -14,7 +14,7 @@ public class PendingIntentProvider {
     private Context context;
     private Event event;
 
-    PendingIntentProvider(Context context, Event event){
+    PendingIntentProvider(Context context, Event event) {
         this.context = context;
         this.event = event;
     }

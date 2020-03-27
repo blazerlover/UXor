@@ -1,7 +1,6 @@
 package ru.exemple.uksorganizer.ui;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -171,14 +171,6 @@ public class MainActivity extends AppCompatActivity implements
         EventActivity.start(this, null);
     }
 
-    private void checkEmptyList(List<EventRow> events) {
-        if (events.size() == 0) {
-            findViewById(R.id.tvEmpty).setVisibility(View.VISIBLE);
-        } else {
-            findViewById(R.id.tvEmpty).setVisibility(View.GONE);
-        }
-    }
-
     private void setSpinnerListener() {
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
@@ -214,6 +206,27 @@ public class MainActivity extends AppCompatActivity implements
         eventsListFragment.initData(eventRows);
         progressBar.setVisibility(View.INVISIBLE);
         checkEmptyList(eventRows);
+    }
+
+    private void checkEmptyList(List<EventRow> events) {
+        TextView tvEmpty = findViewById(R.id.tvEmpty);
+        TextView tvEmptyTrash = findViewById(R.id.tvEmptyTrash);
+        if (!isDeletedRequestFlag) {
+            tvEmptyTrash.setVisibility(View.GONE);
+            if (events.size() == 0) {
+                tvEmpty.setVisibility(View.VISIBLE);
+            } else {
+                tvEmpty.setVisibility(View.GONE);
+            }
+        }
+        if (isDeletedRequestFlag) {
+            tvEmpty.setVisibility(View.GONE);
+            if (events.size() == 0) {
+                tvEmptyTrash.setVisibility(View.VISIBLE);
+            } else {
+                tvEmptyTrash.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
