@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, EventsListFragment.Listener {
 
     public final static String TAG = MainActivity.class.getName();
+    private static final String EXTRA_EVENT = "EVENT";
 
     private EventsListFragment eventsListFragment;
     private ProgressBar progressBar;
@@ -219,9 +220,13 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onEventListFragmentItemClick(Event event) {
+
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(EXTRA_EVENT, event);
             EventDetailReadOnlyFragment fragment = new EventDetailReadOnlyFragment();
+            fragment.setArguments(bundle);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             View fragmentContainer = findViewById(R.id.fragment_container_tablet);
             if (fragmentContainer != null) {

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,13 +18,10 @@ import java.util.Locale;
 import java.util.Objects;
 
 import ru.exemple.uksorganizer.R;
-import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 
 
 public class EventDetailReadOnlyFragment extends Fragment {
-
-    private int eventID;
 
     private static final String EXTRA_EVENT = "EVENT";
 
@@ -33,17 +29,18 @@ public class EventDetailReadOnlyFragment extends Fragment {
     private Spinner spinnerCategory;
     private TextView textViewTime;
     private TextView textViewDate;
-    private Button buttonSaveEvent;
     private CheckBox checkBox;
     private Calendar calendar = Calendar.getInstance();
 
     private Event event;
-    private EventsDatabase eventsDatabase;
-    private EventDetailFragment.Listener listener;
     private Event.Category [] categoriesArray = Event.Category.values();
     private final static String TAG = EventActivity.class.getName();
 
     public EventDetailReadOnlyFragment() {
+    }
+
+    public EventDetailReadOnlyFragment(Event event) {
+
     }
 
     @Override
@@ -62,14 +59,12 @@ public class EventDetailReadOnlyFragment extends Fragment {
             editTextDescription = viewFrag.findViewById(R.id.editTextDescription);
             textViewTime = viewFrag.findViewById(R.id.textViewTime);
             textViewDate = viewFrag.findViewById(R.id.textViewDate);
-            buttonSaveEvent = viewFrag.findViewById(R.id.buttonSaveEvent);
             checkBox = viewFrag.findViewById(R.id.priority);
 
             ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, categoriesArray);
             spinnerCategory.setEnabled(false);
             spinnerCategory.setClickable(false);
             spinnerCategory.setAdapter(arrayAdapter);
-
 
             setInitialDateTime();
             getIntentFromMain();
@@ -95,10 +90,12 @@ public class EventDetailReadOnlyFragment extends Fragment {
         textViewTime.setText(stf.format(calendar.getTimeInMillis()));
     }
 
-    private void getIntentFromMain() {
+    public void getIntentFromMain() {
         event = (Event) getActivity().getIntent().getSerializableExtra(EXTRA_EVENT);
         if (event == null) {
-            event = new Event("", Event.Category.SOMETHING, "", System.currentTimeMillis(), 0);
+            Bundle bundle = this.getArguments();
+            event = (Event) bundle.getSerializable(EXTRA_EVENT);
+            //event = new Event("", Event.Category.SOMETHING, "", System.currentTimeMillis(), 0);
         }
         calendar = Calendar.getInstance();
         calendar.setTimeInMillis(event.getTime());
