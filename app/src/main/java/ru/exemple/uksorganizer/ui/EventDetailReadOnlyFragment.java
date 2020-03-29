@@ -26,7 +26,7 @@ public class EventDetailReadOnlyFragment extends Fragment {
     private static final String EXTRA_EVENT = "EVENT";
 
     private TextView editTextName, editTextDescription;
-    private Spinner spinnerCategory;
+    private Spinner spinnerCategory, spinnerPriority;
     private TextView textViewTime;
     private TextView textViewDate;
     private CheckBox checkBox;
@@ -34,13 +34,10 @@ public class EventDetailReadOnlyFragment extends Fragment {
 
     private Event event;
     private Event.Category [] categoriesArray = Event.Category.values();
+    private String [] priorityArray;
     private final static String TAG = EventActivity.class.getName();
 
     public EventDetailReadOnlyFragment() {
-    }
-
-    public EventDetailReadOnlyFragment(Event event) {
-
     }
 
     @Override
@@ -56,15 +53,23 @@ public class EventDetailReadOnlyFragment extends Fragment {
         if (viewFrag != null) {
             editTextName = viewFrag.findViewById(R.id.editTextName);
             spinnerCategory = viewFrag.findViewById(R.id.spinnerCategory);
+            spinnerPriority = viewFrag.findViewById(R.id.spinnerPriority);
             editTextDescription = viewFrag.findViewById(R.id.editTextDescription);
             textViewTime = viewFrag.findViewById(R.id.textViewTime);
             textViewDate = viewFrag.findViewById(R.id.textViewDate);
-            checkBox = viewFrag.findViewById(R.id.priority);
 
+            //checkBox = viewFrag.findViewById(R.id.priority);
+
+            priorityArray = getActivity().getResources().getStringArray(R.array.priority);
             ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, categoriesArray);
             spinnerCategory.setEnabled(false);
             spinnerCategory.setClickable(false);
             spinnerCategory.setAdapter(arrayAdapter);
+
+            ArrayAdapter <String> arrayPriorityAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, priorityArray);
+            spinnerCategory.setEnabled(false);
+            spinnerCategory.setClickable(false);
+            spinnerPriority.setAdapter(arrayPriorityAdapter);
 
             setInitialDateTime();
             getIntentFromMain();
@@ -77,9 +82,19 @@ public class EventDetailReadOnlyFragment extends Fragment {
         String description = editTextDescription.getText().toString();
         long time = calendar.getTimeInMillis();
         int priority = 0;
-        if (checkBox.isChecked()) {
-            priority = 1;
+        String priorityPos = spinnerPriority.getSelectedItem().toString();
+        switch (priorityPos) {
+            case "Low priority": priority = 0;
+                break;
+            case "Middle priority": priority = 1;
+                break;
+            case "High priority": priority = 2;
+                break;
         }
+
+        /*if (checkBox.isChecked()) {
+            priority = 1;
+        }*/
         return new Event(name, category, description, time, priority);
     }
 
@@ -90,7 +105,7 @@ public class EventDetailReadOnlyFragment extends Fragment {
         textViewTime.setText(stf.format(calendar.getTimeInMillis()));
     }
 
-    public void getIntentFromMain() {
+    private void getIntentFromMain() {
         event = (Event) getActivity().getIntent().getSerializableExtra(EXTRA_EVENT);
         if (event == null) {
             Bundle bundle = this.getArguments();
@@ -113,11 +128,27 @@ public class EventDetailReadOnlyFragment extends Fragment {
         SimpleDateFormat tf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         textViewDate.setText(df.format(event.getTime()));
         textViewTime.setText(tf.format(event.getTime()));
-        boolean checked = false;
+       /* boolean checked = false;
         if (event.getPriority() == 1) {
             checked = true;
         }
-        checkBox.setChecked(checked);
+        checkBox.setChecked(checked);*/
+
+        ArrayAdapter <String> arrayPriorityAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, priorityArray);
+        spinnerPriority.setAdapter(arrayPriorityAdapter);
+        int priorityPosition = 0;
+        switch (event.getPriority()) {
+            case 0:
+                priorityPosition = 0;
+                break;
+            case 1:
+                priorityPosition = 1;
+                break;
+            case 2:
+                priorityPosition = 2;
+                break;
+        }
+        spinnerPriority.setSelection(priorityPosition);
     }
 
     boolean eventChanged() {

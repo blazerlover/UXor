@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements
             fragment.setArguments(bundle);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             View fragmentContainer = findViewById(R.id.fragment_container_tablet);
-            if (fragmentContainer != null) {
+            if (fragmentContainer == null) {
                 fragmentTransaction.add(R.id.fragment_container_tablet, fragment).commit();
             }
             else {
