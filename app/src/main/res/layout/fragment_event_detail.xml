@@ -29,7 +29,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextName"
-        app:layout_constraintVertical_bias="0.05" />
+        app:layout_constraintVertical_bias="0.01" />
 
     <EditText
         android:id="@+id/editTextDescription"
@@ -41,7 +41,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerCategory"
-        app:layout_constraintVertical_bias="0.05" />
+        app:layout_constraintVertical_bias="0.01" />
 
     <TextView
         android:id="@+id/textViewTime"

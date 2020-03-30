@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -29,7 +28,6 @@ public class EventDetailReadOnlyFragment extends Fragment {
     private Spinner spinnerCategory, spinnerPriority;
     private TextView textViewTime;
     private TextView textViewDate;
-    private CheckBox checkBox;
     private Calendar calendar = Calendar.getInstance();
 
     private Event event;
@@ -58,17 +56,16 @@ public class EventDetailReadOnlyFragment extends Fragment {
             textViewTime = viewFrag.findViewById(R.id.textViewTime);
             textViewDate = viewFrag.findViewById(R.id.textViewDate);
 
-            //checkBox = viewFrag.findViewById(R.id.priority);
-
             priorityArray = getActivity().getResources().getStringArray(R.array.priority);
+
             ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, categoriesArray);
             spinnerCategory.setEnabled(false);
             spinnerCategory.setClickable(false);
             spinnerCategory.setAdapter(arrayAdapter);
 
             ArrayAdapter <String> arrayPriorityAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, priorityArray);
-            spinnerCategory.setEnabled(false);
-            spinnerCategory.setClickable(false);
+            spinnerPriority.setEnabled(false);
+            spinnerPriority.setClickable(false);
             spinnerPriority.setAdapter(arrayPriorityAdapter);
 
             setInitialDateTime();
@@ -92,9 +89,6 @@ public class EventDetailReadOnlyFragment extends Fragment {
                 break;
         }
 
-        /*if (checkBox.isChecked()) {
-            priority = 1;
-        }*/
         return new Event(name, category, description, time, priority);
     }
 
@@ -110,7 +104,6 @@ public class EventDetailReadOnlyFragment extends Fragment {
         if (event == null) {
             Bundle bundle = this.getArguments();
             event = (Event) bundle.getSerializable(EXTRA_EVENT);
-            //event = new Event("", Event.Category.SOMETHING, "", System.currentTimeMillis(), 0);
         }
         calendar = Calendar.getInstance();
         calendar.setTimeInMillis(event.getTime());
@@ -128,11 +121,6 @@ public class EventDetailReadOnlyFragment extends Fragment {
         SimpleDateFormat tf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         textViewDate.setText(df.format(event.getTime()));
         textViewTime.setText(tf.format(event.getTime()));
-       /* boolean checked = false;
-        if (event.getPriority() == 1) {
-            checked = true;
-        }
-        checkBox.setChecked(checked);*/
 
         ArrayAdapter <String> arrayPriorityAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, priorityArray);
         spinnerPriority.setAdapter(arrayPriorityAdapter);

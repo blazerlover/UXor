@@ -30,8 +30,6 @@ import ru.exemple.uksorganizer.model.Event;
 
 public class EventDetailFragment extends Fragment {
 
-    private int eventID;
-
     private static final String EXTRA_EVENT = "EVENT";
 
     private EditText editTextName, editTextDescription;
@@ -39,7 +37,6 @@ public class EventDetailFragment extends Fragment {
     private TextView textViewTime;
     private TextView textViewDate;
     private Button buttonSaveEvent;
-    //private CheckBox checkBox;
     private Calendar calendar = Calendar.getInstance();
     private TimePickerDialog timepickerdialog;
     private DatePickerDialog datePickerDialog;
@@ -84,7 +81,6 @@ public class EventDetailFragment extends Fragment {
             textViewDate = viewFrag.findViewById(R.id.textViewDate);
             buttonSaveEvent = viewFrag.findViewById(R.id.buttonSaveEvent);
 
-            //checkBox = viewFrag.findViewById(R.id.priority);
 
             priorityArray = getActivity().getResources().getStringArray(R.array.priority);
             ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, categoriesArray);
@@ -141,13 +137,13 @@ public class EventDetailFragment extends Fragment {
         String description = editTextDescription.getText().toString();
         long time = calendar.getTimeInMillis();
         int priority = 0;
-        String priorityPos = spinnerPriority.getSelectedItem().toString();
-        switch (priorityPos) {
-            case "Low priority": priority = 0;
-                 break;
-            case "Middle priority": priority = 1;
+        int pos = spinnerPriority.getSelectedItemPosition();
+        switch (pos) {
+            case 0: priority = 0;
                 break;
-            case "High priority": priority = 2;
+            case 1: priority = 1;
+                break;
+            case 2: priority = 2;
                 break;
         }
         return new Event(name, category, description, time, priority);
@@ -181,11 +177,6 @@ public class EventDetailFragment extends Fragment {
         SimpleDateFormat tf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         textViewDate.setText(df.format(event.getTime()));
         textViewTime.setText(tf.format(event.getTime()));
-       /* boolean checked = false;
-        if (event.getPriority() == 1) {
-            checked = true;
-        }
-        checkBox.setChecked(checked);*/
 
         ArrayAdapter <String> arrayPriorityAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, priorityArray);
         spinnerPriority.setAdapter(arrayPriorityAdapter);
@@ -202,7 +193,6 @@ public class EventDetailFragment extends Fragment {
                 break;
         }
         spinnerPriority.setSelection(priorityPosition);
-
     }
 
     private void openEnterNameDialog () {
