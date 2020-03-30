@@ -86,12 +86,13 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            app:headerLayout="@layout/nav_bar"
-            app:menu="@menu/nav_menu"
-            tools:ignore="MissingConstraints" />
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:maxWidth="200dp"
+        app:headerLayout="@layout/nav_bar"
+        app:menu="@menu/nav_menu"
+        tools:ignore="MissingConstraints" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
