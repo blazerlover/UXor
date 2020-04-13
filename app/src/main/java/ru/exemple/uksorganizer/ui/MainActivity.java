@@ -1,6 +1,5 @@
-package ru.exemple.uksorganizer.ui;
+﻿package ru.exemple.uksorganizer.ui;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, EventsListFragment.Listener {
 
     public final static String TAG = MainActivity.class.getName();
+    private static final String EXTRA_EVENT = "EVENT";
 
     private EventsListFragment eventsListFragment;
     private ProgressBar progressBar;
@@ -231,7 +232,23 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onEventListFragmentItemClick(Event event) {
-        EventActivity.start(this, event);
+
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(EXTRA_EVENT, event);
+            EventDetailReadOnlyFragment fragment = new EventDetailReadOnlyFragment();
+            fragment.setArguments(bundle);
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            View fragmentContainer = findViewById(R.id.fragment_container_tablet);
+            if (fragmentContainer == null) {
+                fragmentTransaction.add(R.id.fragment_container_tablet, fragment).commit();
+            }
+            else {
+                fragmentTransaction.replace(R.id.fragment_container_tablet, fragment).commit();
+            }
+        }
+        else EventActivity.start(this, event);
     }
 
     @Override
