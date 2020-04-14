@@ -1,5 +1,6 @@
-﻿package ru.exemple.uksorganizer.ui;
+package ru.exemple.uksorganizer.ui;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements
                 R.string.nav_open_drawer, R.string.nav_close_drawer);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        FloatingActionButton fab = findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.button_add_event);
         progressBar = findViewById(R.id.pbMain);
         fab.setOnClickListener(this::addEvent);
         NavigationView navigationView = findViewById(R.id.nav_view);

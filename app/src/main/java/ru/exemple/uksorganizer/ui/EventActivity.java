@@ -13,13 +13,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 
 
-public class EventActivity extends AppCompatActivity {
+public class EventActivity extends AppCompatActivity implements EventDetailReadOnlyFragment.Listener {
 
     private final static String TAG = EventActivity.class.getName();
     private static final String EXTRA_EVENT = "EVENT";
@@ -43,7 +45,7 @@ public class EventActivity extends AppCompatActivity {
         eventDetailFragment = new EventDetailFragment();
         eventDetailReadOnlyFragment = new EventDetailReadOnlyFragment();
 
-        Event event =(Event) getIntent().getSerializableExtra(EXTRA_EVENT);
+        Event event = (Event) getIntent().getSerializableExtra(EXTRA_EVENT);
         if (event == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, eventDetailFragment).commit();
         } else {
@@ -54,13 +56,13 @@ public class EventActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        ImageButton imageButton = findViewById(R.id.imageEditEventButton);
-        imageButton.setOnClickListener(v -> getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, eventDetailFragment).commit());
+//        FloatingActionButton imageButton = findViewById(R.id.imageEditEventButton);
+//        imageButton.setOnClickListener(v -> getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, eventDetailFragment).commit());
         eventsDatabase = ((App) getApplication()).getEventsDb();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.option_menu_eventactivity, menu);
         return super.onCreateOptionsMenu(menu);
@@ -80,49 +82,6 @@ public class EventActivity extends AppCompatActivity {
 
     }
 
-    private void openQuitDialog() {
-        AlertDialog.Builder quitDialog = new AlertDialog.Builder(this);
-        quitDialog.setTitle(R.string.save_changed);
-        quitDialog.setPositiveButton(R.string.ok, (dialog, which) -> {
-            if (eventDetailFragment.getEvent().getName().length() == 0) {
-                openEnterNameDialog();
-            }
-            else {
-            eventsDatabase.addEvent((eventDetailFragment.getEvent()));
-            EventActivity.this.finish();}
-        });
-        quitDialog.setNegativeButton(R.string.cancel, null);
-        quitDialog.create();
-        quitDialog.show();
-    }
-
-    private void openDeleteDialog () {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
-        deleteDialog.setTitle(R.string.delete_event_question);
-        deleteDialog.setPositiveButton(R.string.ok, (dialog, which) -> {
-            if (fragment instanceof EventDetailFragment) {
-                eventsDatabase.delete(eventDetailFragment.getEvent());
-                this.finish();
-            }
-            else if (fragment instanceof EventDetailReadOnlyFragment) {
-                eventsDatabase.delete(eventDetailReadOnlyFragment.getEvent());
-                this.finish();
-            }
-        });
-        deleteDialog.setNegativeButton(R.string.cancel, null);
-        deleteDialog.create();
-        deleteDialog.show();
-    }
-
-    private void openEnterNameDialog () {
-        AlertDialog.Builder nameDialog = new AlertDialog.Builder(this);
-        nameDialog.setTitle(R.string.enter_name);
-        nameDialog.setNegativeButton(R.string.ok, null);
-        nameDialog.create();
-        nameDialog.show();
-    }
-
     @Override
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
@@ -132,9 +91,55 @@ public class EventActivity extends AppCompatActivity {
             } else {
                 super.onBackPressed();
             }
-        }
-        else if (fragment instanceof EventDetailReadOnlyFragment) {
+        } else if (fragment instanceof EventDetailReadOnlyFragment) {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onEditButtonClicked() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, eventDetailFragment).commit();
+    }
+
+    private void openQuitDialog() {
+        AlertDialog.Builder quitDialog = new AlertDialog.Builder(this);
+        quitDialog.setTitle(R.string.save_changed);
+        quitDialog.setPositiveButton(R.string.ok, (dialog, which) -> {
+            if (eventDetailFragment.getEvent().getName().length() == 0) {
+                openEnterNameDialog();
+            } else {
+                eventsDatabase.addEvent((eventDetailFragment.getEvent()));
+                EventActivity.this.finish();
+            }
+        });
+        quitDialog.setNegativeButton(R.string.cancel, null);
+        quitDialog.create();
+        quitDialog.show();
+    }
+
+    private void openDeleteDialog() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
+        deleteDialog.setTitle(R.string.delete_event_question);
+        deleteDialog.setPositiveButton(R.string.ok, (dialog, which) -> {
+            if (fragment instanceof EventDetailFragment) {
+                eventsDatabase.delete(eventDetailFragment.getEvent());
+                this.finish();
+            } else if (fragment instanceof EventDetailReadOnlyFragment) {
+                eventsDatabase.delete(eventDetailReadOnlyFragment.getEvent());
+                this.finish();
+            }
+        });
+        deleteDialog.setNegativeButton(R.string.cancel, null);
+        deleteDialog.create();
+        deleteDialog.show();
+    }
+
+    private void openEnterNameDialog() {
+        AlertDialog.Builder nameDialog = new AlertDialog.Builder(this);
+        nameDialog.setTitle(R.string.enter_name);
+        nameDialog.setNegativeButton(R.string.ok, null);
+        nameDialog.create();
+        nameDialog.show();
     }
 }

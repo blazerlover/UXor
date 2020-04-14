@@ -67,7 +67,6 @@ public class EventsViewModel extends ViewModel {
     }
 
 
-    //подготовка пирожков для recycleView:
     private List<EventRow> getEventRows(List<Event> events) {
         List<EventRow> result = new ArrayList<>();
         for (Event event : events) {
@@ -76,7 +75,6 @@ public class EventsViewModel extends ViewModel {
         return result;
     }
 
-    //форматирование каждого event для прирожков:
     private EventRow getEventRow(Event event) {
         return new EventRow(event.getName(), bindCategory(event),
                 bindTime(event), bindCategoryBackground(event), bindPriority(), bindPriorityColor(event), event);

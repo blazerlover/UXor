@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UksOrganizer</string>
+    <string name="app_name">UXor</string>
     <string name="new_event">New event</string>
     <string name="recycle_view_orientation">Orientation</string>
     <string name="recycle_view_orientation_vertical">Vertical orientation</string>

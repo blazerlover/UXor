@@ -1,6 +1,7 @@
 package ru.exemple.uksorganizer.ui;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,6 +28,7 @@ public class EventDetailReadOnlyFragment extends Fragment {
 
     private static final String EXTRA_EVENT = "EVENT";
 
+    private Listener listener;
     private TextView editTextName, editTextDescription;
     private Spinner spinnerCategory, spinnerPriority;
     private TextView textViewTime;
@@ -31,8 +36,8 @@ public class EventDetailReadOnlyFragment extends Fragment {
     private Calendar calendar = Calendar.getInstance();
 
     private Event event;
-    private Event.Category [] categoriesArray = Event.Category.values();
-    private String [] priorityArray;
+    private Event.Category[] categoriesArray = Event.Category.values();
+    private String[] priorityArray;
     private final static String TAG = EventActivity.class.getName();
 
     public EventDetailReadOnlyFragment() {
@@ -42,6 +47,12 @@ public class EventDetailReadOnlyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_event_detail_read_only, container, false);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.listener = (Listener) context;
     }
 
     @Override
@@ -55,7 +66,8 @@ public class EventDetailReadOnlyFragment extends Fragment {
             editTextDescription = viewFrag.findViewById(R.id.editTextDescription);
             textViewTime = viewFrag.findViewById(R.id.textViewTime);
             textViewDate = viewFrag.findViewById(R.id.textViewDate);
-
+            FloatingActionButton imageButton = viewFrag.findViewById(R.id.editEventButton);
+            imageButton.setOnClickListener(v -> listener.onEditButtonClicked());
             priorityArray = getActivity().getResources().getStringArray(R.array.priority);
 
             ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, categoriesArray);
@@ -63,7 +75,7 @@ public class EventDetailReadOnlyFragment extends Fragment {
             spinnerCategory.setClickable(false);
             spinnerCategory.setAdapter(arrayAdapter);
 
-            ArrayAdapter <String> arrayPriorityAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, priorityArray);
+            ArrayAdapter<String> arrayPriorityAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, priorityArray);
             spinnerPriority.setEnabled(false);
             spinnerPriority.setClickable(false);
             spinnerPriority.setAdapter(arrayPriorityAdapter);
@@ -81,11 +93,14 @@ public class EventDetailReadOnlyFragment extends Fragment {
         int priority = 0;
         String priorityPos = spinnerPriority.getSelectedItem().toString();
         switch (priorityPos) {
-            case "Low priority": priority = 0;
+            case "Low priority":
+                priority = 0;
                 break;
-            case "Middle priority": priority = 1;
+            case "Middle priority":
+                priority = 1;
                 break;
-            case "High priority": priority = 2;
+            case "High priority":
+                priority = 2;
                 break;
         }
 
@@ -122,7 +137,7 @@ public class EventDetailReadOnlyFragment extends Fragment {
         textViewDate.setText(df.format(event.getTime()));
         textViewTime.setText(tf.format(event.getTime()));
 
-        ArrayAdapter <String> arrayPriorityAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, priorityArray);
+        ArrayAdapter<String> arrayPriorityAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, priorityArray);
         spinnerPriority.setAdapter(arrayPriorityAdapter);
         int priorityPosition = 0;
         switch (event.getPriority()) {
@@ -142,5 +157,9 @@ public class EventDetailReadOnlyFragment extends Fragment {
     boolean eventChanged() {
         Event newEvent = this.getEvent();
         return !event.equals(newEvent);
+    }
+
+    interface Listener {
+        void onEditButtonClicked();
     }
 }

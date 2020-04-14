@@ -51,7 +51,7 @@ public class EventsDatabaseList implements EventsDatabase {
                 break;
             case 2: randomCategory = Event.Category.SPORT;
                 break;
-            default: randomCategory = Event.Category.SOMETHING;
+            default: randomCategory = Event.Category.CATEGORY;
         }
         return randomCategory;
     }

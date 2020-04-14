@@ -51,9 +51,9 @@ public class EventsDatabaseSqlite implements EventsDatabase {
                     try {
                         category = Event.Category.valueOf(categoryString);
                     } catch (IllegalArgumentException e) {
-                        category = Event.Category.SOMETHING;
+                        category = Event.Category.CATEGORY;
                     } catch (NullPointerException e) {
-                        category = Event.Category.SOMETHING;
+                        category = Event.Category.CATEGORY;
                     }
                     String description = cursor.getString(cursor.getColumnIndex(DB_DESCRIPTION_COLUMN));
                     long time = cursor.getLong(cursor.getColumnIndex(DB_TIME_COLUMN));
