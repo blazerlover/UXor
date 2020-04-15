@@ -1,56 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawerLayout"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:layout_below="@id/toolbar">
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/drawerLayout"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:layout_below="@id/toolbar">
 
-    <LinearLayout
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar" />
+
+    <Spinner
+        android:id="@+id/spinnerSort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/main_activity_spinner_bg2"
+        android:entries="@array/sort_types"
+        android:prompt="@string/sort"
+        android:spinnerMode="dialog"
+        android:textAlignment="center" />
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        tools:context=".ui.MainActivity">
 
-        <include
-            layout="@layout/toolbar">
-        </include>
-
-        <Spinner
-            android:id="@+id/spinnerSort"
-            android:spinnerMode="dialog"
-            android:entries="@array/sort_types"
+        <fragment
+            android:id="@+id/eventsListFragment"
+            android:name="ru.exemple.uksorganizer.ui.EventsListFragment"
             android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/button_add_event"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:prompt="@string/sort"
-            android:textAlignment="center"
-            android:background="@drawable/main_activity_spinner_bg2">
-        </Spinner>
+            android:layout_gravity="end|bottom"
+            android:layout_margin="10dp"
+            android:src="@drawable/baseline_add_24" />
+    </FrameLayout>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".ui.MainActivity">
-
-            <fragment
-                android:name="ru.exemple.uksorganizer.ui.EventsListFragment"
-                android:id="@+id/eventsListFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:layout_margin="10dp"
-                android:src="@drawable/baseline_add_24"
-                app:backgroundTint="@color/colorPrimary"/>
-        </FrameLayout>
-
-    </LinearLayout>
+</LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
@@ -58,7 +54,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_bar"
-        app:menu="@menu/nav_menu">
-    </com.google.android.material.navigation.NavigationView>
+        app:menu="@menu/nav_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

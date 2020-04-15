@@ -100,6 +100,8 @@ public class EventsListFragment extends Fragment implements EventsAdapter.Listen
                 dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                         linearLayoutManager.getOrientation());
                 dividerItemDecoration.setOrientation(RecyclerView.VERTICAL);
+                recyclerView.invalidateItemDecorations();
+                recyclerView.addItemDecoration(dividerItemDecoration);
                 this.currentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER_VERTICAL;
                 break;
             case LINEAR_LAYOUT_MANAGER_HORIZONTAL:
@@ -108,9 +110,12 @@ public class EventsListFragment extends Fragment implements EventsAdapter.Listen
                 dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                         linearLayoutManager.getOrientation());
                 dividerItemDecoration.setOrientation(RecyclerView.HORIZONTAL);
+                recyclerView.invalidateItemDecorations();
+                recyclerView.addItemDecoration(dividerItemDecoration);
                 this.currentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER_VERTICAL;
                 break;
             case GRID_LAYOUT_MANAGER:
+                recyclerView.invalidateItemDecorations();
                 recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
                 this.currentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
                 break;

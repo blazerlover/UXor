@@ -10,11 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -36,7 +40,6 @@ public class EventDetailFragment extends Fragment {
     private Spinner spinnerCategory, spinnerPriority;
     private TextView textViewTime;
     private TextView textViewDate;
-    private Button buttonSaveEvent;
     private Calendar calendar = Calendar.getInstance();
     private TimePickerDialog timepickerdialog;
     private DatePickerDialog datePickerDialog;
@@ -79,8 +82,8 @@ public class EventDetailFragment extends Fragment {
             editTextDescription = viewFrag.findViewById(R.id.editTextDescription);
             textViewTime = viewFrag.findViewById(R.id.textViewTime);
             textViewDate = viewFrag.findViewById(R.id.textViewDate);
-            buttonSaveEvent = viewFrag.findViewById(R.id.buttonSaveEvent);
-
+            CheckBox checkBoxNotification = viewFrag.findViewById(R.id.checkBoxNotification);
+            FloatingActionButton buttonSaveEvent = viewFrag.findViewById(R.id.buttonSaveEvent);
 
             priorityArray = getActivity().getResources().getStringArray(R.array.priority);
             ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, categoriesArray);
@@ -114,17 +117,18 @@ public class EventDetailFragment extends Fragment {
                 if (event.getName().length() == 0) {
                     openEnterNameDialog();
                 } else {
-                    //EventActivity.this.getEvent() - надо вынести это в переменную,
-                    //в оповещении используется это значение
                     eventsDatabase.addEvent((event));
-                    //мой код по оповещению:
                     //правильно ли создавать здесь экземпляр?
-                    EventNotification notification = new EventNotification(getContext(), event);
-                    notification.createNotificationChannel();
-                    notification.createWorkNotification();
+                    if (checkBoxNotification.isChecked()) {
+                        EventNotification notification = new EventNotification(getContext(), event);
+                        notification.createNotificationChannel();
+                        notification.createWorkNotification();
+                    }
                     getActivity().finish();
                 }
             });
+
+            checkBoxNotification.setOnCheckedChangeListener((buttonView, isChecked) -> checkBoxNotification.setChecked(isChecked));
 
             setInitialDateTime();
             getIntentFromMain();
@@ -159,7 +163,7 @@ public class EventDetailFragment extends Fragment {
     private void getIntentFromMain() {
         event = (Event) getActivity().getIntent().getSerializableExtra(EXTRA_EVENT);
         if (event == null) {
-            event = new Event("", Event.Category.SOMETHING, "", System.currentTimeMillis(), 0);
+            event = new Event("", Event.Category.CATEGORY, "", System.currentTimeMillis(), 0);
         }
         calendar = Calendar.getInstance();
         calendar.setTimeInMillis(event.getTime());

@@ -1,6 +1,5 @@
 package ru.exemple.uksorganizer.ui;
 
-import android.app.AlertDialog;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,9 +10,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements
                 R.string.nav_open_drawer, R.string.nav_close_drawer);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        FloatingActionButton fab = findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.button_add_event);
         progressBar = findViewById(R.id.pbMain);
         fab.setOnClickListener(this::addEvent);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -173,14 +174,6 @@ public class MainActivity extends AppCompatActivity implements
         EventActivity.start(this, null);
     }
 
-    private void checkEmptyList(List<EventRow> events) {
-        if (events.size() == 0) {
-            findViewById(R.id.tvEmpty).setVisibility(View.VISIBLE);
-        } else {
-            findViewById(R.id.tvEmpty).setVisibility(View.GONE);
-        }
-    }
-
     private void setSpinnerListener() {
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
@@ -216,6 +209,27 @@ public class MainActivity extends AppCompatActivity implements
         eventsListFragment.initData(eventRows);
         progressBar.setVisibility(View.INVISIBLE);
         checkEmptyList(eventRows);
+    }
+
+    private void checkEmptyList(List<EventRow> events) {
+        TextView tvEmpty = findViewById(R.id.tvEmpty);
+        TextView tvEmptyTrash = findViewById(R.id.tvEmptyTrash);
+        if (!isDeletedRequestFlag) {
+            tvEmptyTrash.setVisibility(View.GONE);
+            if (events.size() == 0) {
+                tvEmpty.setVisibility(View.VISIBLE);
+            } else {
+                tvEmpty.setVisibility(View.GONE);
+            }
+        }
+        if (isDeletedRequestFlag) {
+            tvEmpty.setVisibility(View.GONE);
+            if (events.size() == 0) {
+                tvEmptyTrash.setVisibility(View.VISIBLE);
+            } else {
+                tvEmptyTrash.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override

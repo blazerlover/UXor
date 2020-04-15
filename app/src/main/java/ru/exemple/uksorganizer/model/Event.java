@@ -39,7 +39,7 @@ public class Event implements Serializable {
     }
 
     public enum Category {
-        MEETING, SPORT, WORK, SOMETHING
+        MEETING, SPORT, WORK, CATEGORY
     }
 
     @Override

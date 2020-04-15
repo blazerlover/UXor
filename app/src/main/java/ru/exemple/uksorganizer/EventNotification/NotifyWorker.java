@@ -29,9 +29,9 @@ public class NotifyWorker extends Worker {
         try {
             category = Event.Category.valueOf(categoryString);
         } catch (IllegalArgumentException e) {
-            category = Event.Category.SOMETHING;
+            category = Event.Category.CATEGORY;
         } catch (NullPointerException e) {
-            category = Event.Category.SOMETHING;
+            category = Event.Category.CATEGORY;
         }
         String description = getInputData().getString(EVENT_DESCRIPTION_KEY);
         long time = getInputData().getLong(EVENT_TIME_KEY, System.currentTimeMillis());
