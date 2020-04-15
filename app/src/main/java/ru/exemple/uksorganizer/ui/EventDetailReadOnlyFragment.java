@@ -1,7 +1,6 @@
 package ru.exemple.uksorganizer.ui;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -28,7 +24,6 @@ public class EventDetailReadOnlyFragment extends Fragment {
 
     private static final String EXTRA_EVENT = "EVENT";
 
-    private Listener listener;
     private TextView editTextName, editTextDescription;
     private Spinner spinnerCategory, spinnerPriority;
     private TextView textViewTime;
@@ -50,12 +45,6 @@ public class EventDetailReadOnlyFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.listener = (Listener) context;
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
         View viewFrag = getView();
@@ -66,10 +55,7 @@ public class EventDetailReadOnlyFragment extends Fragment {
             editTextDescription = viewFrag.findViewById(R.id.editTextDescription);
             textViewTime = viewFrag.findViewById(R.id.textViewTime);
             textViewDate = viewFrag.findViewById(R.id.textViewDate);
-            FloatingActionButton imageButton = viewFrag.findViewById(R.id.editEventButton);
-            imageButton.setOnClickListener(v -> listener.onEditButtonClicked());
             priorityArray = getActivity().getResources().getStringArray(R.array.priority);
-
             ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, categoriesArray);
             spinnerCategory.setEnabled(false);
             spinnerCategory.setClickable(false);
@@ -159,7 +145,4 @@ public class EventDetailReadOnlyFragment extends Fragment {
         return !event.equals(newEvent);
     }
 
-    interface Listener {
-        void onEditButtonClicked();
-    }
 }

@@ -9,16 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,22 +36,18 @@ public class EventDetailFragment extends Fragment {
     private Spinner spinnerCategory, spinnerPriority;
     private TextView textViewTime;
     private TextView textViewDate;
+    private CheckBox checkBoxNotification;
     private Calendar calendar = Calendar.getInstance();
     private TimePickerDialog timepickerdialog;
     private DatePickerDialog datePickerDialog;
 
     private Event event;
     private EventsDatabase eventsDatabase;
-    private Listener listener;
-    private Event.Category [] categoriesArray = Event.Category.values();
-    private String [] priorityArray;
+    private Event.Category[] categoriesArray = Event.Category.values();
+    private String[] priorityArray;
     private final static String TAG = EventActivity.class.getName();
 
-       public EventDetailFragment() {
-    }
-
-    interface Listener {
-        void itemClicked(long id);
+    public EventDetailFragment() {
     }
 
     @Override
@@ -82,13 +74,11 @@ public class EventDetailFragment extends Fragment {
             editTextDescription = viewFrag.findViewById(R.id.editTextDescription);
             textViewTime = viewFrag.findViewById(R.id.textViewTime);
             textViewDate = viewFrag.findViewById(R.id.textViewDate);
-            CheckBox checkBoxNotification = viewFrag.findViewById(R.id.checkBoxNotification);
-            FloatingActionButton buttonSaveEvent = viewFrag.findViewById(R.id.buttonSaveEvent);
-
+            checkBoxNotification = viewFrag.findViewById(R.id.checkBoxNotification);
             priorityArray = getActivity().getResources().getStringArray(R.array.priority);
             ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, categoriesArray);
             spinnerCategory.setAdapter(arrayAdapter);
-            ArrayAdapter <String> arrayPriorityAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, priorityArray);
+            ArrayAdapter<String> arrayPriorityAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, priorityArray);
             spinnerPriority.setAdapter(arrayPriorityAdapter);
 
             textViewDate.setOnClickListener(v -> {
@@ -112,22 +102,6 @@ public class EventDetailFragment extends Fragment {
                 timepickerdialog.show();
             });
 
-            buttonSaveEvent.setOnClickListener(v -> {
-                Event event = this.getEvent();
-                if (event.getName().length() == 0) {
-                    openEnterNameDialog();
-                } else {
-                    eventsDatabase.addEvent((event));
-                    //правильно ли создавать здесь экземпляр?
-                    if (checkBoxNotification.isChecked()) {
-                        EventNotification notification = new EventNotification(getContext(), event);
-                        notification.createNotificationChannel();
-                        notification.createWorkNotification();
-                    }
-                    getActivity().finish();
-                }
-            });
-
             checkBoxNotification.setOnCheckedChangeListener((buttonView, isChecked) -> checkBoxNotification.setChecked(isChecked));
 
             setInitialDateTime();
@@ -143,11 +117,14 @@ public class EventDetailFragment extends Fragment {
         int priority = 0;
         int pos = spinnerPriority.getSelectedItemPosition();
         switch (pos) {
-            case 0: priority = 0;
+            case 0:
+                priority = 0;
                 break;
-            case 1: priority = 1;
+            case 1:
+                priority = 1;
                 break;
-            case 2: priority = 2;
+            case 2:
+                priority = 2;
                 break;
         }
         return new Event(name, category, description, time, priority);
@@ -182,7 +159,7 @@ public class EventDetailFragment extends Fragment {
         textViewDate.setText(df.format(event.getTime()));
         textViewTime.setText(tf.format(event.getTime()));
 
-        ArrayAdapter <String> arrayPriorityAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, priorityArray);
+        ArrayAdapter<String> arrayPriorityAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, priorityArray);
         spinnerPriority.setAdapter(arrayPriorityAdapter);
         int priorityPosition = 0;
         switch (event.getPriority()) {
@@ -199,7 +176,7 @@ public class EventDetailFragment extends Fragment {
         spinnerPriority.setSelection(priorityPosition);
     }
 
-    private void openEnterNameDialog () {
+    private void openEnterNameDialog() {
         AlertDialog.Builder nameDialog = new AlertDialog.Builder(getActivity());
         nameDialog.setTitle(R.string.enter_name);
         nameDialog.setNegativeButton(R.string.ok, null);
@@ -210,5 +187,21 @@ public class EventDetailFragment extends Fragment {
     boolean eventChanged() {
         Event newEvent = this.getEvent();
         return !event.equals(newEvent);
+    }
+
+    public void saveEvent() {
+        Event event = this.getEvent();
+        if (event.getName().length() == 0) {
+            openEnterNameDialog();
+        } else {
+            eventsDatabase.addEvent((event));
+            //правильно ли создавать здесь экземпляр?
+            if (checkBoxNotification.isChecked()) {
+                EventNotification notification = new EventNotification(getContext(), event);
+                notification.createNotificationChannel();
+                notification.createWorkNotification();
+            }
+            getActivity().finish();
+        }
     }
 }

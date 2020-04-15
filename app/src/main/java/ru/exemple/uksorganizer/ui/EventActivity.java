@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,13 +20,15 @@ import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 
 
-public class EventActivity extends AppCompatActivity implements EventDetailReadOnlyFragment.Listener {
+public class EventActivity extends AppCompatActivity {
 
     private final static String TAG = EventActivity.class.getName();
     private static final String EXTRA_EVENT = "EVENT";
 
     private EventDetailFragment eventDetailFragment;
     private EventDetailReadOnlyFragment eventDetailReadOnlyFragment;
+
+    private FloatingActionButton imageButton;
 
     private EventsDatabase eventsDatabase;
 
@@ -45,9 +46,12 @@ public class EventActivity extends AppCompatActivity implements EventDetailReadO
         eventDetailFragment = new EventDetailFragment();
         eventDetailReadOnlyFragment = new EventDetailReadOnlyFragment();
 
+        imageButton = findViewById(R.id.button_edit_event);
+
         Event event = (Event) getIntent().getSerializableExtra(EXTRA_EVENT);
         if (event == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, eventDetailFragment).commit();
+            imageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_done_white_24dp));
         } else {
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, eventDetailReadOnlyFragment).commit();
         }
@@ -56,8 +60,17 @@ public class EventActivity extends AppCompatActivity implements EventDetailReadO
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-//        FloatingActionButton imageButton = findViewById(R.id.imageEditEventButton);
-//        imageButton.setOnClickListener(v -> getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, eventDetailFragment).commit());
+
+        imageButton.setOnClickListener(v -> {
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (fragment instanceof EventDetailFragment) {
+                ((EventDetailFragment) fragment).saveEvent();
+            }
+            else if (fragment instanceof EventDetailReadOnlyFragment) {
+                editEvent();
+            }
+        });
+
         eventsDatabase = ((App) getApplication()).getEventsDb();
     }
 
@@ -79,7 +92,6 @@ public class EventActivity extends AppCompatActivity implements EventDetailReadO
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
     @Override
@@ -94,11 +106,6 @@ public class EventActivity extends AppCompatActivity implements EventDetailReadO
         } else if (fragment instanceof EventDetailReadOnlyFragment) {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public void onEditButtonClicked() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, eventDetailFragment).commit();
     }
 
     private void openQuitDialog() {
@@ -141,5 +148,10 @@ public class EventActivity extends AppCompatActivity implements EventDetailReadO
         nameDialog.setNegativeButton(R.string.ok, null);
         nameDialog.create();
         nameDialog.show();
+    }
+
+    private void editEvent () {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, eventDetailFragment).commit();
+        imageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_done_white_24dp));
     }
 }
