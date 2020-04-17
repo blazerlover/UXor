@@ -18,25 +18,14 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:context=".ui.EventActivity">
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/button_edit_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_create_white_24dp" />
+
     </FrameLayout>
-
-    <!--<ImageButton
-        android:id="@+id/imageEditEventButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="150dp"
-        android:background="@drawable/background_circle"
-        android:backgroundTint="#6d6d6d"
-        android:backgroundTintMode="src_atop"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_mode_edit_black_24dp"
-        android:tint="#02030A"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_container">
-
-    </ImageButton>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
