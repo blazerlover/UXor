@@ -1,5 +1,7 @@
 package ru.exemple.uksorganizer.ui;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -9,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +29,7 @@ public class EventsViewModel extends ViewModel {
     private MutableLiveData<List<EventRow>> liveData = new MutableLiveData<>();
     private List<EventRow> eventRows;
 
-    public EventsViewModel(EventsDatabase eventsDatabase) {
+    private EventsViewModel(EventsDatabase eventsDatabase) {
         this.eventsDatabase = eventsDatabase;
     }
 
@@ -34,7 +37,9 @@ public class EventsViewModel extends ViewModel {
         new Thread() {
             @Override
             public void run() {
-                try{TimeUnit.SECONDS.sleep(1);} catch (InterruptedException e) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 List<Event> events = eventsDatabase.getAllEvents(isDeletedRequestFlag);
@@ -144,7 +149,8 @@ public class EventsViewModel extends ViewModel {
             case 2:
                 return R.color.colorPriorityHard;
 
-            default: return R.color.colorPriorityLow;
+            default:
+                return R.color.colorPriorityLow;
         }
 
        /* if (event.getPriority() == 1) {

@@ -42,9 +42,9 @@
         <item>Middle priority</item>
         <item>High priority</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="nav_bar_iv_content_description">UXor</string>
     <string name="user">USER</string>
+    <string name="date">Date</string>
+    <string name="event_name">EventName</string>
 </resources>

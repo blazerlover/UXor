@@ -65,8 +65,7 @@ public class EventActivity extends AppCompatActivity {
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
             if (fragment instanceof EventDetailFragment) {
                 ((EventDetailFragment) fragment).saveEvent();
-            }
-            else if (fragment instanceof EventDetailReadOnlyFragment) {
+            } else if (fragment instanceof EventDetailReadOnlyFragment) {
                 editEvent();
             }
         });
@@ -150,7 +149,7 @@ public class EventActivity extends AppCompatActivity {
         nameDialog.show();
     }
 
-    private void editEvent () {
+    private void editEvent() {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, eventDetailFragment).commit();
         imageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_done_white_24dp));
     }

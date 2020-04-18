@@ -70,14 +70,13 @@ public class MainActivity extends AppCompatActivity implements
         toggle.syncState();
         FloatingActionButton fab = findViewById(R.id.button_add_event);
         progressBar = findViewById(R.id.pbMain);
-        fab.setOnClickListener(this::addEvent);
+        fab.setOnClickListener(v -> MainActivity.this.addEvent());
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         if (savedInstanceState != null) {
             isDeletedRequestFlag = savedInstanceState.getBoolean("isDeletedRequestFlag");
         } else {
-         //не совсем понятно зачем если потом в он старте все равно вызывается???
             eventsViewModel.load(isDeletedRequestFlag);
         }
 
@@ -92,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        eventsViewModel.load(isDeletedRequestFlag);
+//        eventsViewModel.load(isDeletedRequestFlag);
     }
 
     @Override
@@ -107,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements
         EventsListFragment.LayoutManagerType layoutManagerType;
         switch (item.getItemId()) {
             case R.id.new_event_item:
+                addEvent();
                 return true;
             case R.id.recycle_view_orientation_vertical_item:
                 layoutManagerType = EventsListFragment.LayoutManagerType.LINEAR_LAYOUT_MANAGER_VERTICAL;
@@ -170,17 +170,17 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public void addEvent(View view) {
+    private void addEvent() {
         EventActivity.start(this, null);
     }
 
     private void setSpinnerListener() {
-        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 int sortTag = position;
-                 eventsViewModel.sortEventRowsBy(sortTag);
-                 eventsListFragment.initData(eventsViewModel.getSortedEventRows());
+                eventsViewModel.sortEventRowsBy(sortTag);
+                eventsListFragment.initData(eventsViewModel.getSortedEventRows());
             }
 
             @Override
@@ -245,12 +245,10 @@ public class MainActivity extends AppCompatActivity implements
             View fragmentContainer = findViewById(R.id.fragment_container_tablet);
             if (fragmentContainer == null) {
                 fragmentTransaction.add(R.id.fragment_container_tablet, fragment).commit();
-            }
-            else {
+            } else {
                 fragmentTransaction.replace(R.id.fragment_container_tablet, fragment).commit();
             }
-        }
-        else EventActivity.start(this, event);
+        } else EventActivity.start(this, event);
     }
 
     @Override

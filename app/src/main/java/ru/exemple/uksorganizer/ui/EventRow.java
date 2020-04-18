@@ -29,26 +29,31 @@ public class EventRow {
         public int compare(EventRow o1, EventRow o2) {
             return o2.priority - o1.priority;
         }
+
         @Override
         public boolean equals(Object obj) {
             return false;
         }
     }
+
     public static class TitleComparator implements Comparator<EventRow> {
         @Override
         public int compare(EventRow o1, EventRow o2) {
             return o1.title.compareTo(o2.title);
         }
+
         @Override
         public boolean equals(Object obj) {
             return false;
         }
     }
+
     public static class TimeComparator implements Comparator<EventRow> {
         @Override
         public int compare(EventRow o1, EventRow o2) {
-            return (int)(o1.event.getTime() - o2.event.getTime());
+            return (int) (o1.event.getTime() - o2.event.getTime());
         }
+
         @Override
         public boolean equals(Object obj) {
             return false;
