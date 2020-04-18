@@ -4,34 +4,28 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_events"
-            android:title="@string/events"
+            android:checked="true"
             android:icon="@android:drawable/ic_menu_save"
-            android:checked="true">
-        </item>
+            android:title="@string/events" />
         <item
             android:id="@+id/nav_trash"
-            android:title="@string/trash"
-            android:icon="@android:drawable/ic_menu_delete">
-        </item>
+            android:icon="@android:drawable/ic_menu_delete"
+            android:title="@string/trash" />
         <item
             android:id="@+id/nav_search"
-            android:title="@string/search"
-            android:icon="@android:drawable/ic_menu_search">
-        </item>
+            android:icon="@android:drawable/ic_menu_search"
+            android:title="@string/search" />
     </group>
-    <item
-        android:title="@string/support">
+    <item android:title="@string/support">
         <menu>
             <item
                 android:id="@+id/nav_help"
-                android:title="@string/help"
-                android:icon="@android:drawable/ic_menu_help">
-            </item>
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="@string/help" />
             <item
                 android:id="@+id/nav_feedback"
-                android:title="@string/feedback"
-                android:icon="@android:drawable/ic_menu_send">
-            </item>
+                android:icon="@android:drawable/ic_menu_send"
+                android:title="@string/feedback" />
         </menu>
     </item>
 </menu>

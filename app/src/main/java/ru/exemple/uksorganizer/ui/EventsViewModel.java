@@ -1,5 +1,7 @@
 package ru.exemple.uksorganizer.ui;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -9,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +29,7 @@ public class EventsViewModel extends ViewModel {
     private MutableLiveData<List<EventRow>> liveData = new MutableLiveData<>();
     private List<EventRow> eventRows;
 
-    public EventsViewModel(EventsDatabase eventsDatabase) {
+    private EventsViewModel(EventsDatabase eventsDatabase) {
         this.eventsDatabase = eventsDatabase;
     }
 
@@ -69,9 +72,15 @@ public class EventsViewModel extends ViewModel {
 
     private List<EventRow> getEventRows(List<Event> events) {
         List<EventRow> result = new ArrayList<>();
-        for (Event event : events) {
-            result.add(getEventRow(event));
-        }
+            for (Event event : events) {
+                Log.d(TAG, "Iteration " + event.getName());
+                result.add(getEventRow(event));
+            }
+//        Iterator i = events.iterator();
+//            while (i.hasNext()) {
+//                Event event = (Event) i.next();
+//                result.add(getEventRow(event));
+//            }
         return result;
     }
 
