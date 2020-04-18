@@ -37,7 +37,9 @@ public class EventsViewModel extends ViewModel {
         new Thread() {
             @Override
             public void run() {
-                try{TimeUnit.SECONDS.sleep(1);} catch (InterruptedException e) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 List<Event> events = eventsDatabase.getAllEvents(isDeletedRequestFlag);
@@ -72,15 +74,9 @@ public class EventsViewModel extends ViewModel {
 
     private List<EventRow> getEventRows(List<Event> events) {
         List<EventRow> result = new ArrayList<>();
-            for (Event event : events) {
-                Log.d(TAG, "Iteration " + event.getName());
-                result.add(getEventRow(event));
-            }
-//        Iterator i = events.iterator();
-//            while (i.hasNext()) {
-//                Event event = (Event) i.next();
-//                result.add(getEventRow(event));
-//            }
+        for (Event event : events) {
+            result.add(getEventRow(event));
+        }
         return result;
     }
 
@@ -153,7 +149,8 @@ public class EventsViewModel extends ViewModel {
             case 2:
                 return R.color.colorPriorityHard;
 
-            default: return R.color.colorPriorityLow;
+            default:
+                return R.color.colorPriorityLow;
         }
 
        /* if (event.getPriority() == 1) {

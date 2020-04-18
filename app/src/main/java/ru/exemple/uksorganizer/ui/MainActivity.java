@@ -175,12 +175,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void setSpinnerListener() {
-        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 int sortTag = position;
-                 eventsViewModel.sortEventRowsBy(sortTag);
-                 eventsListFragment.initData(eventsViewModel.getSortedEventRows());
+                eventsViewModel.sortEventRowsBy(sortTag);
+                eventsListFragment.initData(eventsViewModel.getSortedEventRows());
             }
 
             @Override
@@ -245,12 +245,10 @@ public class MainActivity extends AppCompatActivity implements
             View fragmentContainer = findViewById(R.id.fragment_container_tablet);
             if (fragmentContainer == null) {
                 fragmentTransaction.add(R.id.fragment_container_tablet, fragment).commit();
-            }
-            else {
+            } else {
                 fragmentTransaction.replace(R.id.fragment_container_tablet, fragment).commit();
             }
-        }
-        else EventActivity.start(this, event);
+        } else EventActivity.start(this, event);
     }
 
     @Override
