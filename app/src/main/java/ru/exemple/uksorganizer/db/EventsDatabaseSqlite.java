@@ -24,14 +24,13 @@ public class EventsDatabaseSqlite implements EventsDatabase {
     private final static String DB_PRIORITY_COLUMN = "PRIORITY";
     private final static String DB_DELETED_COLUMN = "DELETED";
 
-    private EventDataBaseHelper helper;
     private ContentValues contentValues;
     private SQLiteDatabase database;
-    private ArrayList<Event> events;
-    private Event event;
 
-    public EventsDatabaseSqlite(Context context){
-        helper = new EventDataBaseHelper(context);
+    private EventsDatabase.OnDataChangedListener listener;
+
+    public EventsDatabaseSqlite(Context context) {
+        EventDataBaseHelper helper = new EventDataBaseHelper(context);
         database = helper.getWritableDatabase();
     }
 
@@ -41,27 +40,25 @@ public class EventsDatabaseSqlite implements EventsDatabase {
         if (!isDeletedRequestFlag) {
             isDeletedRequest = 0;
         }
-        events = new ArrayList<>();
-            try (Cursor cursor = database.query(DB_EVENTS_TABLE, null, "DELETED = ?",
-                    new String[] {Integer.toString(isDeletedRequest)}, null, null, null)) {
-                while (cursor.moveToNext()) {
-                    String name = cursor.getString(cursor.getColumnIndex(DB_NAME_COLUMN));
-                    Event.Category category;
-                    String categoryString = cursor.getString(cursor.getColumnIndex(DB_CATEGORY_COLUMN));
-                    try {
-                        category = Event.Category.valueOf(categoryString);
-                    } catch (IllegalArgumentException e) {
-                        category = Event.Category.CATEGORY;
-                    } catch (NullPointerException e) {
-                        category = Event.Category.CATEGORY;
-                    }
-                    String description = cursor.getString(cursor.getColumnIndex(DB_DESCRIPTION_COLUMN));
-                    long time = cursor.getLong(cursor.getColumnIndex(DB_TIME_COLUMN));
-                    int priority = cursor.getInt(cursor.getColumnIndex(DB_PRIORITY_COLUMN));
-                    event = new Event(name, category, description, time, priority);
-                    events.add(event);
+        ArrayList<Event> events = new ArrayList<>();
+        try (Cursor cursor = database.query(DB_EVENTS_TABLE, null, "DELETED = ?",
+                new String[]{Integer.toString(isDeletedRequest)}, null, null, null)) {
+            while (cursor.moveToNext()) {
+                String name = cursor.getString(cursor.getColumnIndex(DB_NAME_COLUMN));
+                Event.Category category;
+                String categoryString = cursor.getString(cursor.getColumnIndex(DB_CATEGORY_COLUMN));
+                try {
+                    category = Event.Category.valueOf(categoryString);
+                } catch (IllegalArgumentException | NullPointerException e) {
+                    category = Event.Category.CATEGORY;
                 }
+                String description = cursor.getString(cursor.getColumnIndex(DB_DESCRIPTION_COLUMN));
+                long time = cursor.getLong(cursor.getColumnIndex(DB_TIME_COLUMN));
+                int priority = cursor.getInt(cursor.getColumnIndex(DB_PRIORITY_COLUMN));
+                Event event = new Event(name, category, description, time, priority);
+                events.add(event);
             }
+        }
         return events;
     }
 
@@ -70,6 +67,7 @@ public class EventsDatabaseSqlite implements EventsDatabase {
         contentValues = fillContentValuesByEvent(event, 0);
         database.insert(DB_EVENTS_TABLE, null, contentValues);
         contentValues.clear();
+        listener.onDataChanged();
     }
 
     @Override
@@ -77,19 +75,25 @@ public class EventsDatabaseSqlite implements EventsDatabase {
         contentValues = fillContentValuesByEvent(event, 1);
         database.update(DB_EVENTS_TABLE, contentValues, "NAME = ?",
                 new String[]{event.getName()});
+        listener.onDataChanged();
     }
 
     @Override
     public void clearTrash() {
-        database.delete(DB_EVENTS_TABLE,  "DELETED = ?", new String[]{"1"});
+        database.delete(DB_EVENTS_TABLE, "DELETED = ?", new String[]{"1"});
+    }
+
+    @Override
+    public void setOnDataChangedListener(OnDataChangedListener listener) {
+        this.listener = listener;
     }
 
     class EventDataBaseHelper extends SQLiteOpenHelper {
 
         private final static int DB_VERSION = 2;
 
-        public EventDataBaseHelper(Context context) {
-         super(context, DB_NAME, null, DB_VERSION);
+        EventDataBaseHelper(Context context) {
+            super(context, DB_NAME, null, DB_VERSION);
         }
 
         @Override

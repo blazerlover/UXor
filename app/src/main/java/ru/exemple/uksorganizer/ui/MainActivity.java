@@ -1,5 +1,6 @@
 package ru.exemple.uksorganizer.ui;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
@@ -22,6 +23,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -31,6 +33,7 @@ import java.util.List;
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.model.Event;
+import ru.exemple.uksorganizer.ui.Settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, EventsListFragment.Listener {
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements
         eventsViewModel = ViewModelProviders.of(this, factory).get(EventsViewModel.class);
 
         setContentView(R.layout.activity_main);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
         sortSpinner = findViewById(R.id.spinnerSort);
         ArrayAdapter<?> adapter =
                 ArrayAdapter.createFromResource(this, R.array.sort_types, android.R.layout.simple_spinner_item);
@@ -124,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements
                 eventsViewModel.clearTrash(isDeletedRequestFlag);
                 return true;
             case R.id.settings_item:
+                openSettings();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -156,6 +161,9 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.nav_feedback:
                 break;
+            case R.id.nav_settings:
+                openSettings();
+                break;
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return false;
@@ -178,8 +186,7 @@ public class MainActivity extends AppCompatActivity implements
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                int sortTag = position;
-                eventsViewModel.sortEventRowsBy(sortTag);
+                eventsViewModel.sortEventRowsBy(position);
                 eventsListFragment.initData(eventsViewModel.getSortedEventRows());
             }
 
@@ -230,6 +237,11 @@ public class MainActivity extends AppCompatActivity implements
                 tvEmptyTrash.setVisibility(View.GONE);
             }
         }
+    }
+
+    private void openSettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     @Override

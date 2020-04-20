@@ -8,7 +8,7 @@ import ru.exemple.uksorganizer.model.Event;
 
 public class EventsDatabaseList implements EventsDatabase {
 
-    Random random = new Random();
+    private Random random = new Random();
 
     @Override
     public List<Event> getAllEvents(boolean isDeletedRequestFlag) {
@@ -41,7 +41,12 @@ public class EventsDatabaseList implements EventsDatabase {
 
     }
 
-    public Event.Category categoryCreate() {
+    @Override
+    public void setOnDataChangedListener(OnDataChangedListener listener) {
+
+    }
+
+    private Event.Category categoryCreate() {
         Event.Category randomCategory;
         int categoryNum = random.nextInt(3);
         switch (categoryNum) {

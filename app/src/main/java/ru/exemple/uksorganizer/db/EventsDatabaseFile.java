@@ -103,4 +103,9 @@ public class EventsDatabaseFile implements EventsDatabase{
             }
         }
     }
+
+    @Override
+    public void setOnDataChangedListener(OnDataChangedListener listener) {
+
+    }
 }

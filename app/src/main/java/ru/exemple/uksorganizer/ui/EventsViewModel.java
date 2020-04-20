@@ -1,7 +1,5 @@
 package ru.exemple.uksorganizer.ui;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -9,18 +7,15 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 
-public class EventsViewModel extends ViewModel {
+public class EventsViewModel extends ViewModel implements EventsDatabase.OnDataChangedListener {
 
     public final static String TAG = EventsViewModel.class.getName();
 
@@ -28,20 +23,23 @@ public class EventsViewModel extends ViewModel {
 
     private MutableLiveData<List<EventRow>> liveData = new MutableLiveData<>();
     private List<EventRow> eventRows;
+    private boolean isDeletedRequestFlag;
 
     private EventsViewModel(EventsDatabase eventsDatabase) {
         this.eventsDatabase = eventsDatabase;
     }
 
     public void load(boolean isDeletedRequestFlag) {
+        eventsDatabase.setOnDataChangedListener(this);
+        this.isDeletedRequestFlag = isDeletedRequestFlag;
         new Thread() {
             @Override
             public void run() {
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    TimeUnit.SECONDS.sleep(1);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 List<Event> events = eventsDatabase.getAllEvents(isDeletedRequestFlag);
                 eventRows = getEventRows(events);
                 liveData.postValue(eventRows);
@@ -85,12 +83,26 @@ public class EventsViewModel extends ViewModel {
                 bindTime(event), bindCategoryBackground(event), bindPriority(), bindPriorityColor(event), event);
     }
 
+//    Эти методы для делигации управления ViewModel с данными вместо прямых обращений с БД
     public void delete(Event event, boolean isDeletedRequestFlag) {
+        eventsDatabase.setOnDataChangedListener(this);
         new Thread() {
             @Override
             public void run() {
                 eventsDatabase.delete(event);
-                load(isDeletedRequestFlag);
+//                load(isDeletedRequestFlag);
+            }
+        }.start();
+    }
+
+//    Эти методы для делигации управления ViewModel с данными вместо прямых обращений с БД
+    public void addEvent(Event event) {
+        eventsDatabase.setOnDataChangedListener(this);
+        new Thread() {
+            @Override
+            public void run() {
+                eventsDatabase.addEvent(event);
+//                load(isDeletedRequestFlag);
             }
         }.start();
     }
@@ -152,11 +164,11 @@ public class EventsViewModel extends ViewModel {
             default:
                 return R.color.colorPriorityLow;
         }
+    }
 
-       /* if (event.getPriority() == 1) {
-        return R.color.colorPriorityHard;
-        }
-        else return R.color.colorPriorityLow;*/
+    @Override
+    public void onDataChanged() {
+        load(isDeletedRequestFlag);
     }
 
     public static class Factory implements ViewModelProvider.Factory {
