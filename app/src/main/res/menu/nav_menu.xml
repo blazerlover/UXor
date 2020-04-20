@@ -5,27 +5,31 @@
         <item
             android:id="@+id/nav_events"
             android:checked="true"
-            android:icon="@android:drawable/ic_menu_save"
+            android:icon="@drawable/ic_save_black_24dp"
             android:title="@string/events" />
         <item
             android:id="@+id/nav_trash"
-            android:icon="@android:drawable/ic_menu_delete"
+            android:icon="@drawable/ic_delete_black_24px"
             android:title="@string/trash" />
         <item
             android:id="@+id/nav_search"
-            android:icon="@android:drawable/ic_menu_search"
+            android:icon="@drawable/ic_search_24px"
             android:title="@string/search" />
     </group>
     <item android:title="@string/support">
         <menu>
             <item
                 android:id="@+id/nav_help"
-                android:icon="@android:drawable/ic_menu_help"
+                android:icon="@drawable/ic_help_24px"
                 android:title="@string/help" />
             <item
                 android:id="@+id/nav_feedback"
-                android:icon="@android:drawable/ic_menu_send"
+                android:icon="@drawable/ic_feedback_24px"
                 android:title="@string/feedback" />
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="@string/settings" />
         </menu>
     </item>
 </menu>

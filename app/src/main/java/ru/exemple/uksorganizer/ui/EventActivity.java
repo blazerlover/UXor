@@ -50,10 +50,10 @@ public class EventActivity extends AppCompatActivity {
 
         Event event = (Event) getIntent().getSerializableExtra(EXTRA_EVENT);
         if (event == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, eventDetailFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.activity_event_fragment_container, eventDetailFragment).commit();
             imageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_done_white_24dp));
         } else {
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, eventDetailReadOnlyFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.activity_event_fragment_container, eventDetailReadOnlyFragment).commit();
         }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -62,7 +62,7 @@ public class EventActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         imageButton.setOnClickListener(v -> {
-            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.activity_event_fragment_container);
             if (fragment instanceof EventDetailFragment) {
                 ((EventDetailFragment) fragment).saveEvent();
             } else if (fragment instanceof EventDetailReadOnlyFragment) {
@@ -95,7 +95,7 @@ public class EventActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.activity_event_fragment_container);
         if (fragment instanceof EventDetailFragment) {
             if (eventDetailFragment.eventChanged()) {
                 openQuitDialog();
@@ -124,7 +124,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void openDeleteDialog() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.activity_event_fragment_container);
         AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
         deleteDialog.setTitle(R.string.delete_event_question);
         deleteDialog.setPositiveButton(R.string.ok, (dialog, which) -> {
@@ -150,7 +150,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void editEvent() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, eventDetailFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.activity_event_fragment_container, eventDetailFragment).commit();
         imageButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_done_white_24dp));
     }
 }

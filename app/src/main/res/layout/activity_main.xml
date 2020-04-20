@@ -27,6 +27,7 @@
             android:textAlignment="center" />
 
         <FrameLayout
+            android:id="@+id/activity_main_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".ui.MainActivity">

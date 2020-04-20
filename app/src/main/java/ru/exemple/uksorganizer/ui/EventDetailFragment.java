@@ -30,6 +30,8 @@ import ru.exemple.uksorganizer.model.Event;
 
 public class EventDetailFragment extends Fragment {
 
+    private final static String TAG = EventActivity.class.getName();
+
     private static final String EXTRA_EVENT = "EVENT";
 
     private EditText editTextName, editTextDescription;
@@ -45,7 +47,6 @@ public class EventDetailFragment extends Fragment {
     private EventsDatabase eventsDatabase;
     private Event.Category[] categoriesArray = Event.Category.values();
     private String[] priorityArray;
-    private final static String TAG = EventActivity.class.getName();
 
     public EventDetailFragment() {
     }
@@ -194,6 +195,7 @@ public class EventDetailFragment extends Fragment {
         if (event.getName().length() == 0) {
             openEnterNameDialog();
         } else {
+//            TODO: заменить на вызов refresh() у viewmodel
             eventsDatabase.addEvent((event));
             //правильно ли создавать здесь экземпляр?
             if (checkBoxNotification.isChecked()) {

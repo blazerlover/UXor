@@ -14,4 +14,9 @@ public interface EventsDatabase {
 
     void clearTrash();
 
+    void setOnDataChangedListener(OnDataChangedListener listener);
+
+    interface OnDataChangedListener {
+        void onDataChanged();
+    }
 }
