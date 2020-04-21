@@ -32,6 +32,7 @@ import java.util.List;
 
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
+import ru.exemple.uksorganizer.ViewModel.EventsViewModel;
 import ru.exemple.uksorganizer.model.Event;
 import ru.exemple.uksorganizer.ui.Settings.SettingsActivity;
 
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-//        eventsViewModel.load(isDeletedRequestFlag);
+        eventsViewModel.load(isDeletedRequestFlag);
     }
 
     @Override
@@ -208,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void deleteEvent(Event event) {
         progressBar.setVisibility(View.VISIBLE);
-        eventsViewModel.delete(event, isDeletedRequestFlag);
+        eventsViewModel.delete(event);
     }
 
     private void onEventsLoaded(List<EventRow> eventRows) {

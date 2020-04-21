@@ -11,11 +11,13 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
+import ru.exemple.uksorganizer.ViewModel.EventsViewModel;
 import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 
@@ -29,7 +31,7 @@ public class EventActivity extends AppCompatActivity {
     private EventDetailReadOnlyFragment eventDetailReadOnlyFragment;
 
     private FloatingActionButton imageButton;
-
+    private EventsViewModel eventsViewModel;
     private EventsDatabase eventsDatabase;
 
     public static void start(Context context, Event event) {
@@ -41,9 +43,12 @@ public class EventActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventsViewModel.Factory factory = new EventsViewModel.Factory(
+                ((App) getApplication()).getEventsDb());
+        eventsViewModel = ViewModelProviders.of(this, factory).get(EventsViewModel.class);
         setContentView(R.layout.activity_event);
 
-        eventDetailFragment = new EventDetailFragment();
+        eventDetailFragment = new EventDetailFragment(eventsViewModel);
         eventDetailReadOnlyFragment = new EventDetailReadOnlyFragment();
 
         imageButton = findViewById(R.id.button_edit_event);
@@ -129,10 +134,10 @@ public class EventActivity extends AppCompatActivity {
         deleteDialog.setTitle(R.string.delete_event_question);
         deleteDialog.setPositiveButton(R.string.ok, (dialog, which) -> {
             if (fragment instanceof EventDetailFragment) {
-                eventsDatabase.delete(eventDetailFragment.getEvent());
+                eventsViewModel.delete(eventDetailFragment.getEvent());
                 this.finish();
             } else if (fragment instanceof EventDetailReadOnlyFragment) {
-                eventsDatabase.delete(eventDetailReadOnlyFragment.getEvent());
+                eventsViewModel.delete(eventDetailReadOnlyFragment.getEvent());
                 this.finish();
             }
         });
