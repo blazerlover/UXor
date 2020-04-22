@@ -1,4 +1,4 @@
-package ru.exemple.uksorganizer.ui.Settings;
+package ru.exemple.uksorganizer.ui.settings;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

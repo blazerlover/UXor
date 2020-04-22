@@ -20,9 +20,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import ru.exemple.uksorganizer.EventNotification.EventNotification;
+import ru.exemple.uksorganizer.eventNotification.EventNotification;
 import ru.exemple.uksorganizer.R;
-import ru.exemple.uksorganizer.ViewModel.EventsViewModel;
+import ru.exemple.uksorganizer.viewModel.EventsViewModel;
 import ru.exemple.uksorganizer.model.Event;
 
 

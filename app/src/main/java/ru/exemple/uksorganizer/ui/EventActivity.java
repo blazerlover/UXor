@@ -17,7 +17,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
-import ru.exemple.uksorganizer.ViewModel.EventsViewModel;
+import ru.exemple.uksorganizer.viewModel.EventsViewModel;
 import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
 

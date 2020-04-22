@@ -32,9 +32,9 @@ import java.util.List;
 
 import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.R;
-import ru.exemple.uksorganizer.ViewModel.EventsViewModel;
+import ru.exemple.uksorganizer.viewModel.EventsViewModel;
 import ru.exemple.uksorganizer.model.Event;
-import ru.exemple.uksorganizer.ui.Settings.SettingsActivity;
+import ru.exemple.uksorganizer.ui.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, EventsListFragment.Listener {

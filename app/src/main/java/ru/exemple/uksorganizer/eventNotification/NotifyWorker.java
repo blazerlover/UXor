@@ -1,4 +1,4 @@
-package ru.exemple.uksorganizer.EventNotification;
+package ru.exemple.uksorganizer.eventNotification;
 
 import android.content.Context;
 

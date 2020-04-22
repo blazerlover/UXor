@@ -4,19 +4,19 @@
     <PreferenceScreen
         android:title="@string/pref_header_general"
         android:icon="@drawable/ic_info_24px"
-        android:fragment="ru.exemple.uksorganizer.ui.Settings.SettingsActivity$GeneralPreferencesFragment">
+        android:fragment="ru.exemple.uksorganizer.ui.settings.SettingsActivity$GeneralPreferencesFragment">
     </PreferenceScreen>
 
     <PreferenceScreen
         android:title="@string/pref_header_account"
         android:icon="@drawable/ic_account_box_24px"
-        android:fragment="ru.exemple.uksorganizer.ui.Settings.SettingsActivity$AccountPreferencesFragment">
+        android:fragment="ru.exemple.uksorganizer.ui.settings.SettingsActivity$AccountPreferencesFragment">
     </PreferenceScreen>
 
     <PreferenceScreen
         android:title="@string/pref_header_notifications"
         android:icon="@drawable/ic_notification_important_24px"
-        android:fragment="ru.exemple.uksorganizer.ui.Settings.SettingsActivity$NotificationPreferencesFragment">
+        android:fragment="ru.exemple.uksorganizer.ui.settings.SettingsActivity$NotificationPreferencesFragment">
     </PreferenceScreen>
 
 </PreferenceScreen>

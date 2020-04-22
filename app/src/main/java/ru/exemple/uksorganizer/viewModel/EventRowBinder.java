@@ -1,4 +1,4 @@
-package ru.exemple.uksorganizer.ViewModel;
+package ru.exemple.uksorganizer.viewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
