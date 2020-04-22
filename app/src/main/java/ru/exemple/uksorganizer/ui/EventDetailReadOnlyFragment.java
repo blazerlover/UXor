@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.Objects;
 
 import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.model.Event;
@@ -30,7 +29,6 @@ public class EventDetailReadOnlyFragment extends Fragment {
     private TextView textViewDate;
     private Calendar calendar = Calendar.getInstance();
 
-    private Event event;
     private Event.Category[] categoriesArray = Event.Category.values();
     private String[] priorityArray;
     private final static String TAG = EventActivity.class.getName();
@@ -56,7 +54,7 @@ public class EventDetailReadOnlyFragment extends Fragment {
             textViewTime = viewFrag.findViewById(R.id.textViewTime);
             textViewDate = viewFrag.findViewById(R.id.textViewDate);
             priorityArray = getActivity().getResources().getStringArray(R.array.priority);
-            ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, categoriesArray);
+            ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>((getActivity()), android.R.layout.simple_list_item_1, categoriesArray);
             spinnerCategory.setEnabled(false);
             spinnerCategory.setClickable(false);
             spinnerCategory.setAdapter(arrayAdapter);
@@ -101,7 +99,7 @@ public class EventDetailReadOnlyFragment extends Fragment {
     }
 
     private void getIntentFromMain() {
-        event = (Event) getActivity().getIntent().getSerializableExtra(EXTRA_EVENT);
+        Event event = (Event) getActivity().getIntent().getSerializableExtra(EXTRA_EVENT);
         if (event == null) {
             Bundle bundle = this.getArguments();
             event = (Event) bundle.getSerializable(EXTRA_EVENT);
@@ -139,10 +137,4 @@ public class EventDetailReadOnlyFragment extends Fragment {
         }
         spinnerPriority.setSelection(priorityPosition);
     }
-
-    boolean eventChanged() {
-        Event newEvent = this.getEvent();
-        return !event.equals(newEvent);
-    }
-
 }

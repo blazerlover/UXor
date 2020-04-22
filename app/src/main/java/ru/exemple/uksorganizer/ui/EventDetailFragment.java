@@ -19,12 +19,10 @@ import androidx.fragment.app.Fragment;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.Objects;
 
-import ru.exemple.uksorganizer.App;
 import ru.exemple.uksorganizer.EventNotification.EventNotification;
 import ru.exemple.uksorganizer.R;
-import ru.exemple.uksorganizer.db.EventsDatabase;
+import ru.exemple.uksorganizer.ViewModel.EventsViewModel;
 import ru.exemple.uksorganizer.model.Event;
 
 
@@ -44,11 +42,12 @@ public class EventDetailFragment extends Fragment {
     private DatePickerDialog datePickerDialog;
 
     private Event event;
-    private EventsDatabase eventsDatabase;
+    private EventsViewModel eventViewModel;
     private Event.Category[] categoriesArray = Event.Category.values();
     private String[] priorityArray;
 
-    public EventDetailFragment() {
+    public EventDetailFragment(EventsViewModel eventsViewModel) {
+        this.eventViewModel = eventsViewModel;
     }
 
     @Override
@@ -60,8 +59,6 @@ public class EventDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        eventsDatabase = ((App) getActivity().getApplication()).getEventsDb();
-
     }
 
     @Override
@@ -77,7 +74,7 @@ public class EventDetailFragment extends Fragment {
             textViewDate = viewFrag.findViewById(R.id.textViewDate);
             checkBoxNotification = viewFrag.findViewById(R.id.checkBoxNotification);
             priorityArray = getActivity().getResources().getStringArray(R.array.priority);
-            ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, categoriesArray);
+            ArrayAdapter<Event.Category> arrayAdapter = new ArrayAdapter<Event.Category>((getActivity()), android.R.layout.simple_list_item_1, categoriesArray);
             spinnerCategory.setAdapter(arrayAdapter);
             ArrayAdapter<String> arrayPriorityAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, priorityArray);
             spinnerPriority.setAdapter(arrayPriorityAdapter);
@@ -195,8 +192,8 @@ public class EventDetailFragment extends Fragment {
         if (event.getName().length() == 0) {
             openEnterNameDialog();
         } else {
-//            TODO: заменить на вызов refresh() у viewmodel
-            eventsDatabase.addEvent((event));
+
+            eventViewModel.addEvent((event));
             //правильно ли создавать здесь экземпляр?
             if (checkBoxNotification.isChecked()) {
                 EventNotification notification = new EventNotification(getContext(), event);

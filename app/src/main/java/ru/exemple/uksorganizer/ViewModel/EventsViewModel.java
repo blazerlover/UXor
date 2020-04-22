@@ -1,19 +1,17 @@
-package ru.exemple.uksorganizer.ui;
+package ru.exemple.uksorganizer.ViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
-import ru.exemple.uksorganizer.R;
 import ru.exemple.uksorganizer.db.EventsDatabase;
 import ru.exemple.uksorganizer.model.Event;
+import ru.exemple.uksorganizer.ui.EventRow;
 
 public class EventsViewModel extends ViewModel implements EventsDatabase.OnDataChangedListener {
 
@@ -22,6 +20,7 @@ public class EventsViewModel extends ViewModel implements EventsDatabase.OnDataC
     private final EventsDatabase eventsDatabase;
 
     private MutableLiveData<List<EventRow>> liveData = new MutableLiveData<>();
+    private EventRowBinder eventRowBinder = new EventRowBinder();
     private List<EventRow> eventRows;
     private boolean isDeletedRequestFlag;
 
@@ -35,11 +34,6 @@ public class EventsViewModel extends ViewModel implements EventsDatabase.OnDataC
         new Thread() {
             @Override
             public void run() {
-//                try {
-//                    TimeUnit.SECONDS.sleep(1);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
                 List<Event> events = eventsDatabase.getAllEvents(isDeletedRequestFlag);
                 eventRows = getEventRows(events);
                 liveData.postValue(eventRows);
@@ -70,21 +64,8 @@ public class EventsViewModel extends ViewModel implements EventsDatabase.OnDataC
     }
 
 
-    private List<EventRow> getEventRows(List<Event> events) {
-        List<EventRow> result = new ArrayList<>();
-        for (Event event : events) {
-            result.add(getEventRow(event));
-        }
-        return result;
-    }
-
-    private EventRow getEventRow(Event event) {
-        return new EventRow(event.getName(), bindCategory(event),
-                bindTime(event), bindCategoryBackground(event), bindPriority(), bindPriorityColor(event), event);
-    }
-
-//    Эти методы для делигации управления ViewModel с данными вместо прямых обращений с БД
-    public void delete(Event event, boolean isDeletedRequestFlag) {
+    //    Эти методы для делигации управления ViewModel с данными вместо прямых обращений с БД
+    public void delete(Event event) {
         eventsDatabase.setOnDataChangedListener(this);
         new Thread() {
             @Override
@@ -95,7 +76,7 @@ public class EventsViewModel extends ViewModel implements EventsDatabase.OnDataC
         }.start();
     }
 
-//    Эти методы для делигации управления ViewModel с данными вместо прямых обращений с БД
+    //    Эти методы для делигации управления ViewModel с данными вместо прямых обращений с БД
     public void addEvent(Event event) {
         eventsDatabase.setOnDataChangedListener(this);
         new Thread() {
@@ -117,53 +98,12 @@ public class EventsViewModel extends ViewModel implements EventsDatabase.OnDataC
         }.start();
     }
 
-    private int bindCategory(Event event) {
-        switch (event.getCategory()) {
-            case WORK:
-                return R.drawable.ic_work_outline_black_24dp;
-            case MEETING:
-                return R.drawable.ic_people_black_24dp;
-            case SPORT:
-                return R.drawable.ic_sports_basketball_black_24dp;
-            default:
-                return R.drawable.ic_description_24px;
+    private List<EventRow> getEventRows(List<Event> events) {
+        List<EventRow> result = new ArrayList<>();
+        for (Event event : events) {
+            result.add(eventRowBinder.getEventRow(event));
         }
-    }
-
-    private String bindTime(Event event) {
-        SimpleDateFormat df = new SimpleDateFormat("MMM dd hh:mm", Locale.getDefault());
-        return df.format(event.getTime());
-    }
-
-    private int bindCategoryBackground(Event event) {
-        switch (event.getCategory()) {
-            case WORK:
-                return R.drawable.category_work_shape;
-            case MEETING:
-                return R.drawable.category_meeting_shape;
-            case SPORT:
-                return R.drawable.category_sport_shape;
-            default:
-                return R.drawable.category_something_shape;
-        }
-    }
-
-    private int bindPriority() {
-        return R.drawable.ic_priority_high_white_24dp;
-    }
-
-    private int bindPriorityColor(Event event) {
-        switch (event.getPriority()) {
-            case 0:
-                return R.color.colorPriorityLow;
-            case 1:
-                return R.color.colorPriorityMiddle;
-            case 2:
-                return R.color.colorPriorityHard;
-
-            default:
-                return R.color.colorPriorityLow;
-        }
+        return result;
     }
 
     @Override
